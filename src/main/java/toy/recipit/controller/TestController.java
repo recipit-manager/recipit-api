@@ -19,7 +19,7 @@ public class TestController {
     public String test(
             HttpServletRequest request
     ) {
-        request.getSession(true).setAttribute("Dummy","DumDum");
+        request.getSession(true).setAttribute("Dummy","DumDum12");
 
         return testService.test();
     }
