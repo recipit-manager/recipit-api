@@ -1,7 +1,7 @@
-package toy.recipe.service;
+package toy.recipit.service;
 
 import org.springframework.stereotype.Service;
-import toy.recipe.mapper.TestMapper;
+import toy.recipit.mapper.TestMapper;
 
 @Service
 public class TestService {

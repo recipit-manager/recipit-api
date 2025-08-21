@@ -1,9 +1,10 @@
-package toy.recipe.controller;
+package toy.recipit.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import toy.recipe.service.TestService;
+import toy.recipit.service.TestService;
 
 @RestController
 @RequestMapping("/test")
@@ -15,7 +16,11 @@ public class TestController {
     }
 
     @GetMapping("/now")
-    public String test() {
+    public String test(
+            HttpServletRequest request
+    ) {
+        request.getSession(true).setAttribute("Dummy","DumDum");
+
         return testService.test();
     }
 }

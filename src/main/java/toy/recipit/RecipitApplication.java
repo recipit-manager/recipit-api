@@ -1,4 +1,4 @@
-package toy.recipe;
+package toy.recipit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @EnableRedisHttpSession
 @SpringBootApplication
-public class RecipeApplication {
+public class RecipitApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RecipeApplication.class, args);
+        SpringApplication.run(RecipitApplication.class, args);
     }
 
 }

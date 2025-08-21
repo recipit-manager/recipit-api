@@ -1,4 +1,4 @@
-package toy.recipe.mapper;
+package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
