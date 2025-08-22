@@ -1,6 +1,5 @@
 package toy.recipit.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.util.StringUtils;
@@ -9,32 +8,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.dto.ApiResponse;
-import toy.recipit.service.TestService;
+import toy.recipit.service.AccountService;
 
 @RestController
-@RequestMapping("/test")
-public class TestController {
-    private final TestService testService;
+@RequestMapping("/user")
+public class AccountController {
+    private final AccountService accountService;
 
-    public TestController(TestService testService) {
-        this.testService = testService;
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
     }
 
-    @GetMapping("/now")
-    public String test(HttpServletRequest request) {
-        request.getSession(true).setAttribute("Dummy","DumDum");
-
-        return testService.test();
-    }
-
-    @GetMapping("/user/nickname/{nickname}/duplicateYn")
+    @GetMapping("/nickname/{nickname}/duplicateYn")
     public ResponseEntity<ApiResponse<String>> checkDuplicate(@PathVariable String nickname) {
         if (!StringUtils.hasText(nickname) || nickname.length() < 2 || nickname.length() > 8) {
             return ResponseEntity.ok(new ApiResponse<String>().badRequest());
         }
 
         try {
-            String result = testService.isNicknameDuplicate(nickname) ? "Y" : "N";
+            String result = accountService.isNicknameDuplicate(nickname) ? "Y" : "N";
             return ResponseEntity.ok(new ApiResponse<String>().success(result));
         } catch (CannotGetJdbcConnectionException e) {
             return ResponseEntity.ok(new ApiResponse<String>().dbConnectionFailed());
