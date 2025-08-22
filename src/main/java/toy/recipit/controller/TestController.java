@@ -34,7 +34,7 @@ public class TestController {
         }
 
         try {
-            String result = testService.isNicknameDuplicate(nickname) ? "N" : "Y";
+            String result = testService.isNicknameDuplicate(nickname) ? "Y" : "N";
             return ResponseEntity.ok(new ApiResponse<String>().success(result));
         } catch (CannotGetJdbcConnectionException e) {
             return ResponseEntity.ok(new ApiResponse<String>().dbConnectionFailed());
