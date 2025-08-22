@@ -14,4 +14,9 @@ public class TestService {
     public String test(){
         return testMapper.test();
     }
+
+    public boolean isNicknameDuplicate(String nickname) {
+        long count = testMapper.countByNickname(nickname);
+        return count > 0;
+    }
 }

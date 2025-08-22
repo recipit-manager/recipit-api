@@ -7,4 +7,10 @@
         SELECT NOW()
     </select>
 
+    <select id="countByNickname" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM US_USER
+        WHERE NICK_NAME = #{nickname}
+    </select>
+
 </mapper>
