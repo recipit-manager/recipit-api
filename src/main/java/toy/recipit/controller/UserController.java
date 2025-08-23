@@ -1,6 +1,7 @@
 package toy.recipit.controller;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,9 +25,13 @@ public class UserController {
     @GetMapping("/nickname/{nickname}/duplicateYn")
     public ResponseEntity<ApiResponse<String>> checkNicknameDuplicate(
             @PathVariable
-            @NotBlank(message = "닉네임이 비어있습니다.")
-            @Size(min = 2, max = 8, message = "올바른 닉네임 형식이 아닙니다.")
-            String nickname) {
+            @Size(min = 2, max = 8, message = "2~8자여야 합니다.")
+            @Pattern(
+                    regexp = "^[0-9A-Za-z가-힣]+$",
+                    message = "숫자, 영문, 한글만 사용할 수 있습니다."
+            )
+            String nickname
+    ) {
         String result = userService.isNicknameDuplicate(nickname) ? "Y" : "N";
 
         return ResponseEntity.ok(new ApiResponse<>("0000", "success", result));

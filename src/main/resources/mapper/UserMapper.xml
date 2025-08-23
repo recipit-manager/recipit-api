@@ -4,9 +4,11 @@
 <mapper namespace="toy.recipit.mapper.UserMapper">
 
     <select id="countByNickname" parameterType="string" resultType="int">
-        SELECT COUNT(*)
-        FROM US_USER
-        WHERE NICK_NAME = #{nickname}
+        SELECT CASE WHEN EXISTS (
+            SELECT 1
+            FROM US_USER
+            WHERE NICK_NAME = #{nickname}
+        ) THEN 1 ELSE 0 END
     </select>
 
 </mapper>

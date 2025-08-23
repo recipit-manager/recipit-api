@@ -12,8 +12,7 @@ public class UserService {
     }
 
     public boolean isNicknameDuplicate(String nickname) {
-        int count = userMapper.countByNickname(nickname);
-
-        return count > 0;
+        int exists = userMapper.countByNickname(nickname);
+        return exists == 1;
     }
 }
