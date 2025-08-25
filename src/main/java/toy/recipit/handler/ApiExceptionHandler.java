@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import toy.recipit.controller.dto.ApiResponseFactory;
+import toy.recipit.controller.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.ApiResponse;
 import java.util.stream.Collectors;

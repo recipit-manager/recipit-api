@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.ApiResponse;
 import toy.recipit.service.UserService;
-import toy.recipit.controller.dto.ApiResponseFactory;
+import toy.recipit.controller.factory.ApiResponseFactory;
 
 @RestController
 @RequestMapping("/user")
