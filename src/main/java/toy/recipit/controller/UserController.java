@@ -1,6 +1,5 @@
 package toy.recipit.controller;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.dto.ApiResponse;
 import toy.recipit.service.UserService;
+import toy.recipit.common.ApiResult;
+import toy.recipit.common.Constant;
 
 @RestController
 @RequestMapping("/user")
@@ -25,15 +26,14 @@ public class UserController {
     @GetMapping("/nickname/{nickname}/duplicateYn")
     public ResponseEntity<ApiResponse<String>> checkNicknameDuplicate(
             @PathVariable
-            @Size(min = 2, max = 8, message = "2~8자여야 합니다.")
-            @Pattern(
-                    regexp = "^[0-9A-Za-z가-힣]+$",
-                    message = "숫자, 영문, 한글만 사용할 수 있습니다."
-            )
+            @Size(min = 2, max = 8, message = "{validation.nickname.size}")
+            @Pattern(regexp = "^[0-9A-Za-z가-힣]+$", message = "{validation.nickname.pattern}")
             String nickname
     ) {
-        String result = userService.isNicknameDuplicate(nickname) ? "Y" : "N";
+        String result = userService.isNicknameDuplicate(nickname) ? Constant.YES : Constant.NO;
 
-        return ResponseEntity.ok(new ApiResponse<>("0000", "success", result));
+        return ResponseEntity.ok(
+                new ApiResponse<>(ApiResult.SUCCESS.getCode(), ApiResult.SUCCESS.getMessage(), result)
+        );
     }
 }

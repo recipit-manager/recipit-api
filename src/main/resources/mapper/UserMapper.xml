@@ -3,7 +3,7 @@
 
 <mapper namespace="toy.recipit.mapper.UserMapper">
 
-    <select id="countByNickname" parameterType="string" resultType="int">
+    <select id="isNicknameExists" parameterType="string" resultType="int">
         SELECT CASE WHEN EXISTS (
             SELECT 1
             FROM US_USER

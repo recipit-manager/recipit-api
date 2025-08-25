@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-    int countByNickname(@Param("nickname") String nickname);
+    int isNicknameExists(@Param("nickname") String nickname);
 }
