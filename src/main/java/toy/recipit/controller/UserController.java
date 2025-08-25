@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
-import toy.recipit.common.MessageProvider;
-import toy.recipit.dto.ApiResponse;
+import toy.recipit.controller.dto.ApiResponse;
 import toy.recipit.service.UserService;
-import toy.recipit.common.ApiResult;
+import toy.recipit.controller.dto.ApiResponseFactory;
 
 @RestController
 @RequestMapping("/user")
@@ -22,7 +21,7 @@ import toy.recipit.common.ApiResult;
 public class UserController {
 
     private final UserService userService;
-    private final MessageProvider messageProvider;
+    private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping("/nickname/{nickname}/duplicateYn")
     public ResponseEntity<ApiResponse<String>> checkNicknameDuplicate(
@@ -32,13 +31,6 @@ public class UserController {
             String nickname
     ) {
         String result = userService.isNicknameDuplicate(nickname) ? Constants.Yn.YES : Constants.Yn.NO;
-
-        return ResponseEntity.ok(
-                new ApiResponse<>(
-                        ApiResult.SUCCESS.getCode(),
-                        messageProvider.getMessage(ApiResult.SUCCESS.getMessageKey()),
-                        result
-                )
-        );
+        return ResponseEntity.ok(apiResponseFactory.success(result));
     }
 }
