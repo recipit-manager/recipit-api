@@ -2,19 +2,18 @@ package toy.recipit.common;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
-
-import java.util.Locale;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 @Component
-class MessageProvider {
-    private static MessageSource messageSource;
+public class MessageProvider {
 
-    MessageProvider(MessageSource messageSource) {
+    private final MessageSource messageSource;
+
+    public MessageProvider(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
-    static String getMessage(String key) {
-
-        return messageSource.getMessage(key, null, Locale.getDefault());
+    public String getMessage(String key, Object... args) {
+        return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
 }

@@ -3,12 +3,12 @@
 
 <mapper namespace="toy.recipit.mapper.UserMapper">
 
-    <select id="isNicknameExists" parameterType="string" resultType="int">
-        SELECT CASE WHEN EXISTS (
+    <select id="isNicknameDuplicate" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
             SELECT 1
             FROM US_USER
             WHERE NICK_NAME = #{nickname}
-        ) THEN 1 ELSE 0 END
+        )
     </select>
 
 </mapper>

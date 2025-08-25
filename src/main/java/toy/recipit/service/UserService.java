@@ -12,7 +12,7 @@ public class UserService {
     }
 
     public boolean isNicknameDuplicate(String nickname) {
-        int exists = userMapper.isNicknameExists(nickname);
-        return exists == 1;
+
+        return userMapper.isNicknameDuplicate(nickname);
     }
 }

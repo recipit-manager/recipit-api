@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-    int isNicknameExists(@Param("nickname") String nickname);
+    boolean isNicknameDuplicate(@Param("nickname") String nickname);
 }
