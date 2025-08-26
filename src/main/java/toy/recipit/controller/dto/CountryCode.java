@@ -2,13 +2,14 @@ package toy.recipit.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CountryCode {
-    private String code;
-    private String name;
-    private String dialCode;
-    private String format;
-    private String regex;
+    private final String code;
+    private final String name;
+    private final String dialCode;
+    private final String format;
+    private final String regex;
 }
