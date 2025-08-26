@@ -11,13 +11,7 @@
             NOTE_1          AS note1,
             NOTE_2          AS note2,
             NOTE_3          AS note3,
-            NOTE_4          AS note4,
-            SORT_SEQUENCE   AS sortSequence,
-            USE_YN          AS useYn,
-            CREATE_DATETIME AS createDatetime,
-            CREATE_USER     AS createUser,
-            EDIT_DATETIME   AS editDatetime,
-            EDIT_USER       AS editUser
+            NOTE_4          AS note4
         FROM CM_DETAIL_CODE
         WHERE GROUP_CODE = #{groupCode}
           AND USE_YN = 'Y'
