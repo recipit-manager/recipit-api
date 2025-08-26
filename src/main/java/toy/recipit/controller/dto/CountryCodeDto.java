@@ -1,12 +1,11 @@
 package toy.recipit.controller.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class CountryCode {
+public class CountryCodeDto {
     private final String code;
     private final String name;
     private final String dialCode;
