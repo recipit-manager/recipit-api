@@ -29,11 +29,11 @@
 * 민감정보는 구글 드라이브 참조 
 ```properties
  -DSPRING_DATASOURCE_URL={RDB host url}
- -SPRING_DATASOURCE_USERNAME={RDB username}
+ -DSPRING_DATASOURCE_USERNAME={RDB username}
  -DSPRING_DATASOURCE_PASSWORD={RDB password}
-`-SPRING_DATA_REDIS_HOST={Redis host url}
-`-SPRING_DATA_REDIS_PORT={Redis port}
-`-SPRING_DATA_REDIS_PASSWORD={Redit password}
+`-DSPRING_DATA_REDIS_HOST={Redis host url}
+`-DSPRING_DATA_REDIS_PORT={Redis port}
+`-DSPRING_DATA_REDIS_PASSWORD={Redit password}
 ``` 
 
 ### Source
