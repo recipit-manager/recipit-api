@@ -3,7 +3,7 @@
 
 <mapper namespace="toy.recipit.mapper.CommonMapper">
 
-    <select id="getCountryCodes" parameterType="string" resultType="toy.recipit.controller.dto.CountryCodeDto">
+    <select id="getCountryCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CountryCodeVo">
         SELECT
             CODE       AS code,
             CODE_NAME  AS name,

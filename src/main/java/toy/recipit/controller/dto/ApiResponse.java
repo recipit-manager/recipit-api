@@ -14,6 +14,7 @@ public class ApiResponse<T> {
     public enum Result {
         SUCCESS("0000", "api.success"),
         BAD_REQUEST("1001", "api.error.bad_request"),
+        ARGUMENT_ERROR("1002", "api.error.argument"),
         SERVER_ERROR("4001", "api.error.server"),
         DB_CONNECT_FAIL("4999", "api.error.db");
 

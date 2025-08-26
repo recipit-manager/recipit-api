@@ -14,7 +14,14 @@ public class CommonService {
     private final CommonMapper commonMapper;
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
-
-        return commonMapper.getCountryCodes(groupCode);
+        return commonMapper.getCountryCodes(groupCode).stream()
+                .map(vo -> new CountryCodeDto(
+                        vo.getCode(),
+                        vo.getName(),
+                        vo.getDialCode(),
+                        vo.getFormat(),
+                        vo.getRegex()
+                ))
+                .toList();
     }
 }

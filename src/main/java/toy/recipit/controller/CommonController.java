@@ -1,6 +1,5 @@
 package toy.recipit.controller;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,6 @@ public class CommonController {
     @GetMapping("/country/list")
     public ApiResponse<List<CountryCodeDto>> getCountryCodes(
             @RequestParam(
-                    name = "language",
                     defaultValue = "KO"
             ) ApiResponse.Language language
     ) {

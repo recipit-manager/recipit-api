@@ -1,10 +1,11 @@
 package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import toy.recipit.controller.dto.CountryCodeDto;
+import toy.recipit.mapper.vo.CountryCodeVo;
+
 import java.util.List;
 
 @Mapper
 public interface CommonMapper {
-    List<CountryCodeDto> getCountryCodes(String language);
+    List<CountryCodeVo> getCountryCodes(String language);
 }

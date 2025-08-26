@@ -47,8 +47,9 @@ public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<String>> handleArgument(MethodArgumentTypeMismatchException e, HttpServletRequest req) {
         log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+        String paramName = e.getName();
 
-        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, "validation.language.pattern"));
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.ARGUMENT_ERROR, paramName));
     }
 
     @ExceptionHandler(Exception.class)
