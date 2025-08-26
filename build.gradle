@@ -6,7 +6,7 @@ plugins {
 
 group = 'toy.recipit'
 version = '0.0.1-SNAPSHOT'
-description = 'Recipit'
+description = 'Recipit-api'
 
 java {
     toolchain {
