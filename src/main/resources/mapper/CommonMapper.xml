@@ -3,13 +3,21 @@
 
 <mapper namespace="toy.recipit.mapper.CommonMapper">
 
-    <select id="getCountryCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CountryCodeVo">
+    <select id="getCountryCodes" parameterType="string" resultType="toy.recipit.mapper.vo.cmDetailCodeVo">
         SELECT
-            CODE       AS code,
-            CODE_NAME  AS name,
-            NOTE_4     AS dialCode,
-            NOTE_2     AS format,
-            NOTE_3     AS regex
+            GROUP_CODE      AS groupCode,
+            CODE            AS code,
+            CODE_NAME       AS codeName,
+            NOTE_1          AS note1,
+            NOTE_2          AS note2,
+            NOTE_3          AS note3,
+            NOTE_4          AS note4,
+            SORT_SEQUENCE   AS sortSequence,
+            USE_YN          AS useYn,
+            CREATE_DATETIME AS createDatetime,
+            CREATE_USER     AS createUser,
+            EDIT_DATETIME   AS editDatetime,
+            EDIT_USER       AS editUser
         FROM CM_DETAIL_CODE
         WHERE GROUP_CODE = #{groupCode}
           AND USE_YN = 'Y'

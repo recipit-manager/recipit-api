@@ -17,10 +17,10 @@ public class CommonService {
         return commonMapper.getCountryCodes(groupCode).stream()
                 .map(vo -> new CountryCodeDto(
                         vo.getCode(),
-                        vo.getName(),
-                        vo.getDialCode(),
-                        vo.getFormat(),
-                        vo.getRegex()
+                        vo.getCodeName(),
+                        vo.getNote4(),
+                        vo.getNote2(),
+                        vo.getNote3()
                 ))
                 .toList();
     }
