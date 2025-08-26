@@ -10,7 +10,6 @@ public class UserService {
     private final UserMapper userMapper;
 
     public boolean isNicknameDuplicate(String nickname) {
-
         return userMapper.isNicknameDuplicate(nickname);
     }
 }
