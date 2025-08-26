@@ -22,11 +22,9 @@ public class CommonController {
 
     @GetMapping("/country/list")
     public ApiResponse<List<CountryCodeDto>> getCountryCodes(
-            @RequestParam(
-                    defaultValue = "KO"
-            ) Language language
+            @RequestParam(defaultValue = "KO") Language language
     ) {
-        List<CountryCodeDto> countryCodes = commonService.getCountryCodes(language.getGroupCode());
+        List<CountryCodeDto> countryCodes = commonService.getCmDetailCodes(language.getGroupCode());
 
         return apiResponseFactory.success(countryCodes);
     }
