@@ -24,7 +24,6 @@ public class ApiExceptionHandler {
     private final MessageSource messageSource;
     private final ApiResponseFactory apiResponseFactory;
 
-    // DB 오류
     @ExceptionHandler({CannotGetJdbcConnectionException.class, RedisConnectionFailureException.class})
     public ResponseEntity<ApiResponse<String>> handleDbConnection(Exception e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.DB_FAIL, req.getMethod(), req.getRequestURI(), e);
@@ -44,7 +43,13 @@ public class ApiExceptionHandler {
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
     }
 
-    // 그 외
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<String>> handleArgument(IllegalArgumentException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.SERVER_ERROR, req.getMethod(), req.getRequestURI(), e);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.CommonMapper">
+
+    <select id="getCountryCodes" parameterType="string" resultType="toy.recipit.controller.dto.CountryCode">
+        SELECT
+            CODE       AS code,
+            CODE_NAME  AS name,
+            NOTE_4     AS dialCode,
+            NOTE_2     AS format,
+            NOTE_3     AS regex
+        FROM CM_DETAIL_CODE
+        WHERE GROUP_CODE = #{groupCode}
+          AND USE_YN = 'Y'
+        ORDER BY SORT_SEQUENCE ASC
+    </select>
+
+</mapper>
