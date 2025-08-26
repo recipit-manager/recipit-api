@@ -33,7 +33,7 @@
  -DSPRING_DATASOURCE_PASSWORD={RDB password}
 `-DSPRING_DATA_REDIS_HOST={Redis host url}
 `-DSPRING_DATA_REDIS_PORT={Redis port}
-`-DSPRING_DATA_REDIS_PASSWORD={Redit password}
+`-DSPRING_DATA_REDIS_PASSWORD={Redis password}
 ``` 
 
 ### Source
