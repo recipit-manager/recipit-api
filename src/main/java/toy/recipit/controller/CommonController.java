@@ -24,7 +24,7 @@ public class CommonController {
     public ApiResponse<List<CountryCodeDto>> getCountryCodes(
             @RequestParam(defaultValue = "KO") Language language
     ) {
-        List<CountryCodeDto> countryCodes = commonService.getCmDetailCodes(language.getGroupCode());
+        List<CountryCodeDto> countryCodes = commonService.getCountryCodes(language.getGroupCode());
 
         return apiResponseFactory.success(countryCodes);
     }

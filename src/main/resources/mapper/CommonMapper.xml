@@ -3,7 +3,7 @@
 
 <mapper namespace="toy.recipit.mapper.CommonMapper">
 
-    <select id="getCmDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CmDetailCodeVo">
+    <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CmDetailCodeVo">
         SELECT
             GROUP_CODE      AS groupCode,
             CODE            AS code,

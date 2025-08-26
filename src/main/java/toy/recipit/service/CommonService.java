@@ -13,8 +13,8 @@ public class CommonService {
 
     private final CommonMapper commonMapper;
 
-    public List<CountryCodeDto> getCmDetailCodes(String groupCode) {
-        return commonMapper.getCmDetailCodes(groupCode).stream()
+    public List<CountryCodeDto> getCountryCodes(String groupCode) {
+        return commonMapper.getCommonDetailCodes(groupCode).stream()
                 .map(vo -> new CountryCodeDto(
                         vo.getCode(),
                         vo.getCodeName(),

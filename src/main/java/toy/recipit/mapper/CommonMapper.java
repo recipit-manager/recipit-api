@@ -7,5 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface CommonMapper {
-    List<CmDetailCodeVo> getCmDetailCodes(String language);
+    List<CmDetailCodeVo> getCommonDetailCodes(String language);
 }
