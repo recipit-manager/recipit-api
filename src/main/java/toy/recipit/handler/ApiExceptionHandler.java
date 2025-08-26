@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import toy.recipit.controller.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.ApiResponse;
@@ -24,7 +25,6 @@ public class ApiExceptionHandler {
     private final MessageSource messageSource;
     private final ApiResponseFactory apiResponseFactory;
 
-    // DB 오류
     @ExceptionHandler({CannotGetJdbcConnectionException.class, RedisConnectionFailureException.class})
     public ResponseEntity<ApiResponse<String>> handleDbConnection(Exception e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.DB_FAIL, req.getMethod(), req.getRequestURI(), e);
@@ -44,7 +44,13 @@ public class ApiExceptionHandler {
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
     }
 
-    // 그 외
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<String>> handleArgument(MethodArgumentTypeMismatchException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.ARGUMENT_ERROR));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.SERVER_ERROR, req.getMethod(), req.getRequestURI(), e);

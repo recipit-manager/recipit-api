@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.CommonMapper">
+
+    <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CmDetailCodeVo">
+        SELECT
+            GROUP_CODE      AS groupCode,
+            CODE            AS code,
+            CODE_NAME       AS codeName,
+            NOTE_1          AS note1,
+            NOTE_2          AS note2,
+            NOTE_3          AS note3,
+            NOTE_4          AS note4
+        FROM CM_DETAIL_CODE
+        WHERE GROUP_CODE = #{groupCode}
+          AND USE_YN = 'Y'
+        ORDER BY SORT_SEQUENCE ASC
+    </select>
+
+</mapper>

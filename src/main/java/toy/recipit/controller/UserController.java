@@ -31,6 +31,7 @@ public class UserController {
             String nickname
     ) {
         String result = userService.isNicknameDuplicate(nickname) ? Constants.Yn.YES : Constants.Yn.NO;
+
         return ResponseEntity.ok(apiResponseFactory.success(result));
     }
 }
