@@ -28,6 +28,6 @@ public final class Constants {
                 this.groupCode = groupCode;
             }
         }
-        String EMAIL = "AC400";
+        String EMAIL_DOMAIN = "AC400";
     }
 }
