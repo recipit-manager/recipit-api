@@ -3,8 +3,7 @@ package toy.recipit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
-import toy.recipit.controller.dto.CountryCodeDto;
-import toy.recipit.controller.dto.CommonCodeItemDto;
+import toy.recipit.controller.dto.*;
 import toy.recipit.mapper.CommonMapper;
 import toy.recipit.mapper.vo.CmDetailCodeVo;
 import java.util.List;
@@ -35,10 +34,10 @@ public class CommonService {
                 .toList();
     }
 
-    public List<CommonCodeItemDto> getRecipeCategories() {
+    public List<RecipeCategoryDto> getRecipeCategories() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.RECIPE_CATEGORY)
                 .stream()
-                .map(vo -> new CommonCodeItemDto(
+                .map(vo -> new RecipeCategoryDto(
                         vo.getCode(),
                         vo.getCodeName(),
                         vo.getNote1()
@@ -46,12 +45,32 @@ public class CommonService {
                 .toList();
     }
 
-    public List<CommonCodeItemDto> getCommonCodeItems(String groupCode) {
+    public List<IngredientTypeDto> getIngredientTypes(String groupCode) {
         return commonMapper.getCommonDetailCodes(groupCode)
                 .stream()
-                .map(vo -> new CommonCodeItemDto(
+                .map(vo -> new IngredientTypeDto(
                         vo.getCode(),
                         vo.getCodeName()
+                ))
+                .toList();
+    }
+
+    public List<ReportCategoryDto> getReportCategories(String groupCode) {
+        return commonMapper.getCommonDetailCodes(groupCode)
+                .stream()
+                .map(vo -> new ReportCategoryDto(
+                        vo.getCode(),
+                        vo.getCodeName()
+                ))
+                .toList();
+    }
+
+    public List<DifficultyDto> getDifficulties(String groupCode) {
+        return commonMapper.getCommonDetailCodes(groupCode)
+                .stream()
+                .map(vo -> new DifficultyDto(
+                        vo.getCodeName(),
+                        vo.getCode()
                 ))
                 .toList();
     }
