@@ -34,8 +34,4 @@ public final class Constants {
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY      = "RC320";
     }
-
-    public interface Url {
-        String RECIPE_CATEGORY_ICON = "http://localhost:8080/";
-    }
 }

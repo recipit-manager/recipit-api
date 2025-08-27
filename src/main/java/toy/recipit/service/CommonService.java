@@ -3,6 +3,7 @@ package toy.recipit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
+import toy.recipit.config.BaseUrlProvider;
 import toy.recipit.controller.dto.CountryCodeDto;
 import toy.recipit.controller.dto.RecipeCategoryDto;
 import toy.recipit.controller.dto.IngredientTypeDto;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommonService {
     private final CommonMapper commonMapper;
-    private final String ICON_BASE_URL = "http://localhost:8080/";
+    private final BaseUrlProvider baseUrlProvider;
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
         return commonMapper.getCommonDetailCodes(groupCode)
@@ -44,7 +45,7 @@ public class CommonService {
                 .map(vo -> new RecipeCategoryDto(
                         vo.getCode(),
                         vo.getCodeName(),
-                        Constants.Url.RECIPE_CATEGORY_ICON + vo.getNote1()
+                        baseUrlProvider.getBaseUrl() + vo.getNote1()
                 ))
                 .toList();
     }
