@@ -3,7 +3,6 @@ package toy.recipit.common;
 import lombok.Getter;
 
 public final class Constants {
-
     public interface Yn {
         String YES = "Y";
         String NO  = "N";
@@ -34,5 +33,9 @@ public final class Constants {
         String INGREDIENT_TYPE = "RC300";
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY      = "RC320";
+    }
+
+    public interface Url {
+        String RECIPE_CATEGORY_ICON = "http://localhost:8080/";
     }
 }

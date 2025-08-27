@@ -39,16 +39,16 @@ public class CommonController {
 
     @GetMapping("/ingredient-type/list")
     public ApiResponse<List<IngredientTypeDto>> getIngredientTypes() {
-        return apiResponseFactory.success(commonService.getIngredientTypes(Constants.GroupCode.INGREDIENT_TYPE));
+        return apiResponseFactory.success(commonService.getIngredientTypes());
     }
 
     @GetMapping("/report-category/list")
     public ApiResponse<List<ReportCategoryDto>> getReportCategories() {
-        return apiResponseFactory.success(commonService.getReportCategories(Constants.GroupCode.REPORT_CATEGORY));
+        return apiResponseFactory.success(commonService.getReportCategories());
     }
 
     @GetMapping("/difficulty/list")
     public ApiResponse<List<DifficultyDto>> getDifficulties() {
-        return apiResponseFactory.success(commonService.getDifficulties(Constants.GroupCode.DIFFICULTY));
+        return apiResponseFactory.success(commonService.getDifficulties());
     }
 }

@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommonService {
-
     private final CommonMapper commonMapper;
+    private final String ICON_BASE_URL = "http://localhost:8080/";
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
         return commonMapper.getCommonDetailCodes(groupCode)
@@ -44,13 +44,13 @@ public class CommonService {
                 .map(vo -> new RecipeCategoryDto(
                         vo.getCode(),
                         vo.getCodeName(),
-                        vo.getNote1()
+                        Constants.Url.RECIPE_CATEGORY_ICON + vo.getNote1()
                 ))
                 .toList();
     }
 
-    public List<IngredientTypeDto> getIngredientTypes(String groupCode) {
-        return commonMapper.getCommonDetailCodes(groupCode)
+    public List<IngredientTypeDto> getIngredientTypes() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.INGREDIENT_TYPE)
                 .stream()
                 .map(vo -> new IngredientTypeDto(
                         vo.getCode(),
@@ -59,8 +59,8 @@ public class CommonService {
                 .toList();
     }
 
-    public List<ReportCategoryDto> getReportCategories(String groupCode) {
-        return commonMapper.getCommonDetailCodes(groupCode)
+    public List<ReportCategoryDto> getReportCategories() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.REPORT_CATEGORY)
                 .stream()
                 .map(vo -> new ReportCategoryDto(
                         vo.getCode(),
@@ -69,8 +69,8 @@ public class CommonService {
                 .toList();
     }
 
-    public List<DifficultyDto> getDifficulties(String groupCode) {
-        return commonMapper.getCommonDetailCodes(groupCode)
+    public List<DifficultyDto> getDifficulties() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.DIFFICULTY)
                 .stream()
                 .map(vo -> new DifficultyDto(
                         vo.getCodeName(),
