@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.CountryCodeDto;
+import toy.recipit.controller.dto.CommonCodeItemDto;
 import toy.recipit.mapper.CommonMapper;
 import toy.recipit.mapper.vo.CmDetailCodeVo;
-
 import java.util.List;
 
 @Service
@@ -32,6 +32,27 @@ public class CommonService {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL_DOMAIN)
                 .stream()
                 .map(CmDetailCodeVo::getCodeName)
+                .toList();
+    }
+
+    public List<CommonCodeItemDto> getRecipeCategories() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.RECIPE_CATEGORY)
+                .stream()
+                .map(vo -> new CommonCodeItemDto(
+                        vo.getCode(),
+                        vo.getCodeName(),
+                        vo.getNote1()
+                ))
+                .toList();
+    }
+
+    public List<CommonCodeItemDto> getCommonCodeItems(String groupCode) {
+        return commonMapper.getCommonDetailCodes(groupCode)
+                .stream()
+                .map(vo -> new CommonCodeItemDto(
+                        vo.getCode(),
+                        vo.getCodeName()
+                ))
                 .toList();
     }
 }
