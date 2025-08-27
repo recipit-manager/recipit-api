@@ -27,7 +27,7 @@ public class CommonService {
                 .toList();
     }
 
-    public List<String> getEmails() {
+    public List<String> getEmailDomains() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL).stream()
                 .map(CmDetailCodeVo::getCodeName).toList();
     }

@@ -16,5 +16,7 @@ public final class Constants {
 
     public static final class GroupCode {
         public static final String EMAIL = "AC400";
+        public static final String LANGUAGE_KO = "CT100";
+        public static final String LANGUAGE_EN = "CT200";
     }
 }
