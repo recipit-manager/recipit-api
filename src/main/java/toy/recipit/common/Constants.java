@@ -2,21 +2,21 @@ package toy.recipit.common;
 
 public final class Constants {
 
-    public static final class Yn {
-        public static final String YES = "Y";
-        public static final String NO  = "N";
+    public interface Yn {
+        String YES = "Y";
+        String NO  = "N";
     }
 
-    public static final class LogTag {
-        public static final String SERVER_ERROR = "SERVER_ERROR";
-        public static final String DB_FAIL      = "DB_FAIL";
-        public static final String VALIDATION   = "VALIDATION";
-        public static final String ARGUMENT     = "ARGUMENT";
+    public interface LogTag {
+        String SERVER_ERROR = "SERVER_ERROR";
+        String DB_FAIL      = "DB_FAIL";
+        String VALIDATION   = "VALIDATION";
+        String ARGUMENT     = "ARGUMENT";
     }
 
-    public static final class GroupCode {
-        public static final String EMAIL = "AC400";
-        public static final String LANGUAGE_KO = "CT100";
-        public static final String LANGUAGE_EN = "CT200";
+    public interface GroupCode {
+        String EMAIL       = "AC400";
+        String LANGUAGE_KO = "CT100";
+        String LANGUAGE_EN = "CT200";
     }
 }

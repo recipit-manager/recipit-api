@@ -16,7 +16,8 @@ public class CommonService {
     private final CommonMapper commonMapper;
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
-        return commonMapper.getCommonDetailCodes(groupCode).stream()
+        return commonMapper.getCommonDetailCodes(groupCode)
+                .stream()
                 .map(vo -> new CountryCodeDto(
                         vo.getCode(),
                         vo.getCodeName(),
@@ -28,7 +29,9 @@ public class CommonService {
     }
 
     public List<String> getEmailDomains() {
-        return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL).stream()
-                .map(CmDetailCodeVo::getCodeName).toList();
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL)
+                .stream()
+                .map(CmDetailCodeVo::getCodeName)
+                .toList();
     }
 }
