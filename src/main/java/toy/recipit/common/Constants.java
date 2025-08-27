@@ -1,5 +1,7 @@
 package toy.recipit.common;
 
+import lombok.Getter;
+
 public final class Constants {
 
     public interface Yn {
@@ -15,8 +17,17 @@ public final class Constants {
     }
 
     public interface GroupCode {
-        String EMAIL       = "AC400";
-        String LANGUAGE_KO = "CT100";
-        String LANGUAGE_EN = "CT200";
+        @Getter
+        enum Language {
+            KO("CT100"),
+            EN("CT200");
+
+            private final String groupCode;
+
+            Language(String groupCode) {
+                this.groupCode = groupCode;
+            }
+        }
+        String EMAIL = "AC400";
     }
 }
