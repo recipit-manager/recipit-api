@@ -13,4 +13,8 @@ public final class Constants {
         public static final String VALIDATION   = "VALIDATION";
         public static final String ARGUMENT     = "ARGUMENT";
     }
+
+    public static final class GroupCode {
+        public static final String EMAIL = "AC400";
+    }
 }

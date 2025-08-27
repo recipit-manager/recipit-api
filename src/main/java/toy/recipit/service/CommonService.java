@@ -2,8 +2,10 @@ package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.CountryCodeDto;
 import toy.recipit.mapper.CommonMapper;
+import toy.recipit.mapper.vo.CmDetailCodeVo;
 
 import java.util.List;
 
@@ -23,5 +25,10 @@ public class CommonService {
                         vo.getNote3()
                 ))
                 .toList();
+    }
+
+    public List<String> getEmails() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL).stream()
+                .map(CmDetailCodeVo::getCodeName).toList();
     }
 }
