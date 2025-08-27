@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class RecipeCategoryDto {
-    private final String code;
-    private final String codeName;
-    private final String imageUrl;
+    private final String categoryCode;
+    private final String categoryName;
+    private final String iconUrl;
 }
