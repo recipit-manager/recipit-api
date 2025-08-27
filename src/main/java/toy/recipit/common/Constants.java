@@ -1,16 +1,34 @@
 package toy.recipit.common;
 
+import lombok.Getter;
+
 public final class Constants {
 
-    public static final class Yn {
-        public static final String YES = "Y";
-        public static final String NO  = "N";
+    public interface Yn {
+        String YES = "Y";
+        String NO  = "N";
     }
 
-    public static final class LogTag {
-        public static final String SERVER_ERROR = "SERVER_ERROR";
-        public static final String DB_FAIL      = "DB_FAIL";
-        public static final String VALIDATION   = "VALIDATION";
-        public static final String ARGUMENT     = "ARGUMENT";
+    public interface LogTag {
+        String SERVER_ERROR = "SERVER_ERROR";
+        String DB_FAIL      = "DB_FAIL";
+        String VALIDATION   = "VALIDATION";
+        String ARGUMENT     = "ARGUMENT";
+    }
+
+    public interface GroupCode {
+        @Getter
+        enum Language {
+            KO("CT100"),
+            EN("CT200");
+
+            private final String groupCode;
+
+            Language(String groupCode) {
+                this.groupCode = groupCode;
+            }
+        }
+
+        String EMAIL_DOMAIN      = "AC400";
     }
 }

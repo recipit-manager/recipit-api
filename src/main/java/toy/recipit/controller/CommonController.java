@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import toy.recipit.common.Language;
+import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.CountryCodeDto;
 import toy.recipit.controller.factory.ApiResponseFactory;
 import toy.recipit.service.CommonService;
@@ -22,10 +22,13 @@ public class CommonController {
 
     @GetMapping("/country/list")
     public ApiResponse<List<CountryCodeDto>> getCountryCodes(
-            @RequestParam(defaultValue = "KO") Language language
+            @RequestParam(defaultValue = "KO") Constants.GroupCode.Language language
     ) {
-        List<CountryCodeDto> countryCodes = commonService.getCountryCodes(language.getGroupCode());
+        return apiResponseFactory.success(commonService.getCountryCodes(language.getGroupCode()));
+    }
 
-        return apiResponseFactory.success(countryCodes);
+    @GetMapping("/emailDomain/list")
+    public ApiResponse<List<String>> getEmailDomains() {
+        return apiResponseFactory.success(commonService.getEmailDomains());
     }
 }
