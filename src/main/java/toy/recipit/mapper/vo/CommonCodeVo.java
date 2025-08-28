@@ -5,8 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class CmDetailCodeVo {
+public class CommonCodeVo {
     private final String groupCode;
+    private final String groupName;
     private final String code;
     private final String codeName;
     private final String note1;

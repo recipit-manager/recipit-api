@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.*;
 import toy.recipit.mapper.CommonMapper;
-import toy.recipit.mapper.vo.CmDetailCodeVo;
-import java.util.Arrays;
+import toy.recipit.mapper.vo.CommonCodeVo;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class CommonService {
     public List<String> getEmailDomains() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL_DOMAIN)
                 .stream()
-                .map(CmDetailCodeVo::getCodeName)
+                .map(CommonCodeVo::getCodeName)
                 .toList();
     }
 
@@ -81,24 +80,18 @@ public class CommonService {
     }
 
     public IngredientCategoryDto getIngredientCategories() {
-        List<CmDetailCodeVo> result =
-                commonMapper.getCommonDetailCodeByIngredientGroupCode(
-                        Constants.GroupCode.RefriItem.ALL_CODES
-                );
+        List<CommonCodeVo> queryResult = commonMapper.getCommonDetailCodeByIngredientGroupCode(Constants.GroupCode.REFRI_ALL_CODES);
 
-        Map<String, List<CmDetailCodeVo>> byGroup = result.stream()
-                .collect(Collectors.groupingBy(CmDetailCodeVo::getGroupCode));
+        Map<String, List<CommonCodeVo>> byGroup = queryResult.stream()
+                .collect(Collectors.groupingBy(CommonCodeVo::getGroupCode, Collectors.toList()));
 
-        List<IngredientGroupDto> ingredientGroupList = Arrays.stream(Constants.GroupCode.RefriItem.values())
-                .filter(refriItem -> byGroup.containsKey(refriItem.getCode()))
-                .map(refriItem -> {
-                    List<IngredientItemDto> ingredientList = byGroup.get(refriItem.getCode()).stream()
-                            .map(vo -> new IngredientItemDto(
-                                    vo.getCodeName(),
-                                    baseUrl + vo.getNote1()
-                            ))
+        List<IngredientGroupDto> ingredientGroupList = byGroup.values().stream()
+                .map(ingredient -> {
+                    String categoryName = ingredient.get(0).getGroupName();
+                    List<IngredientItemDto> ingredientList = ingredient.stream()
+                            .map(vo -> new IngredientItemDto(vo.getCodeName(), baseUrl + vo.getNote1()))
                             .toList();
-                    return new IngredientGroupDto(refriItem.getName(), ingredientList);
+                    return new IngredientGroupDto(categoryName, ingredientList);
                 })
                 .toList();
 

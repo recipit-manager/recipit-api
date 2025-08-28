@@ -3,7 +3,7 @@
 
 <mapper namespace="toy.recipit.mapper.CommonMapper">
 
-    <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CmDetailCodeVo">
+    <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CommonCodeVo">
         SELECT
             GROUP_CODE      AS groupCode,
             CODE            AS code,
@@ -18,20 +18,24 @@
         ORDER BY SORT_SEQUENCE ASC
     </select>
 
-    <select id="getCommonDetailCodeByIngredientGroupCode" parameterType="map" resultType="toy.recipit.mapper.vo.CmDetailCodeVo">
+    <select id="getCommonDetailCodeByIngredientGroupCode" parameterType="map" resultType="toy.recipit.mapper.vo.CommonCodeVo">
         SELECT
-        GROUP_CODE AS groupCode,
-        CODE       AS code,
-        CODE_NAME  AS codeName,
-        NOTE_1     AS note1,
-        note_2     AS note2,
-        NOTE_3     AS note3,
-        NOTE_4     AS note4
-        FROM CM_DETAIL_CODE
-        WHERE GROUP_CODE IN
+        g.GROUP_CODE      AS groupCode,
+        g.GROUP_CODE_NAME AS groupName,
+        d.CODE            AS code,
+        d.CODE_NAME       AS codeName,
+        d.NOTE_1          AS note1,
+        d.NOTE_2          AS note2,
+        d.NOTE_3          AS note3,
+        d.NOTE_4          AS note4
+        FROM CM_DETAIL_CODE d
+        JOIN CM_GROUP_CODE g
+        ON g.GROUP_CODE = d.GROUP_CODE
+        WHERE d.GROUP_CODE IN
         <foreach collection="groupCodes" item="groupCode" open="(" separator="," close=")">
             #{groupCode}
         </foreach>
-        ORDER BY GROUP_CODE, SORT_SEQUENCE
+        AND d.USE_YN = 'Y'
+        ORDER BY g.GROUP_CODE, d.SORT_SEQUENCE
     </select>
 </mapper>

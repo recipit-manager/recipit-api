@@ -3,7 +3,6 @@ package toy.recipit.common;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class Constants {
@@ -35,23 +34,20 @@ public final class Constants {
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY      = "RC320";
 
-        @Getter
-        @RequiredArgsConstructor
-        enum RefriItem {
-            VEGETABLE("RI100", "채소"),
-            FRUIT("RI110", "과일"),
-            MEAT("RI120", "육류"),
-            SEAFOOD("RI130", "해산물"),
-            SEASONING("RI140", "조미료"),
-            PROCESSED("RI150", "가공/유제품");
+        String REFRI_VEGETABLE = "RI100";
+        String REFRI_FRUIT     = "RI110";
+        String REFRI_MEAT      = "RI120";
+        String REFRI_SEAFOOD   = "RI130";
+        String REFRI_SEASONING = "RI140";
+        String REFRI_PROCESSED = "RI150";
 
-            private final String code;
-            private final String name;
-
-            public static final List<String> ALL_CODES =
-                    Arrays.stream(values())
-                            .map(RefriItem::getCode)
-                            .toList();
-        }
+        List<String> REFRI_ALL_CODES = List.of(
+                REFRI_VEGETABLE,
+                REFRI_FRUIT,
+                REFRI_MEAT,
+                REFRI_SEAFOOD,
+                REFRI_SEASONING,
+                REFRI_PROCESSED
+        );
     }
 }
