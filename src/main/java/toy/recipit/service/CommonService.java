@@ -1,18 +1,23 @@
 package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.CountryCodeDto;
+import toy.recipit.controller.dto.RecipeCategoryDto;
+import toy.recipit.controller.dto.IngredientTypeDto;
+import toy.recipit.controller.dto.DifficultyDto;
+import toy.recipit.controller.dto.ReportCategoryDto;
 import toy.recipit.mapper.CommonMapper;
 import toy.recipit.mapper.vo.CmDetailCodeVo;
-
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CommonService {
-
+    @Value("${app.base-url}")
+    private String baseUrl;
     private final CommonMapper commonMapper;
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
@@ -32,6 +37,47 @@ public class CommonService {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL_DOMAIN)
                 .stream()
                 .map(CmDetailCodeVo::getCodeName)
+                .toList();
+    }
+
+    public List<RecipeCategoryDto> getRecipeCategories() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.RECIPE_CATEGORY)
+                .stream()
+                .map(vo -> new RecipeCategoryDto(
+                        vo.getCode(),
+                        vo.getCodeName(),
+                        baseUrl + vo.getNote1()
+                ))
+                .toList();
+    }
+
+    public List<IngredientTypeDto> getIngredientTypes() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.INGREDIENT_TYPE)
+                .stream()
+                .map(vo -> new IngredientTypeDto(
+                        vo.getCode(),
+                        vo.getCodeName()
+                ))
+                .toList();
+    }
+
+    public List<ReportCategoryDto> getReportCategories() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.REPORT_CATEGORY)
+                .stream()
+                .map(vo -> new ReportCategoryDto(
+                        vo.getCode(),
+                        vo.getCodeName()
+                ))
+                .toList();
+    }
+
+    public List<DifficultyDto> getDifficulties() {
+        return commonMapper.getCommonDetailCodes(Constants.GroupCode.DIFFICULTY)
+                .stream()
+                .map(vo -> new DifficultyDto(
+                        vo.getCodeName(),
+                        vo.getCode()
+                ))
                 .toList();
     }
 }

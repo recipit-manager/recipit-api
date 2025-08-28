@@ -1,0 +1,2 @@
+app:
+  base-url: https://api.recipit.com #임의의 url

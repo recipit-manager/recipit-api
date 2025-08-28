@@ -3,7 +3,6 @@ package toy.recipit.common;
 import lombok.Getter;
 
 public final class Constants {
-
     public interface Yn {
         String YES = "Y";
         String NO  = "N";
@@ -29,6 +28,10 @@ public final class Constants {
             }
         }
 
-        String EMAIL_DOMAIN      = "AC400";
+        String EMAIL_DOMAIN    = "AC400";
+        String RECIPE_CATEGORY = "RC100";
+        String INGREDIENT_TYPE = "RC300";
+        String REPORT_CATEGORY = "RC400";
+        String DIFFICULTY      = "RC320";
     }
 }
