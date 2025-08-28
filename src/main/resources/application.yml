@@ -13,7 +13,7 @@ spring:
       password: ${SPRING_DATA_REDIS_PASSWORD}
   web:
     resources:
-      static-locations: file:./uploads/static/
+      static-locations: file:./uploads
 
 mybatis:
   configuration:

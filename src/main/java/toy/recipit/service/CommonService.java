@@ -1,9 +1,9 @@
 package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
-import toy.recipit.config.BaseUrlProvider;
 import toy.recipit.controller.dto.CountryCodeDto;
 import toy.recipit.controller.dto.RecipeCategoryDto;
 import toy.recipit.controller.dto.IngredientTypeDto;
@@ -16,8 +16,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommonService {
+    @Value("${app.base-url}")
+    private String baseUrl;
     private final CommonMapper commonMapper;
-    private final BaseUrlProvider baseUrlProvider;
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
         return commonMapper.getCommonDetailCodes(groupCode)
@@ -45,7 +46,7 @@ public class CommonService {
                 .map(vo -> new RecipeCategoryDto(
                         vo.getCode(),
                         vo.getCodeName(),
-                        baseUrlProvider.getBaseUrl() + vo.getNote1()
+                        baseUrl + vo.getNote1()
                 ))
                 .toList();
     }
