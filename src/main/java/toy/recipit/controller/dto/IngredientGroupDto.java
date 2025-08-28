@@ -2,7 +2,6 @@ package toy.recipit.controller.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 
 @Getter

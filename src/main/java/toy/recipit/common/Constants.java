@@ -3,6 +3,9 @@ package toy.recipit.common;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class Constants {
     public interface Yn {
         String YES = "Y";
@@ -44,6 +47,11 @@ public final class Constants {
 
             private final String code;
             private final String name;
+
+            public static final List<String> ALL_CODES =
+                    Arrays.stream(values())
+                            .map(RefriItem::getCode)
+                            .toList();
         }
     }
 }

@@ -81,12 +81,10 @@ public class CommonService {
     }
 
     public IngredientCategoryDto getIngredientCategories() {
-
-        List<String> groupCodes = Arrays.stream(Constants.GroupCode.RefriItem.values())
-                .map(Constants.GroupCode.RefriItem::getCode)
-                .toList();
-
-        List<CmDetailCodeVo> result = commonMapper.getCommonDetailCodeByIngredientGroupCode(groupCodes);
+        List<CmDetailCodeVo> result =
+                commonMapper.getCommonDetailCodeByIngredientGroupCode(
+                        Constants.GroupCode.RefriItem.ALL_CODES
+                );
 
         Map<String, List<CmDetailCodeVo>> byGroup = result.stream()
                 .collect(Collectors.groupingBy(CmDetailCodeVo::getGroupCode));
