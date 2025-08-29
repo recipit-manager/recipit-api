@@ -11,9 +11,6 @@ spring:
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
       password: ${SPRING_DATA_REDIS_PASSWORD}
-  web:
-    resources:
-      static-locations: file:./uploads
 
 mybatis:
   configuration:

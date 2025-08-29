@@ -3,8 +3,6 @@ package toy.recipit.common;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 public final class Constants {
     public interface Yn {
         String YES = "Y";
@@ -35,17 +33,13 @@ public final class Constants {
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY      = "RC320";
 
-        @Getter
-        @RequiredArgsConstructor
         enum RefriIngredientCategory {
-            VEGETABLE("RI100"),
-            FRUIT("RI110"),
-            MEAT("RI120"),
-            SEAFOOD("RI130"),
-            SEASONING("RI140"),
-            PROCESSED("RI150");
-
-            private final String code;
+            RI100,
+            RI110,
+            RI120,
+            RI130,
+            RI140,
+            RI150;
         }
     }
 }

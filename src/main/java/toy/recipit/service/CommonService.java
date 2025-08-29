@@ -1,7 +1,6 @@
 package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.IngredientNotFoundException;
@@ -15,13 +14,11 @@ import toy.recipit.controller.dto.IngredientGroupDto;
 import toy.recipit.controller.dto.IngredientCategoryDto;
 import toy.recipit.controller.dto.IngredientItemDto;
 import toy.recipit.mapper.CommonMapper;
-import toy.recipit.mapper.vo.CommonCodeVo;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
+import toy.recipit.mapper.vo.CommonGroupCodeWithDetailsVo;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,49 +88,39 @@ public class CommonService {
     }
 
     public IngredientCategoryDto getIngredientsByCategory() {
-        List<String> groupCodes = Arrays.stream(Constants.GroupCode.RefriIngredientCategory.values())
-                .map(Constants.GroupCode.RefriIngredientCategory::getCode)
+        List<String> refriIngredientGroupCodes = Arrays.stream(Constants.GroupCode.RefriIngredientCategory.values())
+                .map(Enum::name)
                 .toList();
 
-        if (groupCodes.isEmpty()) {
-            throw new IllegalStateException();
-        }
+        List<CommonGroupCodeWithDetailsVo> commonCodeGroupWithDetailsVoList = commonMapper.getCommonCodeGroupsByGroupCodes(refriIngredientGroupCodes);
 
-        List<CommonCodeVo> ingredients =
-                commonMapper.getCommonDetailCodeByIngredientGroupCode(groupCodes);
-
-        if (ingredients.isEmpty()) {
+        if (commonCodeGroupWithDetailsVoList.isEmpty()) {
             throw new IngredientNotFoundException();
         }
 
-        Map<String, List<CommonCodeVo>> ingredientGroupByCategory = ingredients.stream()
-                .collect(Collectors.groupingBy(
-                        CommonCodeVo::getGroupCode,
-                        LinkedHashMap::new,
-                        Collectors.toList()
-                ));
+        List<IngredientGroupDto> ingredientGroupDtoList = commonCodeGroupWithDetailsVoList.stream()
+                .map(commonCodeGroupWithDetailsVo -> {
+                    String ingredientCategoryName = commonCodeGroupWithDetailsVo.getGroupCodeName();
 
-        List<IngredientGroupDto> ingredientGroupList = ingredientGroupByCategory.values()
-                .stream()
-                .map(ingredientGroups -> {
-                    String categoryName = ingredientGroups.get(0).getGroupCodeName();
+                    List<IngredientItemDto> ingredientItemDtoList =
+                            commonCodeGroupWithDetailsVo.getCommonCodeDetailVoList().stream()
+                                    .map(commonCodeDetailVo -> new IngredientItemDto(
+                                            commonCodeDetailVo.getCodeName(),
+                                            imageKitUtil.getUrl(commonCodeDetailVo.getNote1(), 60).orElse(null)
+                                    ))
+                                    .toList();
 
-                    List<IngredientItemDto> ingredientList = ingredientGroups.stream()
-                            .map(CommonCodeVo -> new IngredientItemDto(
-                                    CommonCodeVo.getCodeName(),
-                                    imageKitUtil.getUrl(CommonCodeVo.getNote1(), 3600).orElse("")
-                            ))
-                            .toList();
-
-                    return new IngredientGroupDto(categoryName, ingredientList);
+                    return new IngredientGroupDto(ingredientCategoryName, ingredientItemDtoList);
                 })
                 .toList();
 
-        List<String> categoryList = ingredientGroupList.stream()
+        List<String> ingredientCategoryNameList = ingredientGroupDtoList.stream()
                 .map(IngredientGroupDto::getCategoryName)
                 .toList();
 
-        return new IngredientCategoryDto(ingredientGroupList, categoryList);
+        return new IngredientCategoryDto(ingredientGroupDtoList, ingredientCategoryNameList);
     }
+
+
 
 }

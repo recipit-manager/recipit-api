@@ -1,15 +1,17 @@
 package toy.recipit.mapper.vo;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@RequiredArgsConstructor
+@Setter
+@NoArgsConstructor
 public class CommonDetailCodeVo {
-    private final String code;
-    private final String codeName;
-    private final String note1;
-    private final String note2;
-    private final String note3;
-    private final String note4;
+    private String code;
+    private String codeName;
+    private String note1;
+    private String note2;
+    private String note3;
+    private String note4;
 }
