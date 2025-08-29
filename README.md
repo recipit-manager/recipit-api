@@ -34,6 +34,9 @@
 `-DSPRING_DATA_REDIS_HOST={Redis host url}
 `-DSPRING_DATA_REDIS_PORT={Redis port}
 `-DSPRING_DATA_REDIS_PASSWORD={Redis password}
+`-DIMAGEKIT_PUBLIC_KEY={imagekit public key}
+`-DIMAGEKIT_PRIVATE_KEY={imagekit private key}
+`-DIMAGEKIT_URL_ENDPOINT={imagekit url endpoint}
 ``` 
 
 ### Source

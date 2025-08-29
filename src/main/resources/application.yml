@@ -20,6 +20,11 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:/mapper/**/*.xml
 
+imagekit:
+  publicKey: ${IMAGEKIT_PUBLIC_KEY}
+  privateKey: ${IMAGEKIT_PRIVATE_KEY}
+  urlEndpoint: ${IMAGEKIT_URL_ENDPOINT}
+
 logging:
   level:
     org.mybatis: DEBUG
