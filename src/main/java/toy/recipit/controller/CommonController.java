@@ -59,7 +59,7 @@ public class CommonController {
     }
 
     @GetMapping("/refri-item/ingredient/list")
-    public ApiResponse<IngredientCategoryDto> getIngredientCategories() {
-        return apiResponseFactory.success(commonService.getIngredientCategories());
+    public ApiResponse<IngredientCategoryDto> getIngredientsByCategory() {
+        return apiResponseFactory.success(commonService.getIngredientsByCategory());
     }
 }
