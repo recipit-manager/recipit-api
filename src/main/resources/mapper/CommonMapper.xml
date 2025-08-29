@@ -28,8 +28,8 @@
         d.NOTE_2          AS note2,
         d.NOTE_3          AS note3,
         d.NOTE_4          AS note4
-        FROM CM_DETAIL_CODE d
-        JOIN CM_GROUP_CODE g
+        FROM CM_GROUP_CODE g
+        INNER JOIN CM_DETAIL_CODE d
         ON g.GROUP_CODE = d.GROUP_CODE
         WHERE d.GROUP_CODE IN
         <foreach collection="groupCodes" item="groupCode" open="(" separator="," close=")">

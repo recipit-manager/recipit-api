@@ -15,10 +15,7 @@ import toy.recipit.controller.dto.IngredientItemDto;
 import toy.recipit.mapper.CommonMapper;
 import toy.recipit.mapper.vo.CommonCodeVo;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,12 +28,12 @@ public class CommonService {
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
         return commonMapper.getCommonDetailCodes(groupCode)
                 .stream()
-                .map(vo -> new CountryCodeDto(
-                        vo.getCode(),
-                        vo.getCodeName(),
-                        vo.getNote4(),
-                        vo.getNote2(),
-                        vo.getNote3()
+                .map(CommonCodeVo -> new CountryCodeDto(
+                        CommonCodeVo.getCode(),
+                        CommonCodeVo.getCodeName(),
+                        CommonCodeVo.getNote4(),
+                        CommonCodeVo.getNote2(),
+                        CommonCodeVo.getNote3()
                 ))
                 .toList();
     }
@@ -51,10 +48,10 @@ public class CommonService {
     public List<RecipeCategoryDto> getRecipeCategories() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.RECIPE_CATEGORY)
                 .stream()
-                .map(vo -> new RecipeCategoryDto(
-                        vo.getCode(),
-                        vo.getCodeName(),
-                        baseUrl + vo.getNote1()
+                .map(CommonCodeVo -> new RecipeCategoryDto(
+                        CommonCodeVo.getCode(),
+                        CommonCodeVo.getCodeName(),
+                        baseUrl + CommonCodeVo.getNote1()
                 ))
                 .toList();
     }
@@ -62,9 +59,9 @@ public class CommonService {
     public List<IngredientTypeDto> getIngredientTypes() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.INGREDIENT_TYPE)
                 .stream()
-                .map(vo -> new IngredientTypeDto(
-                        vo.getCode(),
-                        vo.getCodeName()
+                .map(CommonCodeVo -> new IngredientTypeDto(
+                        CommonCodeVo.getCode(),
+                        CommonCodeVo.getCodeName()
                 ))
                 .toList();
     }
@@ -72,9 +69,9 @@ public class CommonService {
     public List<ReportCategoryDto> getReportCategories() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.REPORT_CATEGORY)
                 .stream()
-                .map(vo -> new ReportCategoryDto(
-                        vo.getCode(),
-                        vo.getCodeName()
+                .map(CommonCodeVo -> new ReportCategoryDto(
+                        CommonCodeVo.getCode(),
+                        CommonCodeVo.getCodeName()
                 ))
                 .toList();
     }
@@ -82,28 +79,41 @@ public class CommonService {
     public List<DifficultyDto> getDifficulties() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.DIFFICULTY)
                 .stream()
-                .map(vo -> new DifficultyDto(
-                        vo.getCodeName(),
-                        vo.getCode()
+                .map(CommonCodeVo -> new DifficultyDto(
+                        CommonCodeVo.getCodeName(),
+                        CommonCodeVo.getCode()
                 ))
                 .toList();
     }
 
     public IngredientCategoryDto getIngredientsByCategory() {
-        List<CommonCodeVo> ingredients =
-                Optional.ofNullable(commonMapper.getCommonDetailCodeByIngredientGroupCode(Constants.GroupCode.REFRI_ALL_CODES))
-                        .filter(list -> !list.isEmpty())
-                        .orElseThrow(NoSuchElementException::new);
+        List<CommonCodeVo> ingredients = commonMapper.getCommonDetailCodeByIngredientGroupCode(
+                Constants.GroupCode.REFRI_ALL_CODES
+        );
 
-        Map<String, List<CommonCodeVo>> ingredientGroupByCategory  = ingredients .stream()
-                .collect(Collectors.groupingBy(CommonCodeVo::getGroupCode, Collectors.toList()));
+        if (ingredients.isEmpty()) {
+            throw new NoSuchElementException();
+        }
 
-        List<IngredientGroupDto> ingredientGroupList = ingredientGroupByCategory.values().stream()
-                .map(ingredient -> {
-                    String categoryName = ingredient.get(0).getGroupCodeName();
-                    List<IngredientItemDto> ingredientList = ingredient.stream()
-                            .map(vo -> new IngredientItemDto(vo.getCodeName(), baseUrl + vo.getNote1()))
+        Map<String, List<CommonCodeVo>> ingredientGroupByCategory = ingredients.stream()
+                .collect(Collectors.groupingBy(
+                        CommonCodeVo::getGroupCode,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+
+        List<IngredientGroupDto> ingredientGroupList = ingredientGroupByCategory.values()
+                .stream()
+                .map(ingredientGroups -> {
+                    String categoryName = ingredientGroups.get(0).getGroupCodeName();
+
+                    List<IngredientItemDto> ingredientList = ingredientGroups.stream()
+                            .map(CommonCodeVo -> new IngredientItemDto(
+                                    CommonCodeVo.getCodeName(),
+                                    baseUrl + CommonCodeVo.getNote1()
+                            ))
                             .toList();
+
                     return new IngredientGroupDto(categoryName, ingredientList);
                 })
                 .toList();
@@ -114,4 +124,5 @@ public class CommonService {
 
         return new IngredientCategoryDto(ingredientGroupList, categoryList);
     }
+
 }

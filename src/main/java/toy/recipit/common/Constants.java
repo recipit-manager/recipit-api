@@ -16,7 +16,7 @@ public final class Constants {
         String DB_FAIL      = "DB_FAIL";
         String VALIDATION   = "VALIDATION";
         String ARGUMENT     = "ARGUMENT";
-        String DATA_MISSING = ("데이터가 존재하지 않습니다");
+        String DATA_MISSING = "DATA_MISSING";
     }
 
     public interface GroupCode {
