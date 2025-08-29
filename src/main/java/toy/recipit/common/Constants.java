@@ -35,20 +35,17 @@ public final class Constants {
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY      = "RC320";
 
-        String REFRI_VEGETABLE = "RI100";
-        String REFRI_FRUIT     = "RI110";
-        String REFRI_MEAT      = "RI120";
-        String REFRI_SEAFOOD   = "RI130";
-        String REFRI_SEASONING = "RI140";
-        String REFRI_PROCESSED = "RI150";
+        @Getter
+        @RequiredArgsConstructor
+        enum RefriIngredientCategory {
+            VEGETABLE("RI100"),
+            FRUIT("RI110"),
+            MEAT("RI120"),
+            SEAFOOD("RI130"),
+            SEASONING("RI140"),
+            PROCESSED("RI150");
 
-        List<String> REFRI_ALL_CODES = List.of(
-                REFRI_VEGETABLE,
-                REFRI_FRUIT,
-                REFRI_MEAT,
-                REFRI_SEAFOOD,
-                REFRI_SEASONING,
-                REFRI_PROCESSED
-        );
+            private final String code;
+        }
     }
 }

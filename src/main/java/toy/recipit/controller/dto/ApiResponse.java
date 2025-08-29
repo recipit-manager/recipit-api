@@ -17,6 +17,7 @@ public class ApiResponse<T> {
         ARGUMENT_ERROR("1002", "api.error.argument"),
         SERVER_ERROR("4001", "api.error.server"),
         DATA_MISSING("4002", "api.error.data_missing"),
+        INVALID_STATE("4003", "api.error.invalid_STATE"),
         DB_CONNECT_FAIL("4999", "api.error.db");
 
         private final String code;

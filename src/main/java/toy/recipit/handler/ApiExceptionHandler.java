@@ -13,6 +13,7 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.controller.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.ApiResponse;
@@ -53,11 +54,18 @@ public class ApiExceptionHandler {
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.ARGUMENT_ERROR));
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ApiResponse<String>> handleNoSuchElement(NoSuchElementException e, HttpServletRequest req) {
+    @ExceptionHandler(IngredientNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleIngredientNotFound(IngredientNotFoundException e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.DATA_MISSING, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.DATA_MISSING));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResponse<String>> handleIllegalState(IllegalStateException e, HttpServletRequest req) {
+        log.error("{} {} - {}", Constants.LogTag.DATA_MISSING, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INVALID_STATE, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

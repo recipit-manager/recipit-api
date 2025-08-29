@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.IngredientNotFoundException;
+import toy.recipit.common.util.ImageKitUtil;
 import toy.recipit.controller.dto.CountryCodeDto;
 import toy.recipit.controller.dto.RecipeCategoryDto;
 import toy.recipit.controller.dto.IngredientTypeDto;
@@ -14,16 +16,18 @@ import toy.recipit.controller.dto.IngredientCategoryDto;
 import toy.recipit.controller.dto.IngredientItemDto;
 import toy.recipit.mapper.CommonMapper;
 import toy.recipit.mapper.vo.CommonCodeVo;
+import toy.recipit.mapper.vo.CommonDetailCodeVo;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CommonService {
-    @Value("${app.base-url}")
-    private String baseUrl;
     private final CommonMapper commonMapper;
+    private final ImageKitUtil imageKitUtil;
 
     public List<CountryCodeDto> getCountryCodes(String groupCode) {
         return commonMapper.getCommonDetailCodes(groupCode)
@@ -41,17 +45,17 @@ public class CommonService {
     public List<String> getEmailDomains() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.EMAIL_DOMAIN)
                 .stream()
-                .map(CommonCodeVo::getCodeName)
+                .map(CommonDetailCodeVo::getCodeName)
                 .toList();
     }
 
     public List<RecipeCategoryDto> getRecipeCategories() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.RECIPE_CATEGORY)
                 .stream()
-                .map(CommonCodeVo -> new RecipeCategoryDto(
-                        CommonCodeVo.getCode(),
-                        CommonCodeVo.getCodeName(),
-                        baseUrl + CommonCodeVo.getNote1()
+                .map(CommonDetailCodeVo -> new RecipeCategoryDto(
+                        CommonDetailCodeVo.getCode(),
+                        CommonDetailCodeVo.getCodeName(),
+                        imageKitUtil.getUrl(CommonDetailCodeVo.getNote1(), 3600).orElse("")
                 ))
                 .toList();
     }
@@ -59,9 +63,9 @@ public class CommonService {
     public List<IngredientTypeDto> getIngredientTypes() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.INGREDIENT_TYPE)
                 .stream()
-                .map(CommonCodeVo -> new IngredientTypeDto(
-                        CommonCodeVo.getCode(),
-                        CommonCodeVo.getCodeName()
+                .map(CommonDetailCodeVo -> new IngredientTypeDto(
+                        CommonDetailCodeVo.getCode(),
+                        CommonDetailCodeVo.getCodeName()
                 ))
                 .toList();
     }
@@ -69,9 +73,9 @@ public class CommonService {
     public List<ReportCategoryDto> getReportCategories() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.REPORT_CATEGORY)
                 .stream()
-                .map(CommonCodeVo -> new ReportCategoryDto(
-                        CommonCodeVo.getCode(),
-                        CommonCodeVo.getCodeName()
+                .map(CommonDetailCodeVo -> new ReportCategoryDto(
+                        CommonDetailCodeVo.getCode(),
+                        CommonDetailCodeVo.getCodeName()
                 ))
                 .toList();
     }
@@ -79,20 +83,27 @@ public class CommonService {
     public List<DifficultyDto> getDifficulties() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.DIFFICULTY)
                 .stream()
-                .map(CommonCodeVo -> new DifficultyDto(
-                        CommonCodeVo.getCodeName(),
-                        CommonCodeVo.getCode()
+                .map(CommonDetailCodeVo -> new DifficultyDto(
+                        CommonDetailCodeVo.getCodeName(),
+                        CommonDetailCodeVo.getCode()
                 ))
                 .toList();
     }
 
     public IngredientCategoryDto getIngredientsByCategory() {
-        List<CommonCodeVo> ingredients = commonMapper.getCommonDetailCodeByIngredientGroupCode(
-                Constants.GroupCode.REFRI_ALL_CODES
-        );
+        List<String> groupCodes = Arrays.stream(Constants.GroupCode.RefriIngredientCategory.values())
+                .map(Constants.GroupCode.RefriIngredientCategory::getCode)
+                .toList();
+
+        if (groupCodes.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
+        List<CommonCodeVo> ingredients =
+                commonMapper.getCommonDetailCodeByIngredientGroupCode(groupCodes);
 
         if (ingredients.isEmpty()) {
-            throw new NoSuchElementException();
+            throw new IngredientNotFoundException();
         }
 
         Map<String, List<CommonCodeVo>> ingredientGroupByCategory = ingredients.stream()
@@ -110,7 +121,7 @@ public class CommonService {
                     List<IngredientItemDto> ingredientList = ingredientGroups.stream()
                             .map(CommonCodeVo -> new IngredientItemDto(
                                     CommonCodeVo.getCodeName(),
-                                    baseUrl + CommonCodeVo.getNote1()
+                                    imageKitUtil.getUrl(CommonCodeVo.getNote1(), 3600).orElse("")
                             ))
                             .toList();
 
