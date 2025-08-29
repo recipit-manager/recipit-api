@@ -21,7 +21,7 @@
     <select id="getCommonDetailCodeByIngredientGroupCode" parameterType="map" resultType="toy.recipit.mapper.vo.CommonCodeVo">
         SELECT
         g.GROUP_CODE      AS groupCode,
-        g.GROUP_CODE_NAME AS groupName,
+        g.GROUP_CODE_NAME AS groupCodeName,
         d.CODE            AS code,
         d.CODE_NAME       AS codeName,
         d.NOTE_1          AS note1,
