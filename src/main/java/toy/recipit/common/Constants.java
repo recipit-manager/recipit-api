@@ -34,12 +34,12 @@ public final class Constants {
         String DIFFICULTY      = "RC320";
 
         enum RefriIngredientCategory {
-            RI100,
-            RI110,
-            RI120,
-            RI130,
-            RI140,
-            RI150;
+            RI100,  // 채소
+            RI110,  // 과일
+            RI120,  // 육류
+            RI130,  // 해산물
+            RI140,  // 조미료
+            RI150;  // 가공/유제품
         }
     }
 }

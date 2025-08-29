@@ -61,13 +61,6 @@ public class ApiExceptionHandler {
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.DATA_MISSING));
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiResponse<String>> handleIllegalState(IllegalStateException e, HttpServletRequest req) {
-        log.error("{} {} - {}", Constants.LogTag.DATA_MISSING, req.getMethod(), req.getRequestURI(), e);
-
-        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INVALID_STATE, e.getMessage()));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.SERVER_ERROR, req.getMethod(), req.getRequestURI(), e);

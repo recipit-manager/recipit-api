@@ -21,6 +21,7 @@ imagekit:
   publicKey: ${IMAGEKIT_PUBLIC_KEY}
   privateKey: ${IMAGEKIT_PRIVATE_KEY}
   urlEndpoint: ${IMAGEKIT_URL_ENDPOINT}
+  defaultExpireTime: 60
 
 logging:
   level:
