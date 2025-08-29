@@ -3,9 +3,8 @@
 
 <mapper namespace="toy.recipit.mapper.CommonMapper">
 
-    <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CmDetailCodeVo">
+    <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
         SELECT
-            GROUP_CODE      AS groupCode,
             CODE            AS code,
             CODE_NAME       AS codeName,
             NOTE_1          AS note1,
@@ -18,4 +17,42 @@
         ORDER BY SORT_SEQUENCE ASC
     </select>
 
+    <select id="getCommonCodeGroupsByGroupCodes" parameterType="map" resultMap="GroupWithDetailsMap" resultOrdered="true">
+
+        SELECT
+        g.GROUP_CODE       AS groupCode,
+        g.GROUP_CODE_NAME  AS groupCodeName,
+        d.CODE             AS code,
+        d.CODE_NAME        AS codeName,
+        d.NOTE_1           AS note1,
+        d.NOTE_2           AS note2,
+        d.NOTE_3           AS note3,
+        d.NOTE_4           AS note4
+        FROM CM_GROUP_CODE g
+        INNER JOIN CM_DETAIL_CODE d
+        ON g.GROUP_CODE = d.GROUP_CODE
+        WHERE d.USE_YN = 'Y'
+        <if test="groupCodes != null and groupCodes.size() > 0">
+            AND d.GROUP_CODE IN
+            <foreach collection="groupCodes" item="groupCode" open="(" separator="," close=")">
+                #{groupCode}
+            </foreach>
+        </if>
+        ORDER BY g.GROUP_CODE, d.SORT_SEQUENCE
+    </select>
+
+    <resultMap id="GroupWithDetailsMap" type="toy.recipit.mapper.vo.CommonGroupCodeWithDetailsVo">
+        <id     property="groupCode"     column="groupCode"/>
+        <result property="groupCodeName" column="groupCodeName"/>
+
+        <collection property="commonCodeDetailVoList"
+                    ofType="toy.recipit.mapper.vo.CommonDetailCodeVo">
+            <id     property="code"     column="code"/>
+            <result property="codeName" column="codeName"/>
+            <result property="note1"    column="note1"/>
+            <result property="note2"    column="note2"/>
+            <result property="note3"    column="note3"/>
+            <result property="note4"    column="note4"/>
+        </collection>
+    </resultMap>
 </mapper>

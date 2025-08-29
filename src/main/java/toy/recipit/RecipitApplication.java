@@ -14,5 +14,4 @@ public class RecipitApplication {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.UTC));
         SpringApplication.run(RecipitApplication.class, args);
     }
-
 }

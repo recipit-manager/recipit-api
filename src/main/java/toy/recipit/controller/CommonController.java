@@ -12,6 +12,7 @@ import toy.recipit.controller.dto.IngredientTypeDto;
 import toy.recipit.controller.dto.RecipeCategoryDto;
 import toy.recipit.controller.dto.ReportCategoryDto;
 import toy.recipit.controller.dto.DifficultyDto;
+import toy.recipit.controller.dto.IngredientCategoryDto;
 import toy.recipit.controller.factory.ApiResponseFactory;
 import toy.recipit.service.CommonService;
 
@@ -55,5 +56,10 @@ public class CommonController {
     @GetMapping("/difficulty/list")
     public ApiResponse<List<DifficultyDto>> getDifficulties() {
         return apiResponseFactory.success(commonService.getDifficulties());
+    }
+
+    @GetMapping("/refri-item/ingredient/list")
+    public ApiResponse<IngredientCategoryDto> getIngredientsByCategory() {
+        return apiResponseFactory.success(commonService.getIngredientsByCategory());
     }
 }

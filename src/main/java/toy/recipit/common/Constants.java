@@ -1,6 +1,7 @@
 package toy.recipit.common;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 public final class Constants {
     public interface Yn {
@@ -13,19 +14,17 @@ public final class Constants {
         String DB_FAIL      = "DB_FAIL";
         String VALIDATION   = "VALIDATION";
         String ARGUMENT     = "ARGUMENT";
+        String DATA_MISSING = "DATA_MISSING";
     }
 
     public interface GroupCode {
         @Getter
+        @RequiredArgsConstructor
         enum Language {
             KO("CT100"),
             EN("CT200");
 
             private final String groupCode;
-
-            Language(String groupCode) {
-                this.groupCode = groupCode;
-            }
         }
 
         String EMAIL_DOMAIN    = "AC400";
@@ -33,5 +32,14 @@ public final class Constants {
         String INGREDIENT_TYPE = "RC300";
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY      = "RC320";
+
+        enum RefriIngredientCategory {
+            RI100,  // 채소
+            RI110,  // 과일
+            RI120,  // 육류
+            RI130,  // 해산물
+            RI140,  // 조미료
+            RI150;  // 가공/유제품
+        }
     }
 }

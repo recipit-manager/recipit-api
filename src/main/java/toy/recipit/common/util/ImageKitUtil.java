@@ -23,6 +23,9 @@ public class ImageKitUtil {
     @Value("${imagekit.urlEndpoint}")
     private String urlEndpoint;
 
+    @Value("${imagekit.defaultExpireTime:60}")
+    private int defaultExpireSeconds;
+
     private final ImageKit imageKit = ImageKit.getInstance();
 
     @PostConstruct
@@ -36,6 +39,10 @@ public class ImageKitUtil {
         fileCreateRequest.setUseUniqueFileName(true);
 
         return imageKit.upload(fileCreateRequest).getFilePath();
+    }
+
+    public Optional<String> getUrl(String filePath) {
+        return getUrl(filePath, defaultExpireSeconds);
     }
 
     public Optional<String> getUrl(String filePath, int expireSeconds) {
