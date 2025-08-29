@@ -52,7 +52,7 @@ public class CommonService {
                 .map(CommonDetailCodeVo -> new RecipeCategoryDto(
                         CommonDetailCodeVo.getCode(),
                         CommonDetailCodeVo.getCodeName(),
-                        imageKitUtil.getUrl(CommonDetailCodeVo.getNote1(), 3600).orElse("")
+                        imageKitUtil.getUrl(CommonDetailCodeVo.getNote1(), 60).orElse("")
                 ))
                 .toList();
     }
