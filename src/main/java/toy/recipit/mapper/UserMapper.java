@@ -8,8 +8,14 @@ import java.time.OffsetDateTime;
 @Mapper
 public interface UserMapper {
     boolean isNicknameDuplicate(@Param("nickname") String nickname);
+
     boolean checkExistsByEmail(@Param("email") String email);
+
     void insertEmailVerification(@Param("email") String email,
                                  @Param("code") String code);
-    OffsetDateTime getExpireDateTimeByEmail(@Param("email") String email);
+
+    void updateEmailVerification(@Param("email") String email,
+                                          @Param("code") String code);
+
+    OffsetDateTime getPostDateTimeByEmail(@Param("email") String email);
 }

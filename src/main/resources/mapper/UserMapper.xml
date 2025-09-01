@@ -40,8 +40,19 @@
              0)
     </insert>
 
-    <select id="getExpireDateTimeByEmail" resultType="java.time.OffsetDateTime">
-        SELECT VERIFYING_EXPIRE_DATETIME
+    <update id="updateEmailVerification">
+        UPDATE US_EMAIL_VERIFICATION
+        SET
+            VERIFYING_CODE = #{code},
+            VERIFYING_STATUS_CODE = 'V100',
+            VERIFYING_EXPIRE_DATETIME = DATE_ADD(NOW(), INTERVAL 5 MINUTE),
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = 0
+        WHERE EMAIL = #{email}
+    </update>
+
+    <select id="getPostDateTimeByEmail" resultType="java.time.OffsetDateTime">
+        SELECT EDIT_DATETIME
         FROM US_EMAIL_VERIFICATION
         WHERE EMAIL = #{email}
     </select>

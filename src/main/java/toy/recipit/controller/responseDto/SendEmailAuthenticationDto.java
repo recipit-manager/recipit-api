@@ -9,5 +9,5 @@ import java.time.OffsetDateTime;
 @RequiredArgsConstructor
 public class SendEmailAuthenticationDto {
     private final boolean sendEmailResult;
-    private final OffsetDateTime expireDateTime;
+    private final OffsetDateTime postDatetime;
 }
