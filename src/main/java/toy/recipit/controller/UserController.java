@@ -44,7 +44,6 @@ public class UserController {
     public ResponseEntity<ApiResponse<SendEmailAuthenticationDto>> sendEmailAuthentication(
             @RequestBody @Valid EmailDto request
     ) {
-
         return ResponseEntity.ok(apiResponseFactory.success(userService.sendEmailVerificationCode(request.getEmail())));
     }
 }
