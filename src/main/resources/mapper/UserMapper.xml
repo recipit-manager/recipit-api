@@ -11,4 +11,39 @@
         )
     </select>
 
+    <select id="checkExistsByEmail" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_EMAIL_VERIFICATION
+            WHERE EMAIL = #{email}
+        )
+    </select>
+
+    <insert id="insertEmailVerification">
+        INSERT INTO US_EMAIL_VERIFICATION
+        (EMAIL,
+         VERIFYING_CODE,
+         VERIFYING_STATUS_CODE,
+         VERIFYING_EXPIRE_DATETIME,
+         CREATE_DATETIME,
+         CREATE_USER,
+         EDIT_DATETIME,
+         EDIT_USER)
+        VALUES
+            (#{email},
+             #{code},
+             'V100',
+             DATE_ADD(NOW(), INTERVAL 5 MINUTE),
+             NOW(),
+             0,
+             NOW(),
+             0)
+    </insert>
+
+    <select id="getExpireDateTimeByEmail" resultType="java.time.OffsetDateTime">
+        SELECT VERIFYING_EXPIRE_DATETIME
+        FROM US_EMAIL_VERIFICATION
+        WHERE EMAIL = #{email}
+    </select>
+
 </mapper>

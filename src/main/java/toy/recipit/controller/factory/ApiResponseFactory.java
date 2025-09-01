@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-import toy.recipit.controller.dto.ApiResponse;
+import toy.recipit.controller.responseDto.ApiResponse;
 
 @Component
 @RequiredArgsConstructor

@@ -11,6 +11,14 @@ spring:
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
       password: ${SPRING_DATA_REDIS_PASSWORD}
+  mail:
+    host: ${SPRING_DATA_EMAIL_HOST}
+    port: ${SPRING_DATA_EMAIL_PORT}
+    username: ${SPRING_DATA_EMAIL_USERNAME}
+    password: ${SPRING_DATA_EMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 mybatis:
   configuration:
