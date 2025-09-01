@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import toy.recipit.common.Constants;
-import toy.recipit.controller.requestDto.EmailDto;
-import toy.recipit.controller.responseDto.ApiResponse;
-import toy.recipit.controller.responseDto.SendEmailAuthenticationDto;
+import toy.recipit.controller.dto.request.EmailDto;
+import toy.recipit.controller.dto.response.ApiResponse;
+import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.service.UserService;
-import toy.recipit.controller.factory.ApiResponseFactory;
+import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 
 @RestController
 @RequestMapping("/user")
@@ -42,8 +42,8 @@ public class UserController {
 
     @PostMapping("/email/authentication")
     public ResponseEntity<ApiResponse<SendEmailAuthenticationDto>> sendEmailAuthentication(
-            @RequestBody @Valid EmailDto request
+            @RequestBody @Valid EmailDto authenticationEmail
     ) {
-        return ResponseEntity.ok(apiResponseFactory.success(userService.sendEmailVerificationCode(request.getEmail())));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.sendEmailVerificationCode(authenticationEmail.getEmail())));
     }
 }

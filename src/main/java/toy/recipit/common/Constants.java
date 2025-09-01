@@ -42,4 +42,8 @@ public final class Constants {
             RI150;  // 가공/유제품
         }
     }
+
+    public interface Email{
+        int VERIFICATION_LENGTH = 8;
+    }
 }

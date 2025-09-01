@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import toy.recipit.common.exception.IngredientNotFoundException;
-import toy.recipit.controller.factory.ApiResponseFactory;
+import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
-import toy.recipit.controller.responseDto.ApiResponse;
+import toy.recipit.controller.dto.response.ApiResponse;
 
 import java.util.stream.Collectors;
 

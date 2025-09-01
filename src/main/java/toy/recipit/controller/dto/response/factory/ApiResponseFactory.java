@@ -1,10 +1,10 @@
-package toy.recipit.controller.factory;
+package toy.recipit.controller.dto.response.factory;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-import toy.recipit.controller.responseDto.ApiResponse;
+import toy.recipit.controller.dto.response.ApiResponse;
 
 @Component
 @RequiredArgsConstructor

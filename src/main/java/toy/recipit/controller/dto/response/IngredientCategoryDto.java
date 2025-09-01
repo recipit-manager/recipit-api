@@ -1,4 +1,4 @@
-package toy.recipit.controller.responseDto;
+package toy.recipit.controller.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
