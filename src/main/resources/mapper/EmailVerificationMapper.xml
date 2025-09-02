@@ -49,4 +49,14 @@
         WHERE EMAIL = #{email}
     </select>
 
+    <update id="checkEmailVerificationCodeWithUpdate">
+        UPDATE US_EMAIL_VERIFICATION
+        SET VERIFYING_STATUS_CODE = #{success},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = 0
+        WHERE EMAIL = #{email}
+          AND VERIFYING_CODE = #{code}
+          AND VERIFYING_EXPIRE_DATETIME > NOW()
+    </update>
+
 </mapper>

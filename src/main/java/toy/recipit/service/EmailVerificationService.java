@@ -27,6 +27,14 @@ public class EmailVerificationService {
         return isSendEmailVerificationCode ? resendEmailVerificationCode(email) : sendNewEmailVerificationCode(email);
     }
 
+    public boolean emailVerificationCodeCheck(String email, String verificationCode) {
+        return emailVerificationMapper.checkEmailVerificationCodeWithUpdate(
+                email,
+                verificationCode,
+                Constants.EmailVerification.SUCCESS
+        );
+    }
+
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email) {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 

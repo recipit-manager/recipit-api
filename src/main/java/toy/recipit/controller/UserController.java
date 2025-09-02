@@ -1,6 +1,8 @@
 package toy.recipit.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -8,17 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
-import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
+import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 
 @RestController
 @RequestMapping("/user")
@@ -47,5 +50,21 @@ public class UserController {
             @RequestBody @Valid EmailDto emailDto
     ) {
         return ResponseEntity.ok(apiResponseFactory.success(emailVerificationService.sendEmailVerificationCode(emailDto.getEmail())));
+    }
+
+    @GetMapping("/email/authentication/{verificationcode}")
+    public ResponseEntity<ApiResponse<Boolean>> emailVerificationCodeCheck(
+            @PathVariable("verificationcode")
+            @Size(min = 8, max = 8, message = "validation.verification_code.size")
+            @Pattern(regexp = "^[0-9A-Za-z]+$", message = "validation.verification_code.blank")
+            String verificationCode,
+
+            @RequestParam("email")
+            @NotBlank(message = "validation.email.blank")
+            @Email(message = "validation.email.pattern")
+            String email
+    ) {
+
+        return ResponseEntity.ok(apiResponseFactory.success(emailVerificationService.emailVerificationCodeCheck(email, verificationCode)));
     }
 }
