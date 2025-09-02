@@ -8,9 +8,9 @@ import java.security.SecureRandom;
 
 @Component
 public class EmailVerificationCodeGenerator {
-    private static final int MAX_VERIFICATION_CODE_LENGTH = 32;
-    private static final int DEFAULT_VERIFICATION_CODE_LENGTH = 8;
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private final int MAX_VERIFICATION_CODE_LENGTH = 32;
+    private final int DEFAULT_VERIFICATION_CODE_LENGTH = 8;
+    private final SecureRandom RANDOM = new SecureRandom();
 
     public String createVerificationCode() {
         return createVerificationCode(DEFAULT_VERIFICATION_CODE_LENGTH);
