@@ -5,10 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import toy.recipit.common.Constants;
-import toy.recipit.common.util.EmailVerificationCodeUtil;
+import toy.recipit.common.util.EmailVerificationCodeGenerator;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.mapper.EmailVerificationMapper;
 
@@ -20,7 +18,7 @@ import java.time.LocalDateTime;
 public class EmailVerificationService {
     private final EmailVerificationMapper emailVerificationMapper;
     private final JavaMailSender mailSender;
-    private final EmailVerificationCodeUtil verificationCodeUtil;
+    private final EmailVerificationCodeGenerator verificationCodeUtil;
 
     @Transactional(rollbackFor = Exception.class)
     public SendEmailAuthenticationDto sendEmailVerificationCode(String email) {
@@ -35,7 +33,7 @@ public class EmailVerificationService {
         emailVerificationMapper.insertEmailVerification(
                 email,
                 authenticationCode,
-                Constants.EmailVERIFICATION.ACTIVATE,
+                Constants.EmailVerification.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
         );
 
@@ -58,7 +56,7 @@ public class EmailVerificationService {
         emailVerificationMapper.updateEmailVerification(
                 email,
                 authenticationCode,
-                Constants.EmailVERIFICATION.ACTIVATE,
+                Constants.EmailVerification.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
         );
 
@@ -70,23 +68,10 @@ public class EmailVerificationService {
     }
 
     private void sendAuthenticationEmail(String email, String code) {
-        Runnable sendEmailTask = () -> {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(email);
-            message.setSubject("[RECIPIT] 이메일 인증코드");
-            message.setText("인증코드: " + code + "\n5분 내에 입력해주세요.");
-            mailSender.send(message);
-        };
-
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    sendEmailTask.run();
-                }
-            });
-        } else {
-            sendEmailTask.run();
-        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("[RECIPIT] 이메일 인증코드");
+        message.setText("인증코드: " + code + "\n5분 내에 입력해주세요.");
+        mailSender.send(message);
     }
 }

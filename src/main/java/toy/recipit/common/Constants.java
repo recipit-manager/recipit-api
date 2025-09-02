@@ -43,7 +43,7 @@ public final class Constants {
         }
     }
 
-    public interface EmailVERIFICATION {
+    public interface EmailVerification {
         String ACTIVATE = "V100";
         String SUCCESS = "V200";
     }

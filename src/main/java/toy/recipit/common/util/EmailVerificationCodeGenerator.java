@@ -1,11 +1,14 @@
 package toy.recipit.common.util;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Component;
 import toy.recipit.common.Constants;
 import java.security.SecureRandom;
 
 @Component
-public class EmailVerificationCodeUtil {
+public class EmailVerificationCodeGenerator {
+    private static final int MAX_VERIFICATION_CODE_LENGTH = 32;
     private static final int DEFAULT_VERIFICATION_CODE_LENGTH = 8;
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -13,7 +16,11 @@ public class EmailVerificationCodeUtil {
         return createVerificationCode(DEFAULT_VERIFICATION_CODE_LENGTH);
     }
 
-    public String createVerificationCode(int length) {
+    public String createVerificationCode(
+            @Min(value = 1,  message = "validation.verification_code.blank")
+            @Max(value = MAX_VERIFICATION_CODE_LENGTH, message = "validation.verification_code.size")
+            int length
+    ) {
         StringBuilder sb = new StringBuilder(length);
 
         for (int i = 0; i < length; i++) {
