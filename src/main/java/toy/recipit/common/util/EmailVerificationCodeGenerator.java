@@ -17,8 +17,8 @@ public class EmailVerificationCodeGenerator {
         StringBuilder sb = new StringBuilder(length);
 
         for (int i = 0; i < length; i++) {
-            sb.append(Constants.RandomCode.CHAR_POOL_WITHOUT_SIMILAR
-                    .charAt(RANDOM.nextInt(Constants.RandomCode.CHAR_POOL_WITHOUT_SIMILAR.length())));
+            sb.append(Constants.RandomCode.UPPERCASE_ALPHABET_NUMBER
+                    .charAt(RANDOM.nextInt(Constants.RandomCode.UPPERCASE_ALPHABET_NUMBER.length())));
         }
 
         return sb.toString();

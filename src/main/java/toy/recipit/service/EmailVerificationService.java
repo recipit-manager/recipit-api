@@ -9,6 +9,7 @@ import toy.recipit.common.Constants;
 import toy.recipit.common.util.EmailVerificationCodeGenerator;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.mapper.EmailVerificationMapper;
+import toy.recipit.mapper.vo.UserEmailVerification;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,14 +28,28 @@ public class EmailVerificationService {
         return isSendEmailVerificationCode ? resendEmailVerificationCode(email) : sendNewEmailVerificationCode(email);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public boolean emailVerificationCodeCheck(String email, String verificationCode) {
-        return emailVerificationMapper.checkEmailVerificationCodeWithUpdate(
+    @Transactional
+    public boolean emailVerificationCodeCheck(String email, String code) {
+        UserEmailVerification userEmailVerification = emailVerificationMapper.getUserEmailVerification(email);
+
+        if (userEmailVerification == null) {
+            return false;
+        }
+
+        if (!userEmailVerification.getVerifyingCode().equals(code)) {
+            return false;
+        }
+
+        if (userEmailVerification.getVerifyingExpireDatetime().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        emailVerificationMapper.updateEmailVerificationStatus(
                 email,
-                verificationCode,
                 Constants.EmailVerification.SUCCESS,
-                Constants.System.SYSTEM_NUMBER
-        );
+                Constants.System.SYSTEM_NUMBER);
+
+        return true;
     }
 
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email) {

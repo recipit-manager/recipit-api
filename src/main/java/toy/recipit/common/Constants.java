@@ -49,7 +49,7 @@ public final class Constants {
     }
 
     public interface RandomCode {
-        String CHAR_POOL_WITHOUT_SIMILAR = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
+        String UPPERCASE_ALPHABET_NUMBER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     }
 
     public interface System {

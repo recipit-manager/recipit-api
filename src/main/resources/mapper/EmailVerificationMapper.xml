@@ -49,14 +49,22 @@
         WHERE EMAIL = #{email}
     </select>
 
-    <update id="checkEmailVerificationCodeWithUpdate">
+    <select id="getUserEmailVerification" resultType="toy.recipit.mapper.vo.UserEmailVerification">
+        SELECT
+            EMAIL                     AS email,
+            VERIFYING_CODE            AS verifyingCode,
+            VERIFYING_STATUS_CODE     AS verifyingStatusCode,
+            VERIFYING_EXPIRE_DATETIME AS verifyingExpireDatetime
+        FROM US_EMAIL_VERIFICATION
+        WHERE EMAIL = #{email}
+    </select>
+
+    <update id="updateEmailVerificationStatus">
         UPDATE US_EMAIL_VERIFICATION
         SET VERIFYING_STATUS_CODE = #{statusCode},
             EDIT_DATETIME = NOW(),
             EDIT_USER = #{updateId}
         WHERE EMAIL = #{email}
-          AND VERIFYING_CODE = #{verificationCode}
-          AND VERIFYING_EXPIRE_DATETIME > NOW()
     </update>
 
 </mapper>
