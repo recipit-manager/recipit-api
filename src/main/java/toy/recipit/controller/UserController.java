@@ -59,7 +59,7 @@ public class UserController {
             @Pattern(regexp = "^[0-9A-Za-z]+$", message = "validation.verification_code.blank")
             String verificationCode,
 
-            @RequestParam("email")
+            @RequestParam()
             @NotBlank(message = "validation.email.blank")
             @Email(message = "validation.email.pattern")
             String email
