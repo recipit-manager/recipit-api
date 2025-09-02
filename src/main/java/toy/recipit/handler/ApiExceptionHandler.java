@@ -68,6 +68,15 @@ public class ApiExceptionHandler {
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.ARGUMENT_ERROR));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<String>> handleIllegalArgument(IllegalArgumentException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+
+        String details = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
+    }
+
     @ExceptionHandler(IngredientNotFoundException.class)
     public ResponseEntity<ApiResponse<String>> handleIngredientNotFound(IngredientNotFoundException e, HttpServletRequest req) {
         log.error("{} {} - {}", Constants.LogTag.DATA_MISSING, req.getMethod(), req.getRequestURI(), e);
