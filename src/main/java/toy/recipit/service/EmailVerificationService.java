@@ -27,6 +27,7 @@ public class EmailVerificationService {
         return isSendEmailVerificationCode ? resendEmailVerificationCode(email) : sendNewEmailVerificationCode(email);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean emailVerificationCodeCheck(String email, String verificationCode) {
         return emailVerificationMapper.checkEmailVerificationCodeWithUpdate(
                 email,
