@@ -32,7 +32,8 @@ public class EmailVerificationService {
         return emailVerificationMapper.checkEmailVerificationCodeWithUpdate(
                 email,
                 verificationCode,
-                Constants.EmailVerification.SUCCESS
+                Constants.EmailVerification.SUCCESS,
+                Constants.System.SYSTEM_NUMBER
         );
     }
 

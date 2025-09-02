@@ -53,13 +53,13 @@ public class UserController {
     }
 
     @GetMapping("/email/authentication/{verificationcode}")
-    public ResponseEntity<ApiResponse<Boolean>> emailVerificationCodeCheck(
+    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationCode(
             @PathVariable("verificationcode")
             @Size(min = 8, max = 8, message = "validation.verification_code.size")
-            @Pattern(regexp = "^[0-9A-Za-z]+$", message = "validation.verification_code.blank")
+            @Pattern(regexp = "^[0-9A-Z]+$", message = "validation.verification_code.blank")
             String verificationCode,
 
-            @RequestParam()
+            @RequestParam
             @NotBlank(message = "validation.email.blank")
             @Email(message = "validation.email.pattern")
             String email

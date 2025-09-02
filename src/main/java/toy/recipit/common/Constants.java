@@ -49,7 +49,7 @@ public final class Constants {
     }
 
     public interface RandomCode {
-        String CHAR_POOL_WITHOUT_SIMILAR = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        String CHAR_POOL_WITHOUT_SIMILAR = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
     }
 
     public interface System {

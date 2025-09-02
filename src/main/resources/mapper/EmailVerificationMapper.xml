@@ -51,11 +51,11 @@
 
     <update id="checkEmailVerificationCodeWithUpdate">
         UPDATE US_EMAIL_VERIFICATION
-        SET VERIFYING_STATUS_CODE = #{success},
+        SET VERIFYING_STATUS_CODE = #{statusCode},
             EDIT_DATETIME = NOW(),
-            EDIT_USER = 0
+            EDIT_USER = #{updateId}
         WHERE EMAIL = #{email}
-          AND VERIFYING_CODE = #{code}
+          AND VERIFYING_CODE = #{verificationCode}
           AND VERIFYING_EXPIRE_DATETIME > NOW()
     </update>
 

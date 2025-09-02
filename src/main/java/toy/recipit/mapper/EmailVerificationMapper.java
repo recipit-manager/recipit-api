@@ -22,6 +22,7 @@ public interface EmailVerificationMapper {
     LocalDateTime getEditDateTime(@Param("email") String email);
 
     boolean checkEmailVerificationCodeWithUpdate(@Param("email") String email,
-                                                 @Param("code") String code,
-                                                 @Param("success") String success);
+                                                 @Param("verificationCode") String verificationCode,
+                                                 @Param("statusCode") String statusCode,
+                                                 @Param("updateId") String updateId);
 }
