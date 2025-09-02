@@ -12,12 +12,12 @@ public interface EmailVerificationMapper {
     void insertEmailVerification(@Param("email") String email,
                                  @Param("verificationCode") String verificationCode,
                                  @Param("statusCode") String statusCode,
-                                 @Param("actNumber") String actNumber);
+                                 @Param("insertId") String insertId);
 
     void updateEmailVerification(@Param("email") String email,
                                  @Param("verificationCode") String verificationCode,
                                  @Param("statusCode") String statusCode,
-                                 @Param("actNumber") String actNumber);
+                                 @Param("updateId") String updateId);
 
     LocalDateTime getEditDateTime(@Param("email") String email);
 }

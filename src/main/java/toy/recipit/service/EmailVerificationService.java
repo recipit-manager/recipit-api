@@ -21,7 +21,6 @@ public class EmailVerificationService {
     private final EmailVerificationMapper emailVerificationMapper;
     private final JavaMailSender mailSender;
     private final EmailVerificationCodeUtil verificationCodeUtil;
-    private static final int DEFAULT_VERIFICATION_CODE_LENGTH = 8;
 
     @Transactional(rollbackFor = Exception.class)
     public SendEmailAuthenticationDto sendEmailVerificationCode(String email) {
@@ -31,12 +30,12 @@ public class EmailVerificationService {
     }
 
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email) {
-        String authenticationCode = verificationCodeUtil.createVerificationCode(DEFAULT_VERIFICATION_CODE_LENGTH);
+        String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.insertEmailVerification(
                 email,
                 authenticationCode,
-                Constants.Email_VERIFICATION.ACTIVATE,
+                Constants.EmailVERIFICATION.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
         );
 
@@ -54,12 +53,12 @@ public class EmailVerificationService {
             return new SendEmailAuthenticationDto(false, lastEmailSendDateTime);
         }
 
-        String authenticationCode = verificationCodeUtil.createVerificationCode(DEFAULT_VERIFICATION_CODE_LENGTH);
+        String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.updateEmailVerification(
                 email,
                 authenticationCode,
-                Constants.Email_VERIFICATION.ACTIVATE,
+                Constants.EmailVERIFICATION.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
         );
 

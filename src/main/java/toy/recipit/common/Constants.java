@@ -6,14 +6,14 @@ import lombok.RequiredArgsConstructor;
 public final class Constants {
     public interface Yn {
         String YES = "Y";
-        String NO  = "N";
+        String NO = "N";
     }
 
     public interface LogTag {
         String SERVER_ERROR = "SERVER_ERROR";
-        String DB_FAIL      = "DB_FAIL";
-        String VALIDATION   = "VALIDATION";
-        String ARGUMENT     = "ARGUMENT";
+        String DB_FAIL = "DB_FAIL";
+        String VALIDATION = "VALIDATION";
+        String ARGUMENT = "ARGUMENT";
         String DATA_MISSING = "DATA_MISSING";
     }
 
@@ -27,11 +27,11 @@ public final class Constants {
             private final String groupCode;
         }
 
-        String EMAIL_DOMAIN    = "AC400";
+        String EMAIL_DOMAIN = "AC400";
         String RECIPE_CATEGORY = "RC100";
         String INGREDIENT_TYPE = "RC300";
         String REPORT_CATEGORY = "RC400";
-        String DIFFICULTY      = "RC320";
+        String DIFFICULTY = "RC320";
 
         enum RefriIngredientCategory {
             RI100,  // 채소
@@ -43,13 +43,16 @@ public final class Constants {
         }
     }
 
-    public interface Email_VERIFICATION{
-        String CHAR_POOL = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    public interface EmailVERIFICATION {
         String ACTIVATE = "V100";
         String SUCCESS = "V200";
     }
 
-    public interface System{
+    public interface RandomCode {
+        String CHAR_POOL_WITHOUT_SIMILAR = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    }
+
+    public interface System {
         String SYSTEM_NUMBER = "0";
     }
 }

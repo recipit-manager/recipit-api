@@ -27,9 +27,9 @@
              #{statusCode},
              DATE_ADD(NOW(), INTERVAL 5 MINUTE),
              NOW(),
-             #{actNumber},
+             #{insertId},
              NOW(),
-             #{actNumber})
+             #{insertId})
     </insert>
 
     <update id="updateEmailVerification">
@@ -39,7 +39,7 @@
             VERIFYING_STATUS_CODE = #{statusCode},
             VERIFYING_EXPIRE_DATETIME = DATE_ADD(NOW(), INTERVAL 5 MINUTE),
             EDIT_DATETIME = NOW(),
-            EDIT_USER = #{actNumber}
+            EDIT_USER = #{updateId}
         WHERE EMAIL = #{email}
     </update>
 
