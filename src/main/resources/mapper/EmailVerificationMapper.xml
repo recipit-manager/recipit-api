@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.EmailVerificationMapper">
+
+    <select id="isEmailExists" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_EMAIL_VERIFICATION
+            WHERE EMAIL = #{email}
+        )
+    </select>
+
+    <insert id="insertEmailVerification">
+        INSERT INTO US_EMAIL_VERIFICATION
+        (EMAIL,
+         VERIFYING_CODE,
+         VERIFYING_STATUS_CODE,
+         VERIFYING_EXPIRE_DATETIME,
+         CREATE_DATETIME,
+         CREATE_USER,
+         EDIT_DATETIME,
+         EDIT_USER)
+        VALUES
+            (#{email},
+             #{verificationCode},
+             #{statusCode},
+             DATE_ADD(NOW(), INTERVAL 5 MINUTE),
+             NOW(),
+             #{insertId},
+             NOW(),
+             #{insertId})
+    </insert>
+
+    <update id="updateEmailVerification">
+        UPDATE US_EMAIL_VERIFICATION
+        SET
+            VERIFYING_CODE = #{verificationCode},
+            VERIFYING_STATUS_CODE = #{statusCode},
+            VERIFYING_EXPIRE_DATETIME = DATE_ADD(NOW(), INTERVAL 5 MINUTE),
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{updateId}
+        WHERE EMAIL = #{email}
+    </update>
+
+    <select id="getEditDateTime" resultType="java.time.LocalDateTime">
+        SELECT EDIT_DATETIME
+        FROM US_EMAIL_VERIFICATION
+        WHERE EMAIL = #{email}
+    </select>
+
+</mapper>
