@@ -43,7 +43,13 @@ public final class Constants {
         }
     }
 
-    public interface Email{
-        int VERIFICATION_LENGTH = 8;
+    public interface Email_VERIFICATION{
+        String CHAR_POOL = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        String ACTIVATE = "V100";
+        String SUCCESS = "V200";
+    }
+
+    public interface System{
+        String SYSTEM_NUMBER = "0";
     }
 }

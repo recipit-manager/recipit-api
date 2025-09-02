@@ -23,23 +23,23 @@
          EDIT_USER)
         VALUES
             (#{email},
-             #{code},
-             'V100',
+             #{verificationCode},
+             #{statusCode},
              DATE_ADD(NOW(), INTERVAL 5 MINUTE),
              NOW(),
-             0,
+             #{actNumber},
              NOW(),
-             0)
+             #{actNumber})
     </insert>
 
     <update id="updateEmailVerification">
         UPDATE US_EMAIL_VERIFICATION
         SET
-            VERIFYING_CODE = #{code},
-            VERIFYING_STATUS_CODE = 'V100',
+            VERIFYING_CODE = #{verificationCode},
+            VERIFYING_STATUS_CODE = #{statusCode},
             VERIFYING_EXPIRE_DATETIME = DATE_ADD(NOW(), INTERVAL 5 MINUTE),
             EDIT_DATETIME = NOW(),
-            EDIT_USER = 0
+            EDIT_USER = #{actNumber}
         WHERE EMAIL = #{email}
     </update>
 

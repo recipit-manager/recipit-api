@@ -16,6 +16,7 @@ import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
+import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 
@@ -26,6 +27,7 @@ import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 public class UserController {
 
     private final UserService userService;
+    private final EmailVerificationService emailVerificationService;
     private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping("/nickname/{nickname}/duplicateYn")
@@ -42,8 +44,8 @@ public class UserController {
 
     @PostMapping("/email/authentication")
     public ResponseEntity<ApiResponse<SendEmailAuthenticationDto>> sendEmailAuthentication(
-            @RequestBody @Valid EmailDto authenticationEmail
+            @RequestBody @Valid EmailDto emailDto
     ) {
-        return ResponseEntity.ok(apiResponseFactory.success(userService.sendEmailVerificationCode(authenticationEmail.getEmail())));
+        return ResponseEntity.ok(apiResponseFactory.success(emailVerificationService.sendEmailVerificationCode(emailDto.getEmail())));
     }
 }

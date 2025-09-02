@@ -10,10 +10,14 @@ public interface EmailVerificationMapper {
     boolean isEmailExists(@Param("email") String email);
 
     void insertEmailVerification(@Param("email") String email,
-                                 @Param("code") String code);
+                                 @Param("verificationCode") String verificationCode,
+                                 @Param("statusCode") String statusCode,
+                                 @Param("actNumber") String actNumber);
 
     void updateEmailVerification(@Param("email") String email,
-                                 @Param("code") String code);
+                                 @Param("verificationCode") String verificationCode,
+                                 @Param("statusCode") String statusCode,
+                                 @Param("actNumber") String actNumber);
 
     LocalDateTime getEditDateTime(@Param("email") String email);
 }
