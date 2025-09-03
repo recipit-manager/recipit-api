@@ -1,13 +1,13 @@
 package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.EmailVerificationCodeGenerator;
-import toy.recipit.common.util.HashingUtil;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.mapper.EmailVerificationMapper;
 import toy.recipit.mapper.vo.UserEmailVerification;
@@ -22,11 +22,10 @@ public class EmailVerificationService {
     private final EmailVerificationMapper emailVerificationMapper;
     private final JavaMailSender mailSender;
     private final EmailVerificationCodeGenerator verificationCodeUtil;
-    private final HashingUtil encryptUtil;
 
     @Transactional(rollbackFor = Exception.class)
     public SendEmailAuthenticationDto sendEmailVerificationCode(String email) {
-        String hashingEmail = encryptUtil.sha256Hashing(email);
+        String hashingEmail = DigestUtils.sha256Hex(email);
         boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(hashingEmail);
 
         return isSendEmailVerificationCode ? resendEmailVerificationCode(email, hashingEmail) : sendNewEmailVerificationCode(email, hashingEmail);
@@ -34,7 +33,7 @@ public class EmailVerificationService {
 
     @Transactional
     public boolean checkEmailVerificationCode(String email, String code) {
-        String hasingEmail = encryptUtil.sha256Hashing(email);
+        String hasingEmail = DigestUtils.sha256Hex(email);
         Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hasingEmail);
 
         if (userEmailVerificationOpt.isEmpty()) {
