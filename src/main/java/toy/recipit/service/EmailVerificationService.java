@@ -31,19 +31,33 @@ public class EmailVerificationService {
 
     @Transactional
     public boolean checkEmailVerificationCode(String email, String code) {
-        return emailVerificationMapper.getUserEmailVerification(email)
-                .filter(userEmailVerification -> userEmailVerification.getVerifyingCode().equals(code))
-                .filter(userEmailVerification -> userEmailVerification.getVerifyingExpireDatetime().isAfter(LocalDateTime.now()))
-                .filter(userEmailVerification -> !Constants.EmailVerification.SUCCESS.equals(userEmailVerification.getVerifyingStatusCode()))
-                .map(userEmailVerification -> {
-                    emailVerificationMapper.updateEmailVerificationStatus(
-                            email,
-                            Constants.EmailVerification.SUCCESS,
-                            Constants.System.SYSTEM_NUMBER
-                    );
-                    return true;
-                })
-                .orElse(false);
+        Optional<UserEmailVerification> optional = emailVerificationMapper.getUserEmailVerification(email);
+
+        if (optional.isEmpty()) {
+            return false;
+        }
+
+        UserEmailVerification userEmailVerification = optional.get();
+
+        if (!userEmailVerification.getVerifyingCode().equals(code)) {
+            return false;
+        }
+
+        if (userEmailVerification.getVerifyingExpireDatetime().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        if (Constants.EmailVerification.SUCCESS.equals(userEmailVerification.getVerifyingStatusCode())) {
+            return false;
+        }
+
+        emailVerificationMapper.updateEmailVerificationStatus(
+                email,
+                Constants.EmailVerification.SUCCESS,
+                Constants.System.SYSTEM_NUMBER
+        );
+
+        return true;
     }
 
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email) {

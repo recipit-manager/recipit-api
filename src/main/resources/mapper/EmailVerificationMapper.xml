@@ -22,7 +22,7 @@
          EDIT_DATETIME,
          EDIT_USER)
         VALUES
-            (#{email},
+            (SHA2(#{email}, 256),
              #{verificationCode},
              #{statusCode},
              DATE_ADD(NOW(), INTERVAL 5 MINUTE),
@@ -40,13 +40,13 @@
             VERIFYING_EXPIRE_DATETIME = DATE_ADD(NOW(), INTERVAL 5 MINUTE),
             EDIT_DATETIME = NOW(),
             EDIT_USER = #{updateId}
-        WHERE EMAIL = #{email}
+        WHERE EMAIL = SHA2(#{email}, 256)
     </update>
 
     <select id="getEditDateTime" resultType="java.time.LocalDateTime">
         SELECT EDIT_DATETIME
         FROM US_EMAIL_VERIFICATION
-        WHERE EMAIL = #{email}
+        WHERE EMAIL = SHA2(#{email}, 256)
     </select>
 
     <select id="getUserEmailVerification" resultType="toy.recipit.mapper.vo.UserEmailVerification">
@@ -56,7 +56,7 @@
             VERIFYING_STATUS_CODE     AS verifyingStatusCode,
             VERIFYING_EXPIRE_DATETIME AS verifyingExpireDatetime
         FROM US_EMAIL_VERIFICATION
-        WHERE EMAIL = #{email}
+        WHERE EMAIL = SHA2(#{email}, 256)
     </select>
 
     <update id="updateEmailVerificationStatus">
@@ -64,7 +64,7 @@
         SET VERIFYING_STATUS_CODE = #{statusCode},
             EDIT_DATETIME = NOW(),
             EDIT_USER = #{updateId}
-        WHERE EMAIL = #{email}
+        WHERE EMAIL = SHA2(#{email}, 256)
     </update>
 
 </mapper>
