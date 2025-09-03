@@ -52,7 +52,7 @@ public final class Constants {
         String UPPERCASE_ALPHABET_NUMBER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     }
 
-    public interface System {
+    public interface SystemId {
         String SYSTEM_NUMBER = "0";
     }
 }

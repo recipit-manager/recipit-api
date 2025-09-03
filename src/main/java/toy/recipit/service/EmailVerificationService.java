@@ -57,7 +57,7 @@ public class EmailVerificationService {
         emailVerificationMapper.updateEmailVerificationStatus(
                 email,
                 Constants.EmailVerification.SUCCESS,
-                Constants.System.SYSTEM_NUMBER
+                Constants.SystemId.SYSTEM_NUMBER
         );
 
         return true;
@@ -70,7 +70,7 @@ public class EmailVerificationService {
                 hashingEmail,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
-                Constants.System.SYSTEM_NUMBER
+                Constants.SystemId.SYSTEM_NUMBER
         );
 
         sendAuthenticationEmail(email, authenticationCode);
@@ -93,7 +93,7 @@ public class EmailVerificationService {
                 hashingEmail,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
-                Constants.System.SYSTEM_NUMBER
+                Constants.SystemId.SYSTEM_NUMBER
         );
 
         sendAuthenticationEmail(email, authenticationCode);
