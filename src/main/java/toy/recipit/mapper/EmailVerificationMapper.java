@@ -9,23 +9,23 @@ import java.util.Optional;
 
 @Mapper
 public interface EmailVerificationMapper {
-    boolean isEmailExists(@Param("encryptEmail") String encryptEmail);
+    boolean isEmailExists(@Param("hashingEmail") String hashingEmail);
 
-    void insertEmailVerification(@Param("encryptEmail") String encryptEmail,
+    void insertEmailVerification(@Param("hashingEmail") String hashingEmail,
                                  @Param("verificationCode") String verificationCode,
                                  @Param("statusCode") String statusCode,
                                  @Param("insertId") String insertId);
 
-    void updateEmailVerification(@Param("encryptEmail") String encryptEmail,
+    void updateEmailVerification(@Param("hashingEmail") String hashingEmail,
                                  @Param("verificationCode") String verificationCode,
                                  @Param("statusCode") String statusCode,
                                  @Param("updateId") String updateId);
 
-    LocalDateTime getEditDateTime(@Param("encryptEmail") String encryptEmail);
+    LocalDateTime getEditDateTime(@Param("hashingEmail") String hashingEmail);
 
-    Optional<UserEmailVerification> getUserEmailVerification(@Param("encryptEmail") String encryptEmail);
+    Optional<UserEmailVerification> getUserEmailVerification(@Param("hashingEmail") String hashingEmail);
 
-    void updateEmailVerificationStatus(@Param("encryptEmail") String encryptEmail,
+    void updateEmailVerificationStatus(@Param("hashingEmail") String hashingEmail,
                                                  @Param("statusCode") String statusCode,
                                                  @Param("updateId") String updateId);
 }

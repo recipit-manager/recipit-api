@@ -26,10 +26,10 @@ public class EmailVerificationService {
 
     @Transactional(rollbackFor = Exception.class)
     public SendEmailAuthenticationDto sendEmailVerificationCode(String email) {
-        String hasingEmail = encryptUtil.sha256Hashing(email);
-        boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(hasingEmail);
+        String hashingEmail = encryptUtil.sha256Hashing(email);
+        boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(hashingEmail);
 
-        return isSendEmailVerificationCode ? resendEmailVerificationCode(email, hasingEmail) : sendNewEmailVerificationCode(email, hasingEmail);
+        return isSendEmailVerificationCode ? resendEmailVerificationCode(email, hashingEmail) : sendNewEmailVerificationCode(email, hashingEmail);
     }
 
     @Transactional
@@ -64,11 +64,11 @@ public class EmailVerificationService {
         return true;
     }
 
-    private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String hasingEmail) {
+    private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String hashingEmail) {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.insertEmailVerification(
-                hasingEmail,
+                hashingEmail,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
@@ -76,11 +76,11 @@ public class EmailVerificationService {
 
         sendAuthenticationEmail(email, authenticationCode);
 
-        return new SendEmailAuthenticationDto(true, emailVerificationMapper.getEditDateTime(hasingEmail));
+        return new SendEmailAuthenticationDto(true, emailVerificationMapper.getEditDateTime(hashingEmail));
     }
 
-    private SendEmailAuthenticationDto resendEmailVerificationCode(String email, String hasingEmail) {
-        LocalDateTime lastEmailSendDateTime = emailVerificationMapper.getEditDateTime(hasingEmail);
+    private SendEmailAuthenticationDto resendEmailVerificationCode(String email, String hashingEmail) {
+        LocalDateTime lastEmailSendDateTime = emailVerificationMapper.getEditDateTime(hashingEmail);
         LocalDateTime now = LocalDateTime.now();
         long secondsSinceEdit = Duration.between(lastEmailSendDateTime, now).getSeconds();
 
@@ -91,7 +91,7 @@ public class EmailVerificationService {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.updateEmailVerification(
-                hasingEmail,
+                hashingEmail,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
@@ -99,7 +99,7 @@ public class EmailVerificationService {
 
         sendAuthenticationEmail(email, authenticationCode);
 
-        LocalDateTime emailSendDatetime = emailVerificationMapper.getEditDateTime(hasingEmail);
+        LocalDateTime emailSendDatetime = emailVerificationMapper.getEditDateTime(hashingEmail);
 
         return new SendEmailAuthenticationDto(true, emailSendDatetime);
     }

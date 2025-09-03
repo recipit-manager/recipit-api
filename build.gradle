@@ -32,6 +32,7 @@ dependencies {
     implementation 'com.github.imagekit-developer:imagekit-java:2.0.1'
     implementation 'com.squareup.okio:okio:3.5.0'
     implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'commons-codec:commons-codec:1.19.0'
 
     compileOnly 'org.projectlombok:lombok'
 
