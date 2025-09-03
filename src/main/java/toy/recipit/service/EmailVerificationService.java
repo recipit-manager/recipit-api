@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.EmailVerificationCodeGenerator;
+import toy.recipit.common.util.HashingUtil;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.mapper.EmailVerificationMapper;
 import toy.recipit.mapper.vo.UserEmailVerification;
@@ -21,23 +22,26 @@ public class EmailVerificationService {
     private final EmailVerificationMapper emailVerificationMapper;
     private final JavaMailSender mailSender;
     private final EmailVerificationCodeGenerator verificationCodeUtil;
+    private final HashingUtil encryptUtil;
 
     @Transactional(rollbackFor = Exception.class)
     public SendEmailAuthenticationDto sendEmailVerificationCode(String email) {
-        boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(email);
+        String hasingEmail = encryptUtil.sha256Hashing(email);
+        boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(hasingEmail);
 
-        return isSendEmailVerificationCode ? resendEmailVerificationCode(email) : sendNewEmailVerificationCode(email);
+        return isSendEmailVerificationCode ? resendEmailVerificationCode(email, hasingEmail) : sendNewEmailVerificationCode(email, hasingEmail);
     }
 
     @Transactional
     public boolean checkEmailVerificationCode(String email, String code) {
-        Optional<UserEmailVerification> optional = emailVerificationMapper.getUserEmailVerification(email);
+        String hasingEmail = encryptUtil.sha256Hashing(email);
+        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hasingEmail);
 
-        if (optional.isEmpty()) {
+        if (userEmailVerificationOpt.isEmpty()) {
             return false;
         }
 
-        UserEmailVerification userEmailVerification = optional.get();
+        UserEmailVerification userEmailVerification = userEmailVerificationOpt.get();
 
         if (!userEmailVerification.getVerifyingCode().equals(code)) {
             return false;
@@ -60,11 +64,11 @@ public class EmailVerificationService {
         return true;
     }
 
-    private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email) {
+    private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String hasingEmail) {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.insertEmailVerification(
-                email,
+                hasingEmail,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
@@ -72,11 +76,11 @@ public class EmailVerificationService {
 
         sendAuthenticationEmail(email, authenticationCode);
 
-        return new SendEmailAuthenticationDto(true, emailVerificationMapper.getEditDateTime(email));
+        return new SendEmailAuthenticationDto(true, emailVerificationMapper.getEditDateTime(hasingEmail));
     }
 
-    private SendEmailAuthenticationDto resendEmailVerificationCode(String email) {
-        LocalDateTime lastEmailSendDateTime = emailVerificationMapper.getEditDateTime(email);
+    private SendEmailAuthenticationDto resendEmailVerificationCode(String email, String hasingEmail) {
+        LocalDateTime lastEmailSendDateTime = emailVerificationMapper.getEditDateTime(hasingEmail);
         LocalDateTime now = LocalDateTime.now();
         long secondsSinceEdit = Duration.between(lastEmailSendDateTime, now).getSeconds();
 
@@ -87,7 +91,7 @@ public class EmailVerificationService {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.updateEmailVerification(
-                email,
+                hasingEmail,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
                 Constants.System.SYSTEM_NUMBER
@@ -95,7 +99,7 @@ public class EmailVerificationService {
 
         sendAuthenticationEmail(email, authenticationCode);
 
-        LocalDateTime emailSendDatetime = emailVerificationMapper.getEditDateTime(email);
+        LocalDateTime emailSendDatetime = emailVerificationMapper.getEditDateTime(hasingEmail);
 
         return new SendEmailAuthenticationDto(true, emailSendDatetime);
     }
