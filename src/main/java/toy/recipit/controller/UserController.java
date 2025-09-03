@@ -65,6 +65,6 @@ public class UserController {
             String email
     ) {
 
-        return ResponseEntity.ok(apiResponseFactory.success(emailVerificationService.emailVerificationCodeCheck(email, verificationCode)));
+        return ResponseEntity.ok(apiResponseFactory.success(emailVerificationService.checkEmailVerificationCode(email, verificationCode)));
     }
 }

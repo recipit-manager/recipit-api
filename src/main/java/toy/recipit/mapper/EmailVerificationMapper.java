@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import toy.recipit.mapper.vo.UserEmailVerification;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Mapper
 public interface EmailVerificationMapper {
@@ -22,7 +23,7 @@ public interface EmailVerificationMapper {
 
     LocalDateTime getEditDateTime(@Param("email") String email);
 
-    UserEmailVerification getUserEmailVerification(@Param("email") String email);
+    Optional<UserEmailVerification> getUserEmailVerification(@Param("email") String email);
 
     void updateEmailVerificationStatus(@Param("email") String email,
                                                  @Param("statusCode") String statusCode,

@@ -13,6 +13,7 @@ import toy.recipit.mapper.vo.UserEmailVerification;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,27 +30,20 @@ public class EmailVerificationService {
     }
 
     @Transactional
-    public boolean emailVerificationCodeCheck(String email, String code) {
-        UserEmailVerification userEmailVerification = emailVerificationMapper.getUserEmailVerification(email);
-
-        if (userEmailVerification == null) {
-            return false;
-        }
-
-        if (!userEmailVerification.getVerifyingCode().equals(code)) {
-            return false;
-        }
-
-        if (userEmailVerification.getVerifyingExpireDatetime().isBefore(LocalDateTime.now())) {
-            return false;
-        }
-
-        emailVerificationMapper.updateEmailVerificationStatus(
-                email,
-                Constants.EmailVerification.SUCCESS,
-                Constants.System.SYSTEM_NUMBER);
-
-        return true;
+    public boolean checkEmailVerificationCode(String email, String code) {
+        return emailVerificationMapper.getUserEmailVerification(email)
+                .filter(userEmailVerification -> userEmailVerification.getVerifyingCode().equals(code))
+                .filter(userEmailVerification -> userEmailVerification.getVerifyingExpireDatetime().isAfter(LocalDateTime.now()))
+                .filter(userEmailVerification -> !Constants.EmailVerification.SUCCESS.equals(userEmailVerification.getVerifyingStatusCode()))
+                .map(userEmailVerification -> {
+                    emailVerificationMapper.updateEmailVerificationStatus(
+                            email,
+                            Constants.EmailVerification.SUCCESS,
+                            Constants.System.SYSTEM_NUMBER
+                    );
+                    return true;
+                })
+                .orElse(false);
     }
 
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email) {
