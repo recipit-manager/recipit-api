@@ -36,4 +36,4 @@ logging:
     org.mybatis: DEBUG
 
 crypto:
-  base64Key: ${CRYPTO_BASE64KEY}
+  password: ${CRYPTO_BASE64KEY}

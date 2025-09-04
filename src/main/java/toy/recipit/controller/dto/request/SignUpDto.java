@@ -6,36 +6,35 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Builder
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SignUpDto {
+    //Todo : 그룹코드도 받아오게 명세서 수정했으니 매퍼와 함께 반영하기
 
     @NotBlank(message = "validation.firstName.blank")
     @Size(max = 10, message = "validation.firstName.size")
-    private String firstName;
+    private final String firstName;
 
     @Size(max = 20, message = "validation.middleName.size")
     @Builder.Default
-    private String middleName = "";
+    private final String middleName = "";
 
     @NotBlank(message = "validation.lastName.blank")
     @Size(max = 20, message = "validation.lastName.size")
-    private String lastName;
+    private final String lastName;
 
     @NotBlank(message = "validation.nickname.blank")
     @Size(min = 2, max = 8, message = "validation.nickname.size")
     @Pattern(regexp = "^[0-9A-Za-z가-힣]+$", message = "validation.nickname.pattern")
-    private String nickname;
+    private final String nickname;
 
     @NotBlank(message = "validation.email.blank")
     @Email(message = "validation.email.pattern")
     @Size(max = 50, message = "validation.email.size")
-    private String email;
+    private final String email;
 
     @NotBlank(message = "validation.password.blank")
     @Size(min = 8, max = 16, message = "validation.password.size")
@@ -49,15 +48,14 @@ public class SignUpDto {
                     message = "validation.password.repetition"
             )
     })
-    private String password;
+    private final String password;
 
-    @NotBlank(message = "validation.verification_code.blank")
-    @Pattern(regexp = "^[A-Z0-9]{8}$", message = "validation.verification_code.pattern")
-    private String verificationCode;
+    @NotBlank(message = "validation.groupCode.blank")
+    private final String groupCode;
 
     @NotBlank(message = "validation.countryCode.blank")
-    private String countryCode;
+    private final String countryCode;
 
     @NotBlank(message = "validation.phoneNumber.blank")
-    private String phoneNumber;
+    private final String phoneNumber;
 }

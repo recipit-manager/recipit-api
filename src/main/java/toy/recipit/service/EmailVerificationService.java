@@ -54,11 +54,23 @@ public class EmailVerificationService {
             return false;
         }
 
+
         emailVerificationMapper.updateEmailVerificationStatus(
-                email,
+                hasingEmail,
                 Constants.EmailVerification.SUCCESS,
                 Constants.SystemId.SYSTEM_NUMBER
         );
+
+        return true;
+    }
+
+    public boolean isEmailVerificationSuccess(String hashingEmail) {
+        Optional<UserEmailVerification> userEmailVerification = emailVerificationMapper.getUserEmailVerification(hashingEmail);
+
+        if (userEmailVerification.isEmpty()
+                || !Constants.EmailVerification.SUCCESS.equals(userEmailVerification.get().getVerifyingStatusCode())) {
+            return false;
+        }
 
         return true;
     }

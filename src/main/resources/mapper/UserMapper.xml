@@ -11,22 +11,22 @@
         )
     </select>
 
-    <select id="isExistsByEmailForSignUp" parameterType="string" resultType="boolean">
+    <select id="isEmailExists" parameterType="string" resultType="boolean">
         SELECT EXISTS(
             SELECT 1
             FROM US_USER
-            WHERE SUBSTRING_INDEX(EMAIL, ':', 1) = #{emailToken}
+            WHERE SUBSTRING_INDEX(EMAIL, ':', 1) = #{emailHasing}
         )
     </select>
 
-    <select id="isExistsByNameAndPhoneForSignUp" parameterType="map" resultType="boolean">
+    <select id="isNameAndPhoneExists" parameterType="map" resultType="boolean">
         SELECT EXISTS(
             SELECT 1
             FROM US_USER
             WHERE FIRST_NAME = #{firstName}
               AND MIDDLE_NAME = #{middleName}
               AND LAST_NAME = #{lastName}
-              AND SUBSTRING_INDEX(PHONE_NUMBER, ':', 1) = #{phoneNumberToken}
+              AND SUBSTRING_INDEX(PHONE_NUMBER, ':', 1) = #{phoneNumberHasing}
         )
     </select>
 

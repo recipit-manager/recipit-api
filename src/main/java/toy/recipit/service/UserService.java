@@ -25,9 +25,10 @@ import java.util.Optional;
 public class UserService {
     private final UserMapper userMapper;
     private final EmailVerificationMapper emailVerificationMapper;
-    private final CommonMapper commonMapper;
+    private final CommonService commonService;
     private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+    private final EmailVerificationService emailVerificationService;
 
     public boolean isNicknameDuplicate(String nickname) {
         return userMapper.isNicknameDuplicate(nickname);
@@ -40,24 +41,24 @@ public class UserService {
         }
 
         String hashingEmail = DigestUtils.sha256Hex(signUpDto.getEmail());
-        Optional<UserEmailVerification> verificationOpt = emailVerificationMapper.getUserEmailVerification(hashingEmail);
 
-        if (verificationOpt.isEmpty()
-                || !Constants.EmailVerification.SUCCESS.equals(verificationOpt.get().getVerifyingStatusCode())) {
+        if (!emailVerificationService.isEmailVerificationSuccess(hashingEmail)) {
             return false;
         }
 
-        String emailPacked = securityUtil.encryptWithToken(signUpDto.getEmail());
-        String phonePacked = securityUtil.encryptWithToken(signUpDto.getPhoneNumber());
+        String emailPacked = securityUtil.encryptWithHasing(signUpDto.getEmail())
+                .orElseThrow(IllegalArgumentException::new);
+        String phonePacked = securityUtil.encryptWithHasing(signUpDto.getPhoneNumber())
+                .orElseThrow(IllegalArgumentException::new);
 
-        String emailToken = securityUtil.extractToken(emailPacked).orElseThrow();
-        String phoneToken = securityUtil.extractToken(phonePacked).orElseThrow();
+        String emailToken = securityUtil.extractHasing(emailPacked).orElseThrow();
+        String phoneToken = securityUtil.extractHasing(phonePacked).orElseThrow();
 
-        if (userMapper.isExistsByEmailForSignUp(emailToken)) {
+        if (userMapper.isEmailExists(emailToken)) {
             return false;
         }
 
-        if (userMapper.isExistsByNameAndPhoneForSignUp(
+        if (userMapper.isNameAndPhoneExists(
                 signUpDto.getFirstName(),
                 signUpDto.getMiddleName(),
                 signUpDto.getLastName(),
@@ -66,27 +67,28 @@ public class UserService {
             return false;
         }
 
-        Optional<CommonDetailCodeVo> commonDetailCodeVoOpt = commonMapper.getCommonDetailCodeByCode(signUpDto.getCountryCode());
-        if (commonDetailCodeVoOpt.isEmpty()) {
+        Optional<CommonDetailCodeVo> commonDetailCodeVo = commonService.getCommonDetailCode(signUpDto.getGroupCode(), signUpDto.getCountryCode());
+        if (commonDetailCodeVo.isEmpty()) {
             return false;
         }
 
-        if (!signUpDto.getPhoneNumber().matches(commonDetailCodeVoOpt.get().getNote3())) {
+        if (!signUpDto.getPhoneNumber().matches(commonDetailCodeVo.get().getNote3())) {
             return false;
         }
 
-        UserVo user = UserVo.builder()
-                .email(emailPacked)
-                .nickName(signUpDto.getNickname())
-                .password(passwordEncoder.encode(signUpDto.getPassword()))
-                .lastName(signUpDto.getLastName())
-                .middleName(signUpDto.getMiddleName())
-                .firstName(signUpDto.getFirstName())
-                .phoneNumber(phonePacked)
-                .countryCode(signUpDto.getCountryCode())
-                .loginFailCount(Constants.User.LOGIN_FAIL_COUNT_INITIAL)
-                .statusCode(Constants.User.STATUS_ACTIVE)
-                .build();
+        UserVo user = new UserVo(
+                null,
+                emailPacked,
+                passwordEncoder.encode(signUpDto.getPassword()),
+                signUpDto.getFirstName(),
+                signUpDto.getMiddleName(),
+                signUpDto.getLastName(),
+                signUpDto.getNickname(),
+                signUpDto.getCountryCode(),
+                phonePacked,
+                Constants.User.LOGIN_FAIL_COUNT_INITIAL,
+                Constants.User.STATUS_ACTIVE
+        );
 
         userMapper.insertUser(user, Constants.SystemId.SYSTEM_NUMBER);
 

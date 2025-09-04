@@ -61,6 +61,6 @@ public final class Constants {
 
         String STATUS_ACTIVE = "A100";
         String STATUS_INACTIVE = "A200";
-        String STATUS_Lock = "A300";
+        String STATUS_LOCK = "A300";
     }
 }

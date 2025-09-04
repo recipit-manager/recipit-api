@@ -56,7 +56,7 @@
         </collection>
     </resultMap>
 
-    <select id="getCommonDetailCodeByCode" parameterType="string" resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
+    <select id="getCommonDetailCode" parameterType="string" resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
         SELECT
             CODE      AS code,
             CODE_NAME AS codeName,
@@ -65,9 +65,9 @@
             NOTE_3    AS note3,
             NOTE_4    AS note4
         FROM CM_DETAIL_CODE
-        WHERE CODE = #{code}
+        WHERE GROUP_CODE = #{groupCode}
+          And CODE = #{code}
           AND USE_YN = 'Y'
-            LIMIT 1
     </select>
 
 </mapper>

@@ -9,12 +9,12 @@ import toy.recipit.mapper.vo.UserVo;
 public interface UserMapper {
     boolean isNicknameDuplicate(@Param("nickname") String nickname);
 
-    boolean isExistsByEmailForSignUp(@Param("emailToken") String emailToken);
+    boolean isEmailExists(@Param("emailHasing") String emailHasing);
 
-    boolean isExistsByNameAndPhoneForSignUp(@Param("firstName") String firstName,
+    boolean isNameAndPhoneExists(@Param("firstName") String firstName,
                                           @Param("middleName") String middleName,
                                           @Param("lastName") String lastName,
-                                          @Param("phoneNumberToken") String phoneNumberToken);
+                                          @Param("phoneNumberHasing") String phoneNumberHasing);
 
     void insertUser(@Param("user") UserVo user, @Param("insertId") String insertId);
 

@@ -16,6 +16,9 @@ public interface CommonMapper {
             @Param("groupCodes") List<String> groupCodes
     );
 
-    Optional<CommonDetailCodeVo> getCommonDetailCodeByCode(@Param("code") String code);
+    Optional<CommonDetailCodeVo> getCommonDetailCode(
+            @Param("groupCode") String groupCode,
+            @Param("code") String code
+    );
 
 }
