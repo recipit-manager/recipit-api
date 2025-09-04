@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class SignUpDto {
-    //Todo : 그룹코드도 받아오게 명세서 수정했으니 매퍼와 함께 반영하기
-
     @NotBlank(message = "validation.firstName.blank")
     @Size(max = 10, message = "validation.firstName.size")
     private final String firstName;
