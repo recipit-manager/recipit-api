@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.session:spring-session-data-redis'
+    implementation 'org.springframework.security:spring-security-crypto'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     implementation 'org.apache.commons:commons-lang3:3.18.0'
@@ -33,6 +34,7 @@ dependencies {
     implementation 'com.squareup.okio:okio:3.5.0'
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'commons-codec:commons-codec:1.19.0'
+
 
     compileOnly 'org.projectlombok:lombok'
 

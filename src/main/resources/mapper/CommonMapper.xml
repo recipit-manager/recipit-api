@@ -55,4 +55,19 @@
             <result property="note4"    column="note4"/>
         </collection>
     </resultMap>
+
+    <select id="getCommonDetailCodeByCode" parameterType="string" resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
+        SELECT
+            CODE      AS code,
+            CODE_NAME AS codeName,
+            NOTE_1    AS note1,
+            NOTE_2    AS note2,
+            NOTE_3    AS note3,
+            NOTE_4    AS note4
+        FROM CM_DETAIL_CODE
+        WHERE CODE = #{code}
+          AND USE_YN = 'Y'
+            LIMIT 1
+    </select>
+
 </mapper>

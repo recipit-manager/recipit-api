@@ -11,4 +11,61 @@
         )
     </select>
 
+    <select id="isExistsByEmailForSignUp" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_USER
+            WHERE SUBSTRING_INDEX(EMAIL, ':', 1) = #{emailToken}
+        )
+    </select>
+
+    <select id="isExistsByNameAndPhoneForSignUp" parameterType="map" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_USER
+            WHERE FIRST_NAME = #{firstName}
+              AND MIDDLE_NAME = #{middleName}
+              AND LAST_NAME = #{lastName}
+              AND SUBSTRING_INDEX(PHONE_NUMBER, ':', 1) = #{phoneNumberToken}
+        )
+    </select>
+
+    <insert id="insertUser" parameterType="map">
+        INSERT INTO US_USER
+        (
+            EMAIL,
+            NICK_NAME,
+            PASSWORD,
+            LAST_NAME,
+            MIDDLE_NAME,
+            FIRST_NAME,
+            PHONE_NUMBER,
+            COUNTRY_CODE,
+            LOGIN_FAIL_COUNT,
+            STATUS_CODE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES
+            (
+                #{user.email},
+                #{user.nickName},
+                #{user.password},
+                #{user.lastName},
+                #{user.middleName},
+                #{user.firstName},
+                #{user.phoneNumber},
+                #{user.countryCode},
+                #{user.loginFailCount},
+                #{user.statusCode},
+                NOW(),
+                #{insertId},
+                NOW(),
+                #{insertId}
+            )
+    </insert>
+
+
 </mapper>

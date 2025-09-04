@@ -34,3 +34,6 @@ imagekit:
 logging:
   level:
     org.mybatis: DEBUG
+
+crypto:
+  base64Key: ${CRYPTO_BASE64KEY}

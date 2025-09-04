@@ -55,4 +55,12 @@ public final class Constants {
     public interface SystemId {
         String SYSTEM_NUMBER = "0";
     }
+
+    public interface User {
+        int LOGIN_FAIL_COUNT_INITIAL = 0;
+
+        String STATUS_ACTIVE = "A100";
+        String STATUS_INACTIVE = "A200";
+        String STATUS_Lock = "A300";
+    }
 }
