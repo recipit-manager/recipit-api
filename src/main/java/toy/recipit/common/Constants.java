@@ -56,11 +56,13 @@ public final class Constants {
         String SYSTEM_NUMBER = "0";
     }
 
-    public interface User {
-        int LOGIN_FAIL_COUNT_INITIAL = 0;
+    public interface UserStatus {
+        String ACTIVE = "A100";
+        String INACTIVE = "A200";
+        String STOP = "A300";
+    }
 
-        String STATUS_ACTIVE = "A100";
-        String STATUS_INACTIVE = "A200";
-        String STATUS_STOP = "A300";
+    public interface UserLogin {
+        int LOGIN_FAIL_COUNT_INITIAL = 0;
     }
 }

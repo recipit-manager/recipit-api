@@ -11,9 +11,7 @@ import toy.recipit.common.Constants;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
-import toy.recipit.mapper.EmailVerificationMapper;
 import toy.recipit.mapper.UserMapper;
-import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.UserVo;
 
 import java.util.Optional;
@@ -23,7 +21,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
-    private final EmailVerificationMapper emailVerificationMapper;
     private final CommonService commonService;
     private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
@@ -93,8 +90,8 @@ public class UserService {
                 signUpDto.getCountryCode().getCode(),
                 phoneNumberHash,
                 phoneNumberEncrypt,
-                Constants.User.LOGIN_FAIL_COUNT_INITIAL,
-                Constants.User.STATUS_ACTIVE
+                Constants.UserLogin.LOGIN_FAIL_COUNT_INITIAL,
+                Constants.UserStatus.ACTIVE
         );
 
 
