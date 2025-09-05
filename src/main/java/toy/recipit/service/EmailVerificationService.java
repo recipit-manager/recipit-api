@@ -33,8 +33,8 @@ public class EmailVerificationService {
 
     @Transactional
     public boolean checkEmailVerificationCode(String email, String code) {
-        String hasingEmail = DigestUtils.sha256Hex(email);
-        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hasingEmail);
+        String hashingEmail = DigestUtils.sha256Hex(email);
+        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hashingEmail);
 
         if (userEmailVerificationOpt.isEmpty()) {
             return false;
@@ -56,7 +56,7 @@ public class EmailVerificationService {
 
 
         emailVerificationMapper.updateEmailVerificationStatus(
-                hasingEmail,
+                hashingEmail,
                 Constants.EmailVerification.SUCCESS,
                 Constants.SystemId.SYSTEM_NUMBER
         );

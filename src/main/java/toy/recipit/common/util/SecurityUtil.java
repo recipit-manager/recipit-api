@@ -1,9 +1,9 @@
 package toy.recipit.common.util;
 
 import jakarta.annotation.PostConstruct;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jasypt.util.text.AES256TextEncryptor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +24,14 @@ public class SecurityUtil {
     }
 
     public Optional<String> encrypt(
-            @NotNull
+            @NonNull
             String plainText
     ) {
         return Optional.of(encryptor.encrypt(plainText));
     }
 
     public Optional<String> decrypt(
-            @NotNull
+            @NonNull
             String encryptedText
     ) {
         return Optional.of(encryptor.decrypt(encryptedText));

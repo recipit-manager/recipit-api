@@ -2,7 +2,7 @@ package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import toy.recipit.mapper.vo.insertUserVo;
+import toy.recipit.mapper.vo.InsertUserVo;
 
 
 @Mapper
@@ -11,11 +11,11 @@ public interface UserMapper {
 
     boolean isEmailExists(@Param("emailHashing") String emailHashing);
 
-    boolean isNameAndPhoneExists(@Param("firstName") String firstName,
+    boolean isNameAndPhoneNumberExists(@Param("firstName") String firstName,
                                           @Param("middleName") String middleName,
                                           @Param("lastName") String lastName,
                                           @Param("phoneNumberHashing") String phoneNumberHashing);
 
-    void insertUser(@Param("user") insertUserVo user, @Param("insertId") String insertId);
+    void insertUser(@Param("user") InsertUserVo user, @Param("insertId") String insertId);
 
 }

@@ -3,19 +3,17 @@ package toy.recipit.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.SecurityUtil;
+import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
-import toy.recipit.controller.dto.response.SignUpResultDto;
 import toy.recipit.mapper.UserMapper;
-import toy.recipit.mapper.vo.insertUserVo;
+import toy.recipit.mapper.vo.InsertUserVo;
 
 import java.util.Optional;
 
@@ -28,73 +26,96 @@ public class UserService {
     private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     private final EmailVerificationService emailVerificationService;
-    private final MessageSource messageSource;
-
 
     public boolean isNicknameDuplicate(String nickname) {
         return userMapper.isNicknameDuplicate(nickname);
     }
 
     @Transactional
-    public SignUpResultDto signUp(SignUpDto signUpDto) {
-        if (isNicknameDuplicate(signUpDto.getNickname())) {
-            String message = messageSource.getMessage("signUp.duplicateNickname", null, LocaleContextHolder.getLocale());
-            return new SignUpResultDto(false, message);
+    public boolean signUp(SignUpDto signUpDto) {
+        validateNickname(signUpDto.getNickname());
+
+        String email = signUpDto.getEmail();
+        validateEmailVerification(email);
+
+        String emailHashing = DigestUtils.sha256Hex(email);
+        String emailEncrypt = securityUtil.encrypt(email)
+                .orElseThrow(() -> new IllegalArgumentException("Encryption failed"));
+
+        String phoneNumber = signUpDto.getPhoneNumber();
+        String phoneNumberHashing = DigestUtils.sha256Hex(phoneNumber);
+        String phoneNumberEncrypt = securityUtil.encrypt(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("Encryption failed"));
+
+        validateDuplicateEmail(emailHashing);
+        validateDuplicateNameAndPhone(signUpDto, phoneNumberHashing);
+        validateCountryAndPhoneNumber(signUpDto.getCountryCode(), phoneNumber);
+
+        InsertUserVo insertUserVo = buildUserVo(
+                signUpDto,
+                emailHashing,
+                emailEncrypt,
+                phoneNumberHashing,
+                phoneNumberEncrypt
+        );
+
+        userMapper.insertUser(insertUserVo, Constants.SystemId.SYSTEM_NUMBER);
+
+        return true;
+    }
+
+    private void validateNickname(String nickname) {
+        if (isNicknameDuplicate(nickname)) {
+            throw new IllegalArgumentException("signUp.duplicateNickname");
         }
+    }
 
-
-        if (emailVerificationService.isEmailVerificationFail(signUpDto.getEmail())) {
-            String message = messageSource.getMessage("signUp.emailVerificationFailed", null, LocaleContextHolder.getLocale());
-            return new SignUpResultDto(false, message);
+    private void validateEmailVerification(String email) {
+        if (emailVerificationService.isEmailVerificationFail(email)) {
+            throw new IllegalArgumentException("signUp.emailVerificationFailed");
         }
+    }
 
-
-        String emailHashing = DigestUtils.sha256Hex(signUpDto.getEmail());
-        String emailEncrypt = securityUtil.encrypt(signUpDto.getEmail())
-                .orElseThrow(IllegalArgumentException::new);
-
-        String phoneNumberHashing = DigestUtils.sha256Hex(signUpDto.getPhoneNumber());
-        String phoneNumberEncrypt = securityUtil.encrypt(signUpDto.getPhoneNumber())
-                .orElseThrow(IllegalArgumentException::new);
-
+    private void validateDuplicateEmail(String emailHashing) {
         if (userMapper.isEmailExists(emailHashing)) {
-            String message = messageSource.getMessage("signUp.duplicateEmail", null, LocaleContextHolder.getLocale());
-            return new SignUpResultDto(false, message);
+            throw new IllegalArgumentException("signUp.duplicateEmail");
         }
+    }
 
-
-        if (userMapper.isNameAndPhoneExists(
+    private void validateDuplicateNameAndPhone(SignUpDto signUpDto, String phoneNumberHashing) {
+        if (userMapper.isNameAndPhoneNumberExists(
                 signUpDto.getFirstName(),
                 signUpDto.getMiddleName(),
                 signUpDto.getLastName(),
-                phoneNumberHashing
-        )) {
-            String message = messageSource.getMessage("signUp.duplicateNameAndPhone", null, LocaleContextHolder.getLocale());
-            return new SignUpResultDto(false, message);
+                phoneNumberHashing)) {
+            throw new IllegalArgumentException("signUp.duplicateNameAndPhoneNumber");
         }
+    }
 
-
-
+    private void validateCountryAndPhoneNumber(
+            CommonCodeDto commonCodeDto,
+            String phoneNumber
+    ) {
         Optional<CountryCodeDto> countryCodeDto = commonService.getCountryCode(
-                signUpDto.getGroupCode(),
-                signUpDto.getCountryCode().getCode()
-        );
-
+                commonCodeDto.getGroupCode(), commonCodeDto.getCode());
 
         if (countryCodeDto.isEmpty()) {
-            String message = messageSource.getMessage("signUp.invalidCountryCode", null, LocaleContextHolder.getLocale());
-            return new SignUpResultDto(false, message);
+            throw new IllegalArgumentException("signUp.invalidCountryCode");
         }
 
-
-        if (!signUpDto.getPhoneNumber().matches(countryCodeDto.get().getRegex())) {
-            String message = messageSource.getMessage("signUp.invalidPhoneNumber", null, LocaleContextHolder.getLocale());
-            return new SignUpResultDto(false, message);
+        if (!phoneNumber.matches(countryCodeDto.get().getRegex())) {
+            throw new IllegalArgumentException("signUp.invalidPhoneNumber");
         }
+    }
 
-
-        insertUserVo user = new insertUserVo(
-                null,
+    private InsertUserVo buildUserVo(
+            SignUpDto signUpDto,
+            String emailHashing,
+            String emailEncrypt,
+            String phoneNumberHashing,
+            String phoneNumberEncrypt
+    ) {
+        return new InsertUserVo(
                 emailHashing,
                 emailEncrypt,
                 passwordEncoder.encode(signUpDto.getPassword()),
@@ -106,12 +127,6 @@ public class UserService {
                 phoneNumberHashing,
                 phoneNumberEncrypt
         );
-
-
-        userMapper.insertUser(user, Constants.SystemId.SYSTEM_NUMBER);
-
-        String successMessage = messageSource.getMessage("signUp.success", null, LocaleContextHolder.getLocale());
-        return new SignUpResultDto(true, successMessage);
-
     }
+
 }

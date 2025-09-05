@@ -48,9 +48,6 @@ public class SignUpDto {
     })
     private final String password;
 
-    @NotBlank(message = "validation.groupCode.blank")
-    private final String groupCode;
-
     @NotNull(message = "validation.countryCode.null")
     @Valid
     private final CommonCodeDto countryCode;
