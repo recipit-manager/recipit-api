@@ -33,8 +33,8 @@ public class EmailVerificationService {
 
     @Transactional
     public boolean checkEmailVerificationCode(String email, String code) {
-        String hasingEmail = DigestUtils.sha256Hex(email);
-        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hasingEmail);
+        String hashingEmail = DigestUtils.sha256Hex(email);
+        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hashingEmail);
 
         if (userEmailVerificationOpt.isEmpty()) {
             return false;
@@ -54,13 +54,29 @@ public class EmailVerificationService {
             return false;
         }
 
+
         emailVerificationMapper.updateEmailVerificationStatus(
-                email,
+                hashingEmail,
                 Constants.EmailVerification.SUCCESS,
                 Constants.SystemId.SYSTEM_NUMBER
         );
 
         return true;
+    }
+
+    public boolean isEmailVerificationFail(String Email) {
+        String hashingEmail = DigestUtils.sha256Hex(Email);
+        Optional<UserEmailVerification> userEmailVerification = emailVerificationMapper.getUserEmailVerification(hashingEmail);
+
+        if (userEmailVerification.isEmpty()) {
+            return true;
+        }
+
+        if (!Constants.EmailVerification.SUCCESS.equals(userEmailVerification.get().getVerifyingStatusCode())) {
+            return true;
+        }
+
+        return false;
     }
 
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String hashingEmail) {

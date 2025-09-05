@@ -6,6 +6,7 @@ import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.CommonGroupCodeWithDetailsVo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface CommonMapper {
@@ -13,6 +14,11 @@ public interface CommonMapper {
 
     List<CommonGroupCodeWithDetailsVo> getCommonCodeGroupsByGroupCodes(
             @Param("groupCodes") List<String> groupCodes
+    );
+
+    Optional<CommonDetailCodeVo> getCommonDetailCode(
+            @Param("groupCode") String groupCode,
+            @Param("code") String code
     );
 
 }

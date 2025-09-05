@@ -19,6 +19,7 @@ import toy.recipit.mapper.vo.CommonGroupCodeWithDetailsVo;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -121,6 +122,15 @@ public class CommonService {
         return new IngredientCategoryDto(ingredientGroupDtoList, ingredientCategoryNameList);
     }
 
-
+    public Optional<CountryCodeDto> getCountryCode(String groupCode, String countryCode) {
+        return commonMapper.getCommonDetailCode(groupCode, countryCode)
+                .map(commonDetailCodeVo -> new CountryCodeDto(
+                        commonDetailCodeVo.getCode(),
+                        commonDetailCodeVo.getCodeName(),
+                        commonDetailCodeVo.getNote4(),
+                        commonDetailCodeVo.getNote2(),
+                        commonDetailCodeVo.getNote3()
+                ));
+    }
 
 }
