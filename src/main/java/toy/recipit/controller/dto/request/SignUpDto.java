@@ -4,11 +4,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import toy.recipit.controller.dto.response.CountryCodeDto;
 
-@Builder
 @Getter
 @RequiredArgsConstructor
 public class SignUpDto {
@@ -17,8 +17,7 @@ public class SignUpDto {
     private final String firstName;
 
     @Size(max = 20, message = "validation.middleName.size")
-    @Builder.Default
-    private final String middleName = "";
+    private final String middleName = StringUtils.EMPTY;
 
     @NotBlank(message = "validation.lastName.blank")
     @Size(max = 20, message = "validation.lastName.size")
@@ -51,8 +50,7 @@ public class SignUpDto {
     @NotBlank(message = "validation.groupCode.blank")
     private final String groupCode;
 
-    @NotBlank(message = "validation.countryCode.blank")
-    private final String countryCode;
+    private final CountryCodeDto countryCode;
 
     @NotBlank(message = "validation.phoneNumber.blank")
     private final String phoneNumber;

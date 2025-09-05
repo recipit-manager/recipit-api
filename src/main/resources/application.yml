@@ -35,5 +35,5 @@ logging:
   level:
     org.mybatis: DEBUG
 
-crypto:
-  password: ${CRYPTO_BASE64KEY}
+jasypt:
+  password: ${JASYPT_BASE64KEY}

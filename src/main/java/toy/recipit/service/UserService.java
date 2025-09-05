@@ -10,11 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.SignUpDto;
-import toy.recipit.mapper.CommonMapper;
+import toy.recipit.controller.dto.response.CountryCodeDto;
 import toy.recipit.mapper.EmailVerificationMapper;
 import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
-import toy.recipit.mapper.vo.UserEmailVerification;
 import toy.recipit.mapper.vo.UserVo;
 
 import java.util.Optional;
@@ -42,19 +41,19 @@ public class UserService {
 
         String hashingEmail = DigestUtils.sha256Hex(signUpDto.getEmail());
 
-        if (!emailVerificationService.isEmailVerificationSuccess(hashingEmail)) {
+        if (emailVerificationService.isEmailVerificationFail(hashingEmail)) {
             return false;
         }
 
-        String emailPacked = securityUtil.encryptWithHasing(signUpDto.getEmail())
-                .orElseThrow(IllegalArgumentException::new);
-        String phonePacked = securityUtil.encryptWithHasing(signUpDto.getPhoneNumber())
+        String emailHash = DigestUtils.sha256Hex(signUpDto.getEmail());
+        String emailEncrypt = securityUtil.encrypt(signUpDto.getEmail())
                 .orElseThrow(IllegalArgumentException::new);
 
-        String emailToken = securityUtil.extractHasing(emailPacked).orElseThrow();
-        String phoneToken = securityUtil.extractHasing(phonePacked).orElseThrow();
+        String phoneNumberHash = DigestUtils.sha256Hex(signUpDto.getPhoneNumber());
+        String phoneNumberEncrypt = securityUtil.encrypt(signUpDto.getPhoneNumber())
+                .orElseThrow(IllegalArgumentException::new);
 
-        if (userMapper.isEmailExists(emailToken)) {
+        if (userMapper.isEmailExists(emailHash)) {
             return false;
         }
 
@@ -62,33 +61,42 @@ public class UserService {
                 signUpDto.getFirstName(),
                 signUpDto.getMiddleName(),
                 signUpDto.getLastName(),
-                phoneToken
+                phoneNumberHash
         )) {
             return false;
         }
 
-        Optional<CommonDetailCodeVo> commonDetailCodeVo = commonService.getCommonDetailCode(signUpDto.getGroupCode(), signUpDto.getCountryCode());
-        if (commonDetailCodeVo.isEmpty()) {
+
+        Optional<CountryCodeDto> countryCodeDto = commonService.getCountryCode(
+                signUpDto.getGroupCode(),
+                signUpDto.getCountryCode().getCode()
+        );
+
+
+        if (countryCodeDto.isEmpty()) {
             return false;
         }
 
-        if (!signUpDto.getPhoneNumber().matches(commonDetailCodeVo.get().getNote3())) {
+        if (!signUpDto.getPhoneNumber().matches(countryCodeDto.get().getRegex())) {
             return false;
         }
 
         UserVo user = new UserVo(
                 null,
-                emailPacked,
+                emailHash,
+                emailEncrypt,
                 passwordEncoder.encode(signUpDto.getPassword()),
                 signUpDto.getFirstName(),
                 signUpDto.getMiddleName(),
                 signUpDto.getLastName(),
                 signUpDto.getNickname(),
-                signUpDto.getCountryCode(),
-                phonePacked,
+                signUpDto.getCountryCode().getCode(),
+                phoneNumberHash,
+                phoneNumberEncrypt,
                 Constants.User.LOGIN_FAIL_COUNT_INITIAL,
                 Constants.User.STATUS_ACTIVE
         );
+
 
         userMapper.insertUser(user, Constants.SystemId.SYSTEM_NUMBER);
 

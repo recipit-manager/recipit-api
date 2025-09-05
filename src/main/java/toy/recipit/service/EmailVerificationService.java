@@ -64,15 +64,15 @@ public class EmailVerificationService {
         return true;
     }
 
-    public boolean isEmailVerificationSuccess(String hashingEmail) {
+    public boolean isEmailVerificationFail(String hashingEmail) {
         Optional<UserEmailVerification> userEmailVerification = emailVerificationMapper.getUserEmailVerification(hashingEmail);
 
         if (userEmailVerification.isEmpty()
                 || !Constants.EmailVerification.SUCCESS.equals(userEmailVerification.get().getVerifyingStatusCode())) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String hashingEmail) {

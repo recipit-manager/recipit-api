@@ -122,7 +122,15 @@ public class CommonService {
         return new IngredientCategoryDto(ingredientGroupDtoList, ingredientCategoryNameList);
     }
 
-    public Optional<CommonDetailCodeVo> getCommonDetailCode(String groupCode, String countryCode) {
-        return commonMapper.getCommonDetailCode(groupCode, countryCode);
+    public Optional<CountryCodeDto> getCountryCode(String groupCode, String countryCode) {
+        return commonMapper.getCommonDetailCode(groupCode, countryCode)
+                .map(commonDetailCodeVo -> new CountryCodeDto(
+                        commonDetailCodeVo.getCode(),
+                        commonDetailCodeVo.getCodeName(),
+                        commonDetailCodeVo.getNote4(),
+                        commonDetailCodeVo.getNote2(),
+                        commonDetailCodeVo.getNote3()
+                ));
     }
+
 }

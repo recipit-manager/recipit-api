@@ -15,9 +15,10 @@
         SELECT EXISTS(
             SELECT 1
             FROM US_USER
-            WHERE SUBSTRING_INDEX(EMAIL, ':', 1) = #{emailHasing}
+            WHERE EMAIL_HASH = #{emailHasing}
         )
     </select>
+
 
     <select id="isNameAndPhoneExists" parameterType="map" resultType="boolean">
         SELECT EXISTS(
@@ -26,20 +27,23 @@
             WHERE FIRST_NAME = #{firstName}
               AND MIDDLE_NAME = #{middleName}
               AND LAST_NAME = #{lastName}
-              AND SUBSTRING_INDEX(PHONE_NUMBER, ':', 1) = #{phoneNumberHasing}
+              AND PHONE_NUMBER_HASH = #{phoneNumberHasing}
         )
     </select>
+
 
     <insert id="insertUser" parameterType="map">
         INSERT INTO US_USER
         (
-            EMAIL,
+            EMAIL_HASH,
+            EMAIL_ENCRYPT,
             NICK_NAME,
             PASSWORD,
             LAST_NAME,
             MIDDLE_NAME,
             FIRST_NAME,
-            PHONE_NUMBER,
+            PHONE_NUMBER_HASH,
+            PHONE_NUMBER_ENCRYPT,
             COUNTRY_CODE,
             LOGIN_FAIL_COUNT,
             STATUS_CODE,
@@ -50,13 +54,15 @@
         )
         VALUES
             (
-                #{user.email},
+                #{user.emailHash},
+                #{user.emailEncrypt},
                 #{user.nickName},
                 #{user.password},
                 #{user.lastName},
                 #{user.middleName},
                 #{user.firstName},
-                #{user.phoneNumber},
+                #{user.phoneNumberHash},
+                #{user.phoneNumberEncrypt},
                 #{user.countryCode},
                 #{user.loginFailCount},
                 #{user.statusCode},
@@ -66,6 +72,7 @@
                 #{insertId}
             )
     </insert>
+
 
 
 </mapper>
