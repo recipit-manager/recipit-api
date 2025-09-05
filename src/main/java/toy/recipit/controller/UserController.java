@@ -20,6 +20,7 @@ import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
+import toy.recipit.controller.dto.response.SignUpResultDto;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
@@ -70,7 +71,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Boolean>> signUp(
+    public ResponseEntity<ApiResponse<SignUpResultDto>> signUp(
             @RequestBody @Valid SignUpDto signUpDto
     ) {
 

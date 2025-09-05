@@ -3,6 +3,7 @@ package toy.recipit.common.util;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.jasypt.util.text.AES256TextEncryptor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +23,18 @@ public class SecurityUtil {
         encryptor.setPassword(cryptoPassword);
     }
 
-    public Optional<String> encrypt(String plainText) {
-        if (plainText == null) return Optional.empty();
+    public Optional<String> encrypt(
+            @NotNull
+            String plainText
+    ) {
         return Optional.of(encryptor.encrypt(plainText));
     }
 
-    public Optional<String> decrypt(String cipherText) {
-        if (cipherText == null) return Optional.empty();
-        return Optional.of(encryptor.decrypt(cipherText));
+    public Optional<String> decrypt(
+            @NotNull
+            String encryptedText
+    ) {
+        return Optional.of(encryptor.decrypt(encryptedText));
     }
 
 }

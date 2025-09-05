@@ -2,10 +2,11 @@ package toy.recipit.mapper.vo;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import toy.recipit.common.Constants;
 
 @Getter
 @RequiredArgsConstructor
-public class UserVo {
+public class insertUserVo {
     final private Long userNo;
     final private String emailHash;
     final private String emailEncrypt;
@@ -17,6 +18,6 @@ public class UserVo {
     final private String countryCode;
     final private String phoneNumberHash;
     final private String phoneNumberEncrypt;
-    final private int loginFailCount;
-    final private String statusCode;
+    final private int loginFailCount = Constants.UserLogin.LOGIN_FAIL_COUNT_INITIAL;
+    final private String statusCode = Constants.UserStatus.ACTIVE;
 }

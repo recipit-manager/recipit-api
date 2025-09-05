@@ -64,11 +64,15 @@ public class EmailVerificationService {
         return true;
     }
 
-    public boolean isEmailVerificationFail(String hashingEmail) {
+    public boolean isEmailVerificationFail(String Email) {
+        String hashingEmail = DigestUtils.sha256Hex(Email);
         Optional<UserEmailVerification> userEmailVerification = emailVerificationMapper.getUserEmailVerification(hashingEmail);
 
-        if (userEmailVerification.isEmpty()
-                || !Constants.EmailVerification.SUCCESS.equals(userEmailVerification.get().getVerifyingStatusCode())) {
+        if (userEmailVerification.isEmpty()) {
+            return true;
+        }
+
+        if (!Constants.EmailVerification.SUCCESS.equals(userEmailVerification.get().getVerifyingStatusCode())) {
             return true;
         }
 

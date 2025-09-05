@@ -15,7 +15,7 @@
         SELECT EXISTS(
             SELECT 1
             FROM US_USER
-            WHERE EMAIL_HASH = #{emailHasing}
+            WHERE EMAIL_HASH = #{emailHashing}
         )
     </select>
 
@@ -27,7 +27,7 @@
             WHERE FIRST_NAME = #{firstName}
               AND MIDDLE_NAME = #{middleName}
               AND LAST_NAME = #{lastName}
-              AND PHONE_NUMBER_HASH = #{phoneNumberHasing}
+              AND PHONE_NUMBER_HASH = #{phoneNumberHashing}
         )
     </select>
 

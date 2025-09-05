@@ -1,13 +1,14 @@
 package toy.recipit.controller.dto.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import toy.recipit.controller.dto.response.CountryCodeDto;
 
 @Getter
 @RequiredArgsConstructor
@@ -50,7 +51,9 @@ public class SignUpDto {
     @NotBlank(message = "validation.groupCode.blank")
     private final String groupCode;
 
-    private final CountryCodeDto countryCode;
+    @NotNull(message = "validation.countryCode.null")
+    @Valid
+    private final CommonCodeDto countryCode;
 
     @NotBlank(message = "validation.phoneNumber.blank")
     private final String phoneNumber;

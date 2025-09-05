@@ -2,20 +2,20 @@ package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import toy.recipit.mapper.vo.UserVo;
+import toy.recipit.mapper.vo.insertUserVo;
 
 
 @Mapper
 public interface UserMapper {
     boolean isNicknameDuplicate(@Param("nickname") String nickname);
 
-    boolean isEmailExists(@Param("emailHasing") String emailHasing);
+    boolean isEmailExists(@Param("emailHashing") String emailHashing);
 
     boolean isNameAndPhoneExists(@Param("firstName") String firstName,
                                           @Param("middleName") String middleName,
                                           @Param("lastName") String lastName,
-                                          @Param("phoneNumberHasing") String phoneNumberHasing);
+                                          @Param("phoneNumberHashing") String phoneNumberHashing);
 
-    void insertUser(@Param("user") UserVo user, @Param("insertId") String insertId);
+    void insertUser(@Param("user") insertUserVo user, @Param("insertId") String insertId);
 
 }
