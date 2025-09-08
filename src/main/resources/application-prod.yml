@@ -1,2 +1,8 @@
 app:
   base-url: https://api.recipit.com #임의의 url
+
+spring:
+  datasource:
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 5
