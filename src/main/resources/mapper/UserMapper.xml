@@ -67,9 +67,9 @@
                 #{user.loginFailCount},
                 #{user.statusCode},
                 NOW(),
-                #{insertId},
+                #{user.createUser},
                 NOW(),
-                #{insertId}
+                #{user.editUser}
             )
     </insert>
 

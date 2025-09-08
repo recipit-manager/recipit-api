@@ -20,6 +20,8 @@ public class InsertUserVo {
     final private String phoneNumberEncrypt;
     final private int loginFailCount = Constants.UserLogin.LOGIN_FAIL_COUNT_INITIAL;
     final private String statusCode = Constants.UserStatus.ACTIVE;
+    final private String createUser = Constants.SystemId.SYSTEM_NUMBER;
+    final private String editUser = Constants.SystemId.SYSTEM_NUMBER;
 
     public InsertUserVo(SignUpDto signUpDto,
                         String emailHashing,
