@@ -23,18 +23,18 @@ public class SecurityUtil {
         encryptor.setPassword(cryptoPassword);
     }
 
-    public Optional<String> encrypt(
+    public String encrypt(
             @NonNull
             String plainText
     ) {
-        return Optional.of(encryptor.encrypt(plainText));
+        return encryptor.encrypt(plainText);
     }
 
-    public Optional<String> decrypt(
+    public String decrypt(
             @NonNull
             String encryptedText
     ) {
-        return Optional.of(encryptor.decrypt(encryptedText));
+        return encryptor.decrypt(encryptedText);
     }
 
 }

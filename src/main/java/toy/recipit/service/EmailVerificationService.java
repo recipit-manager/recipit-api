@@ -25,16 +25,16 @@ public class EmailVerificationService {
 
     @Transactional(rollbackFor = Exception.class)
     public SendEmailAuthenticationDto sendEmailVerificationCode(String email) {
-        String hashingEmail = DigestUtils.sha256Hex(email);
-        boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(hashingEmail);
+        String emailHasing = DigestUtils.sha256Hex(email);
+        boolean isSendEmailVerificationCode = emailVerificationMapper.isEmailExists(emailHasing);
 
-        return isSendEmailVerificationCode ? resendEmailVerificationCode(email, hashingEmail) : sendNewEmailVerificationCode(email, hashingEmail);
+        return isSendEmailVerificationCode ? resendEmailVerificationCode(email, emailHasing) : sendNewEmailVerificationCode(email, emailHasing);
     }
 
     @Transactional
     public boolean checkEmailVerificationCode(String email, String code) {
-        String hashingEmail = DigestUtils.sha256Hex(email);
-        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(hashingEmail);
+        String emailHasing = DigestUtils.sha256Hex(email);
+        Optional<UserEmailVerification> userEmailVerificationOpt = emailVerificationMapper.getUserEmailVerification(emailHasing);
 
         if (userEmailVerificationOpt.isEmpty()) {
             return false;
@@ -56,7 +56,7 @@ public class EmailVerificationService {
 
 
         emailVerificationMapper.updateEmailVerificationStatus(
-                hashingEmail,
+                emailHasing,
                 Constants.EmailVerification.SUCCESS,
                 Constants.SystemId.SYSTEM_NUMBER
         );
@@ -64,9 +64,8 @@ public class EmailVerificationService {
         return true;
     }
 
-    public boolean isEmailVerificationFail(String Email) {
-        String hashingEmail = DigestUtils.sha256Hex(Email);
-        Optional<UserEmailVerification> userEmailVerification = emailVerificationMapper.getUserEmailVerification(hashingEmail);
+    public boolean isEmailVerificationFail(String emailHashing) {
+        Optional<UserEmailVerification> userEmailVerification = emailVerificationMapper.getUserEmailVerification(emailHashing);
 
         if (userEmailVerification.isEmpty()) {
             return true;
@@ -79,11 +78,11 @@ public class EmailVerificationService {
         return false;
     }
 
-    private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String hashingEmail) {
+    private SendEmailAuthenticationDto sendNewEmailVerificationCode(String email, String emailHasing) {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.insertEmailVerification(
-                hashingEmail,
+                emailHasing,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
                 Constants.SystemId.SYSTEM_NUMBER
@@ -91,11 +90,11 @@ public class EmailVerificationService {
 
         sendAuthenticationEmail(email, authenticationCode);
 
-        return new SendEmailAuthenticationDto(true, emailVerificationMapper.getEditDateTime(hashingEmail));
+        return new SendEmailAuthenticationDto(true, emailVerificationMapper.getEditDateTime(emailHasing));
     }
 
-    private SendEmailAuthenticationDto resendEmailVerificationCode(String email, String hashingEmail) {
-        LocalDateTime lastEmailSendDateTime = emailVerificationMapper.getEditDateTime(hashingEmail);
+    private SendEmailAuthenticationDto resendEmailVerificationCode(String email, String emailHasing) {
+        LocalDateTime lastEmailSendDateTime = emailVerificationMapper.getEditDateTime(emailHasing);
         LocalDateTime now = LocalDateTime.now();
         long secondsSinceEdit = Duration.between(lastEmailSendDateTime, now).getSeconds();
 
@@ -106,7 +105,7 @@ public class EmailVerificationService {
         String authenticationCode = verificationCodeUtil.createVerificationCode();
 
         emailVerificationMapper.updateEmailVerification(
-                hashingEmail,
+                emailHasing,
                 authenticationCode,
                 Constants.EmailVerification.ACTIVATE,
                 Constants.SystemId.SYSTEM_NUMBER
@@ -114,7 +113,7 @@ public class EmailVerificationService {
 
         sendAuthenticationEmail(email, authenticationCode);
 
-        LocalDateTime emailSendDatetime = emailVerificationMapper.getEditDateTime(hashingEmail);
+        LocalDateTime emailSendDatetime = emailVerificationMapper.getEditDateTime(emailHasing);
 
         return new SendEmailAuthenticationDto(true, emailSendDatetime);
     }

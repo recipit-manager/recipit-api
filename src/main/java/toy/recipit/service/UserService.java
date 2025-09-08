@@ -39,22 +39,21 @@ public class UserService {
         validateEmailVerification(email);
 
         String emailHashing = DigestUtils.sha256Hex(email);
-        String emailEncrypt = securityUtil.encrypt(email)
-                .orElseThrow(() -> new IllegalArgumentException("Encryption failed"));
+        String emailEncrypt = securityUtil.encrypt(email);
 
         String phoneNumber = signUpDto.getPhoneNumber();
         String phoneNumberHashing = DigestUtils.sha256Hex(phoneNumber);
-        String phoneNumberEncrypt = securityUtil.encrypt(phoneNumber)
-                .orElseThrow(() -> new IllegalArgumentException("Encryption failed"));
+        String phoneNumberEncrypt = securityUtil.encrypt(phoneNumber);
 
         validateDuplicateEmail(emailHashing);
         validateDuplicateNameAndPhone(signUpDto, phoneNumberHashing);
         validateCountryAndPhoneNumber(signUpDto.getCountryCode(), phoneNumber);
 
-        InsertUserVo insertUserVo = buildUserVo(
+        InsertUserVo insertUserVo = new InsertUserVo(
                 signUpDto,
                 emailHashing,
                 emailEncrypt,
+                passwordEncoder.encode(signUpDto.getPassword()),
                 phoneNumberHashing,
                 phoneNumberEncrypt
         );
@@ -70,8 +69,8 @@ public class UserService {
         }
     }
 
-    private void validateEmailVerification(String email) {
-        if (emailVerificationService.isEmailVerificationFail(email)) {
+    private void validateEmailVerification(String emailHashing) {
+        if (emailVerificationService.isEmailVerificationFail(emailHashing)) {
             throw new IllegalArgumentException("signUp.emailVerificationFailed");
         }
     }
@@ -107,26 +106,4 @@ public class UserService {
             throw new IllegalArgumentException("signUp.invalidPhoneNumber");
         }
     }
-
-    private InsertUserVo buildUserVo(
-            SignUpDto signUpDto,
-            String emailHashing,
-            String emailEncrypt,
-            String phoneNumberHashing,
-            String phoneNumberEncrypt
-    ) {
-        return new InsertUserVo(
-                emailHashing,
-                emailEncrypt,
-                passwordEncoder.encode(signUpDto.getPassword()),
-                signUpDto.getFirstName(),
-                signUpDto.getMiddleName(),
-                signUpDto.getLastName(),
-                signUpDto.getNickname(),
-                signUpDto.getCountryCode().getCode(),
-                phoneNumberHashing,
-                phoneNumberEncrypt
-        );
-    }
-
 }
