@@ -33,17 +33,16 @@ public class UserService {
 
     @Transactional
     public boolean signUp(SignUpDto signUpDto) {
-        validateNickname(signUpDto.getNickname());
-
         String email = signUpDto.getEmail();
         String emailHashing = DigestUtils.sha256Hex(email);
-        validateEmailVerification(emailHashing);
         String emailEncrypt = securityUtil.encrypt(email);
 
         String phoneNumber = signUpDto.getPhoneNumber();
         String phoneNumberHashing = DigestUtils.sha256Hex(phoneNumber);
         String phoneNumberEncrypt = securityUtil.encrypt(phoneNumber);
 
+        validateNickname(signUpDto.getNickname());
+        validateEmailVerification(emailHashing);
         validateDuplicateEmail(emailHashing);
         validateDuplicateNameAndPhone(signUpDto, phoneNumberHashing);
         validateCountryAndPhoneNumber(signUpDto.getCountryCode(), phoneNumber);
