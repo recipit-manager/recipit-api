@@ -16,6 +16,5 @@ public interface UserMapper {
                                           @Param("lastName") String lastName,
                                           @Param("phoneNumberHashing") String phoneNumberHashing);
 
-    void insertUser(@Param("user") InsertUserVo user, @Param("insertId") String insertId);
-
+    void insertUser(@Param("user") InsertUserVo user);
 }

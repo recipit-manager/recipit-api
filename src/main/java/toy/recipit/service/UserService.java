@@ -7,7 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import toy.recipit.common.Constants;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.SignUpDto;
@@ -56,7 +55,7 @@ public class UserService {
                 phoneNumberEncrypt
         );
 
-        userMapper.insertUser(insertUserVo, Constants.SystemId.SYSTEM_NUMBER);
+        userMapper.insertUser(insertUserVo);
 
         return true;
     }
