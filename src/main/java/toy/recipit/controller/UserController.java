@@ -10,18 +10,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.request.EmailDto;
+import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
+import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
-import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 
 @RestController
 @RequestMapping("/user")
@@ -66,5 +67,13 @@ public class UserController {
     ) {
 
         return ResponseEntity.ok(apiResponseFactory.success(emailVerificationService.checkEmailVerificationCode(email, verificationCode)));
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<Boolean>> signUp(
+            @RequestBody @Valid SignUpDto signUpDto
+    ) {
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.signUp(signUpDto)));
     }
 }

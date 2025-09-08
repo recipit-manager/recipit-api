@@ -11,4 +11,68 @@
         )
     </select>
 
+    <select id="isEmailExists" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_USER
+            WHERE EMAIL_HASHING = #{emailHashing}
+        )
+    </select>
+
+
+    <select id="isNameAndPhoneNumberExists" parameterType="map" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_USER
+            WHERE FIRST_NAME = #{firstName}
+              AND MIDDLE_NAME = #{middleName}
+              AND LAST_NAME = #{lastName}
+              AND PHONE_NUMBER_HASHING = #{phoneNumberHashing}
+        )
+    </select>
+
+
+    <insert id="insertUser" parameterType="map">
+        INSERT INTO US_USER
+        (
+            EMAIL_HASHING,
+            EMAIL_ENCRYPT,
+            NICK_NAME,
+            PASSWORD,
+            LAST_NAME,
+            MIDDLE_NAME,
+            FIRST_NAME,
+            PHONE_NUMBER_HASHING,
+            PHONE_NUMBER_ENCRYPT,
+            COUNTRY_CODE,
+            LOGIN_FAIL_COUNT,
+            STATUS_CODE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES
+            (
+                #{user.emailHashing},
+                #{user.emailEncrypt},
+                #{user.nickName},
+                #{user.password},
+                #{user.lastName},
+                #{user.middleName},
+                #{user.firstName},
+                #{user.phoneNumberHashing},
+                #{user.phoneNumberEncrypt},
+                #{user.countryCode},
+                #{user.loginFailCount},
+                #{user.statusCode},
+                NOW(),
+                #{user.createUser},
+                NOW(),
+                #{user.editUser}
+            )
+    </insert>
+
+
+
 </mapper>
