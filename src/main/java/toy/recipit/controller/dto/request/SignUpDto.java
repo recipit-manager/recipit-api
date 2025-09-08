@@ -7,18 +7,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
-@RequiredArgsConstructor
 public class SignUpDto {
     @NotBlank(message = "validation.firstName.blank")
     @Size(max = 10, message = "validation.firstName.size")
     private final String firstName;
 
     @Size(max = 20, message = "validation.middleName.size")
-    private final String middleName = StringUtils.EMPTY;
+    private final String middleName;
 
     @NotBlank(message = "validation.lastName.blank")
     @Size(max = 20, message = "validation.lastName.size")
@@ -54,4 +52,25 @@ public class SignUpDto {
 
     @NotBlank(message = "validation.phoneNumber.blank")
     private final String phoneNumber;
+
+    public SignUpDto(
+            String firstName,
+            String middleName,
+            String lastName,
+            String nickname,
+            String email,
+            String password,
+            CommonCodeDto countryCode,
+            String phoneNumber
+    ) {
+        this.firstName = firstName;
+        this.middleName = (middleName == null) ? StringUtils.EMPTY : middleName;
+        this.lastName = lastName;
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.countryCode = countryCode;
+        this.phoneNumber = phoneNumber;
+    }
+
 }

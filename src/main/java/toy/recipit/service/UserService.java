@@ -36,9 +36,8 @@ public class UserService {
         validateNickname(signUpDto.getNickname());
 
         String email = signUpDto.getEmail();
-        validateEmailVerification(email);
-
         String emailHashing = DigestUtils.sha256Hex(email);
+        validateEmailVerification(emailHashing);
         String emailEncrypt = securityUtil.encrypt(email);
 
         String phoneNumber = signUpDto.getPhoneNumber();
