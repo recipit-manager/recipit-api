@@ -1,5 +1,6 @@
 package toy.recipit.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.request.EmailDto;
+import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
@@ -73,7 +75,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<Boolean>> signUp(
             @RequestBody @Valid SignUpDto signUpDto
     ) {
-
         return ResponseEntity.ok(apiResponseFactory.success(userService.signUp(signUpDto)));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<Boolean>> login(
+            @RequestBody @Valid LoginDto loginDto
+    ) {
+        return ResponseEntity.ok(apiResponseFactory.success(userService.login(loginDto)));
     }
 }

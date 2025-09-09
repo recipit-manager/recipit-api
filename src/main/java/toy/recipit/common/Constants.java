@@ -64,5 +64,7 @@ public final class Constants {
 
     public interface UserLogin {
         int LOGIN_FAIL_COUNT_INITIAL = 0;
+        long AUTO_LOGIN_EXPIRATION_DAYS = 7L;
+        String AUTO_LOGIN_COOKIE_NAME = "AUTO_LOGIN_TOKEN";
     }
 }
