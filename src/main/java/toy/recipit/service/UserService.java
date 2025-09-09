@@ -74,7 +74,6 @@ public class UserService {
         return true;
     }
 
-    @Transactional
     public boolean login(LoginDto loginDto) {
         String email = loginDto.getEmail();
         String emailHashing = DigestUtils.sha256Hex(email);
@@ -82,7 +81,7 @@ public class UserService {
         UserVo userVo = getUserVoByEmail(emailHashing);
 
         checkUserStatus(userVo.getStatusCode());
-        checkLoginFailCount(loginDto, userVo, emailHashing);
+        checkPassword(loginDto, userVo);
 
         if (userVo.getLoginFailCount() != 0) {
             resetLoginFailCount(emailHashing);
@@ -152,19 +151,21 @@ public class UserService {
         }
     }
 
-    private void checkLoginFailCount(LoginDto loginDto, UserVo userVo, String emailHashing) {
+    @Transactional
+    public void checkPassword(LoginDto loginDto, UserVo userVo) {
         if (!passwordEncoder.matches(loginDto.getPassword(), userVo.getPassword())) {
-            userMapper.increaseLoginFailCount(emailHashing, Constants.SystemId.SYSTEM_NUMBER);
+            userMapper.increaseLoginFailCount(userVo.getEmailHashing(), Constants.SystemId.SYSTEM_NUMBER);
 
             if (userVo.getLoginFailCount() >= 4) {
-                userMapper.updateStatusCode(emailHashing, Constants.UserStatus.INACTIVE, Constants.SystemId.SYSTEM_NUMBER);
+                userMapper.updateStatusCode(userVo.getEmailHashing(), Constants.UserStatus.INACTIVE, Constants.SystemId.SYSTEM_NUMBER);
             }
 
             throw new IllegalArgumentException("login.notFoundUser");
         }
     }
 
-    private void resetLoginFailCount(String emailHashing) {
+    @Transactional
+    public void resetLoginFailCount(String emailHashing) {
         userMapper.resetLoginFailCount(emailHashing, Constants.SystemId.SYSTEM_NUMBER);
     }
 

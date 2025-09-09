@@ -79,19 +79,19 @@
                EMAIL_ENCRYPT,
                NICK_NAME,
                PASSWORD,
-               LAST_NAME,
-               MIDDLE_NAME,
                FIRST_NAME,
+               MIDDLE_NAME,
+               LAST_NAME,
+               COUNTRY_CODE,
                PHONE_NUMBER_HASHING,
                PHONE_NUMBER_ENCRYPT,
-               COUNTRY_CODE,
                LOGIN_FAIL_COUNT,
                STATUS_CODE
         FROM US_USER
         WHERE EMAIL_HASHING = #{emailHashing}
     </select>
 
-    <update id="increaseLoginFailCount" parameterType="string">
+    <update id="increaseLoginFailCount">
         UPDATE US_USER
         SET LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
             EDIT_DATETIME = NOW(),
@@ -99,7 +99,8 @@
         WHERE EMAIL_HASHING = #{emailHashing}
     </update>
 
-    <update id="updateStatusCode" parameterType="map">
+
+    <update id="updateStatusCode">
         UPDATE US_USER
         SET STATUS_CODE = #{statusCode},
             EDIT_DATETIME = NOW(),
@@ -107,7 +108,7 @@
         WHERE EMAIL_HASHING = #{emailHashing}
     </update>
 
-    <update id="resetLoginFailCount" parameterType="string">
+    <update id="resetLoginFailCount">
         UPDATE US_USER
         SET LOGIN_FAIL_COUNT = 0,
             EDIT_DATETIME = NOW(),
