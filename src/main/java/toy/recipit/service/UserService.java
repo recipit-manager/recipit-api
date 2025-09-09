@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
+    private final LoginFailService loginFailService;
     private final CommonService commonService;
     private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
@@ -70,6 +71,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional
     public LoginResult login(LoginDto loginDto) {
         String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
 
@@ -150,20 +152,14 @@ public class UserService {
         }
     }
 
-    @Transactional
     public void checkPassword(LoginDto loginDto, UserVo userVo) {
         if (!passwordEncoder.matches(loginDto.getPassword(), userVo.getPassword())) {
-            userMapper.increaseLoginFailCount(userVo.getEmailHashing(), Constants.SystemId.SYSTEM_NUMBER);
-
-            if (userVo.getLoginFailCount() >= 4) {
-                userMapper.updateStatusCode(userVo.getEmailHashing(), Constants.UserStatus.INACTIVE, Constants.SystemId.SYSTEM_NUMBER);
-            }
+            loginFailService.notMatchPassword(userVo);
 
             throw new IllegalArgumentException("login.notFoundUser");
         }
     }
 
-    @Transactional
     public void resetLoginFailCount(String emailHashing) {
         userMapper.resetLoginFailCount(emailHashing, Constants.SystemId.SYSTEM_NUMBER);
     }
