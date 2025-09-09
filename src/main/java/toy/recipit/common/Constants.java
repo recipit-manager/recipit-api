@@ -66,5 +66,6 @@ public final class Constants {
         int LOGIN_FAIL_COUNT_INITIAL = 0;
         int AUTO_LOGIN_EXPIRATION_DAYS = 7;
         String AUTO_LOGIN_COOKIE_NAME = "AUTO_LOGIN_TOKEN";
+        int LOGIN_FAIL_INACTIVE_THRESHOLD = 5;
     }
 }
