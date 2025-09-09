@@ -1,13 +1,10 @@
 package toy.recipit.service;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,7 @@ import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
+import toy.recipit.controller.dto.response.LoginResult;
 import toy.recipit.controller.dto.response.SessionUser;
 import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
@@ -36,9 +34,7 @@ public class UserService {
     private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     private final EmailVerificationService emailVerificationService;
-    private final HttpSession httpSession;
     private final StringRedisTemplate redisTemplate;
-    private final HttpServletResponse response;
 
     public boolean isNicknameDuplicate(String nickname) {
         return userMapper.isNicknameDuplicate(nickname);
@@ -74,11 +70,11 @@ public class UserService {
         return true;
     }
 
-    public boolean login(LoginDto loginDto) {
-        String email = loginDto.getEmail();
-        String emailHashing = DigestUtils.sha256Hex(email);
+    public LoginResult login(LoginDto loginDto) {
+        String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
 
-        UserVo userVo = getUserVoByEmail(emailHashing);
+        UserVo userVo = userMapper.getUserByEmail(emailHashing)
+                .orElseThrow(() -> new IllegalArgumentException("login.notFoundUser"));
 
         checkUserStatus(userVo.getStatusCode());
         checkPassword(loginDto, userVo);
@@ -87,13 +83,21 @@ public class UserService {
             resetLoginFailCount(emailHashing);
         }
 
+        String autoLoginToken;
+
         if (loginDto.isAutoLogin()) {
-            setAutoLoginToken(userVo.getUserNo());
+            autoLoginToken = createAutoLoginToken(userVo.getUserNo());
+        } else {
+            autoLoginToken = StringUtils.EMPTY;
         }
 
-        setSessionUser(userVo);
+        SessionUser sessionUser = new SessionUser(
+                userVo.getUserNo(),
+                userVo.getNickName(),
+                userVo.getStatusCode()
+        );
 
-        return true;
+        return new LoginResult(sessionUser, autoLoginToken);
     }
 
     private void validateNickname(String nickname) {
@@ -140,11 +144,6 @@ public class UserService {
         }
     }
 
-    private UserVo getUserVoByEmail(String emailHashing) {
-        return userMapper.getUserByEmail(emailHashing)
-                .orElseThrow(() -> new IllegalArgumentException("login.notFoundUser"));
-    }
-
     private void checkUserStatus(String statusCode) {
         if (Constants.UserStatus.INACTIVE.equals(statusCode)) {
             throw new IllegalArgumentException("login.inactiveUser");
@@ -169,25 +168,16 @@ public class UserService {
         userMapper.resetLoginFailCount(emailHashing, Constants.SystemId.SYSTEM_NUMBER);
     }
 
-    private void setSessionUser(UserVo userVo) {
-        SessionUser sessionUser = new SessionUser(
-                userVo.getUserNo(),
-                userVo.getNickName(),
-                userVo.getStatusCode()
-        );
-        httpSession.setAttribute("user", sessionUser);
-    }
-
-    private void setAutoLoginToken(String userNo) {
+    private String createAutoLoginToken(String userNo) {
         String autoLoginToken = UUID.randomUUID().toString();
 
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(autoLoginToken, userNo, Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(
+                autoLoginToken,
+                userNo,
+                Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS,
+                TimeUnit.DAYS
+        );
 
-        Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, autoLoginToken);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
-        response.addCookie(cookie);
+        return autoLoginToken;
     }
 }

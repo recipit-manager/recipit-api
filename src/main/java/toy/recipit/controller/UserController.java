@@ -1,12 +1,16 @@
 package toy.recipit.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +25,16 @@ import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
+import toy.recipit.controller.dto.response.LoginResult;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
+import toy.recipit.controller.dto.response.SessionUser;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
+import toy.recipit.mapper.vo.UserVo;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
@@ -80,8 +90,21 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Boolean>> login(
-            @RequestBody @Valid LoginDto loginDto
+            @RequestBody @Valid LoginDto loginDto,
+            HttpSession session,
+            HttpServletResponse response
     ) {
-        return ResponseEntity.ok(apiResponseFactory.success(userService.login(loginDto)));
+        LoginResult loginResult = userService.login(loginDto);
+        session.setAttribute("user", loginResult.getSessionUser());
+
+        if (loginDto.isAutoLogin()) {
+            Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, loginResult.getAutoLoginToken());
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
+            response.addCookie(cookie);
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(true));
     }
 }
