@@ -92,6 +92,10 @@ public class UserService {
         return new LoginResult(userVo.getUserNo(), autoLoginToken);
     }
 
+    public void removeAutoLoginToken(String autoLoginToken) {
+        redisTemplate.unlink(autoLoginToken);
+    }
+
     private void validateNickname(String nickname) {
         if (isNicknameDuplicate(nickname)) {
             throw new IllegalArgumentException("signUp.duplicateNickname");
@@ -142,7 +146,7 @@ public class UserService {
         }
     }
 
-    public void checkPassword(LoginDto loginDto, UserVo userVo) {
+    private void checkPassword(LoginDto loginDto, UserVo userVo) {
         if (!passwordEncoder.matches(loginDto.getPassword(), userVo.getPassword())) {
             userMapper.increaseLoginFailCount(userVo.getEmailHashing(), Constants.SystemId.SYSTEM_NUMBER);
 
@@ -157,7 +161,7 @@ public class UserService {
         }
     }
 
-    public void resetLoginFailCount(String emailHashing) {
+    private void resetLoginFailCount(String emailHashing) {
         userMapper.resetLoginFailCount(emailHashing, Constants.SystemId.SYSTEM_NUMBER);
     }
 

@@ -22,4 +22,11 @@ public class SessionUtil {
         }
         return Optional.empty();
     }
+
+    public void removeSession(HttpServletRequest request) {
+        var session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
 }
