@@ -111,7 +111,6 @@ public class UserController {
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Boolean>> logout(
             HttpServletRequest request,
-            HttpServletResponse response,
             @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
             String autoLoginToken
     ) {
