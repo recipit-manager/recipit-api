@@ -93,7 +93,7 @@ public class UserService {
     }
 
     public void removeAutoLoginToken(String autoLoginToken) {
-        redisTemplate.delete(autoLoginToken);
+        redisTemplate.unlink(autoLoginToken);
     }
 
     private void validateNickname(String nickname) {
