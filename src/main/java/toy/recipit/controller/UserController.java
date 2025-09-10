@@ -123,4 +123,12 @@ public class UserController {
         return ResponseEntity.ok(apiResponseFactory.success(true));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<Boolean>> refresh(
+            HttpServletRequest request
+    ) {
+        request.getSession(false);
+
+        return ResponseEntity.ok(apiResponseFactory.success(true));
+    }
 }
