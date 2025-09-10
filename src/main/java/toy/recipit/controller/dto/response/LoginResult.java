@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class LoginResult {
-    private final SessionUser sessionUser;
+    private final String userNo;
     private final String autoLoginToken;
 }

@@ -10,13 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
 import toy.recipit.controller.dto.response.LoginResult;
-import toy.recipit.controller.dto.response.SessionUser;
 import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
@@ -70,7 +70,7 @@ public class UserService {
         return true;
     }
 
-    @Transactional(noRollbackFor = IllegalArgumentException.class)
+    @Transactional(noRollbackFor = loginFailException.class)
     public LoginResult login(LoginDto loginDto) {
         String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
 
@@ -89,11 +89,7 @@ public class UserService {
         autoLoginToken = loginDto.isAutoLogin() ?
                 createAutoLoginToken(userVo.getUserNo()) : StringUtils.EMPTY;
 
-        SessionUser sessionUser = new SessionUser(
-                userVo.getUserNo()
-        );
-
-        return new LoginResult(sessionUser, autoLoginToken);
+        return new LoginResult(userVo.getUserNo(), autoLoginToken);
     }
 
     private void validateNickname(String nickname) {
@@ -142,7 +138,7 @@ public class UserService {
 
     private void checkUserStatus(String statusCode) {
         if (Constants.UserStatus.INACTIVE.equals(statusCode)) {
-            throw new IllegalArgumentException("login.inactiveUser");
+            throw new loginFailException("login.inactiveUser");
         }
     }
 
@@ -157,7 +153,7 @@ public class UserService {
                         Constants.SystemId.SYSTEM_NUMBER
                 );
             }
-            throw new IllegalArgumentException("login.notFoundUser");
+            throw new loginFailException("login.notFoundUser");
         }
     }
 

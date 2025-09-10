@@ -1,8 +1,8 @@
 package toy.recipit.controller;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +30,6 @@ import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -89,11 +88,11 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Boolean>> login(
             @RequestBody @Valid LoginDto loginDto,
-            HttpSession session,
+            HttpServletRequest request,
             HttpServletResponse response
     ) {
         LoginResult loginResult = userService.login(loginDto);
-        sessionUtil.setSessionUser(session, loginResult.getSessionUser());
+        sessionUtil.setSessionUserNo(request, loginResult.getUserNo());
 
         if (loginDto.isAutoLogin()) {
             Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, loginResult.getAutoLoginToken());

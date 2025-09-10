@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import toy.recipit.common.exception.IngredientNotFoundException;
+import toy.recipit.common.exception.loginFailException;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.response.ApiResponse;
@@ -82,6 +83,15 @@ public class ApiExceptionHandler {
         log.error("{} {} - {}", Constants.LogTag.DATA_MISSING, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.DATA_MISSING));
+    }
+
+    @ExceptionHandler(loginFailException.class)
+    public ResponseEntity<ApiResponse<String>> handleLoginFailException(loginFailException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+
+        String details = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
     }
 
     @ExceptionHandler(Exception.class)
