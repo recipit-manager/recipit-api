@@ -9,8 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,13 +25,10 @@ import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.LoginResult;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
-import toy.recipit.controller.dto.response.SessionUser;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
-import toy.recipit.mapper.vo.UserVo;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
