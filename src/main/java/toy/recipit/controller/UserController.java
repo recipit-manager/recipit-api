@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
+import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
@@ -29,6 +30,7 @@ import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -40,6 +42,7 @@ public class UserController {
     private final UserService userService;
     private final EmailVerificationService emailVerificationService;
     private final ApiResponseFactory apiResponseFactory;
+    private final SessionUtil sessionUtil;
 
     @GetMapping("/nickname/{nickname}/duplicateYn")
     public ResponseEntity<ApiResponse<String>> checkNicknameDuplicate(
@@ -90,7 +93,7 @@ public class UserController {
             HttpServletResponse response
     ) {
         LoginResult loginResult = userService.login(loginDto);
-        session.setAttribute("user", loginResult.getSessionUser());
+        sessionUtil.setSessionUser(session, loginResult.getSessionUser());
 
         if (loginDto.isAutoLogin()) {
             Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, loginResult.getAutoLoginToken());

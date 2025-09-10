@@ -9,6 +9,4 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 public class SessionUser implements Serializable {
     private final String userNo;
-    private final String nickName;
-    private final String statusCode;
 }

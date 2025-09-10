@@ -68,4 +68,9 @@ public final class Constants {
         String AUTO_LOGIN_COOKIE_NAME = "AUTO_LOGIN_TOKEN";
         int LOGIN_FAIL_INACTIVE_THRESHOLD = 5;
     }
+
+    public interface SessionKey {
+        String USER = "user";
+    }
+
 }

@@ -7,8 +7,6 @@ import org.jasypt.util.text.AES256TextEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 @RequiredArgsConstructor
 public class SecurityUtil {
