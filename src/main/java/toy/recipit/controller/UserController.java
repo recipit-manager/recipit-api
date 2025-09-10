@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,7 @@ import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -104,4 +107,21 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
     }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponse<Boolean>> logout(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
+            String autoLoginToken
+    ) {
+        sessionUtil.removeSession(request);
+
+        if (autoLoginToken != null && !autoLoginToken.isEmpty()) {
+            userService.removeAutoLoginToken(autoLoginToken);
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(true));
+    }
+
 }
