@@ -3,18 +3,27 @@ package toy.recipit.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import toy.recipit.common.Constants;
+import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
+import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
+import toy.recipit.controller.dto.response.LoginResult;
 import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
+import toy.recipit.mapper.vo.UserVo;
 
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -25,6 +34,7 @@ public class UserService {
     private final SecurityUtil securityUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     private final EmailVerificationService emailVerificationService;
+    private final StringRedisTemplate redisTemplate;
 
     public boolean isNicknameDuplicate(String nickname) {
         return userMapper.isNicknameDuplicate(nickname);
@@ -58,6 +68,28 @@ public class UserService {
         userMapper.insertUser(insertUserVo);
 
         return true;
+    }
+
+    @Transactional(noRollbackFor = loginFailException.class)
+    public LoginResult login(LoginDto loginDto) {
+        String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
+
+        UserVo userVo = userMapper.getUserByEmail(emailHashing)
+                .orElseThrow(() -> new IllegalArgumentException("login.notFoundUser"));
+
+        checkUserStatus(userVo.getStatusCode());
+        checkPassword(loginDto, userVo);
+
+        if (userVo.getLoginFailCount() != 0) {
+            resetLoginFailCount(emailHashing);
+        }
+
+        String autoLoginToken;
+
+        autoLoginToken = loginDto.isAutoLogin() ?
+                createAutoLoginToken(userVo.getUserNo()) : StringUtils.EMPTY;
+
+        return new LoginResult(userVo.getUserNo(), autoLoginToken);
     }
 
     private void validateNickname(String nickname) {
@@ -102,5 +134,43 @@ public class UserService {
         if (!phoneNumber.matches(countryCodeDto.get().getRegex())) {
             throw new IllegalArgumentException("signUp.invalidPhoneNumber");
         }
+    }
+
+    private void checkUserStatus(String statusCode) {
+        if (Constants.UserStatus.INACTIVE.equals(statusCode)) {
+            throw new loginFailException("login.inactiveUser");
+        }
+    }
+
+    public void checkPassword(LoginDto loginDto, UserVo userVo) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), userVo.getPassword())) {
+            userMapper.increaseLoginFailCount(userVo.getEmailHashing(), Constants.SystemId.SYSTEM_NUMBER);
+
+            if (userVo.getLoginFailCount() + 1 >= Constants.UserLogin.LOGIN_FAIL_INACTIVE_THRESHOLD) {
+                userMapper.updateStatusCode(
+                        userVo.getEmailHashing(),
+                        Constants.UserStatus.INACTIVE,
+                        Constants.SystemId.SYSTEM_NUMBER
+                );
+            }
+            throw new loginFailException("login.notFoundUser");
+        }
+    }
+
+    public void resetLoginFailCount(String emailHashing) {
+        userMapper.resetLoginFailCount(emailHashing, Constants.SystemId.SYSTEM_NUMBER);
+    }
+
+    private String createAutoLoginToken(String userNo) {
+        String autoLoginToken = UUID.randomUUID().toString();
+
+        redisTemplate.opsForValue().set(
+                autoLoginToken,
+                userNo,
+                Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS,
+                TimeUnit.DAYS
+        );
+
+        return autoLoginToken;
     }
 }

@@ -73,6 +73,46 @@
             )
     </insert>
 
+    <select id="getUserByEmail" parameterType="String" resultType="toy.recipit.mapper.vo.UserVo">
+        SELECT USER_NO,
+               EMAIL_HASHING,
+               EMAIL_ENCRYPT,
+               NICK_NAME,
+               PASSWORD,
+               FIRST_NAME,
+               MIDDLE_NAME,
+               LAST_NAME,
+               COUNTRY_CODE,
+               PHONE_NUMBER_HASHING,
+               PHONE_NUMBER_ENCRYPT,
+               LOGIN_FAIL_COUNT,
+               STATUS_CODE
+        FROM US_USER
+        WHERE EMAIL_HASHING = #{emailHashing}
+    </select>
+
+    <update id="increaseLoginFailCount">
+        UPDATE US_USER
+        SET LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{updateId}
+        WHERE EMAIL_HASHING = #{emailHashing}
+    </update>
 
 
+    <update id="updateStatusCode">
+        UPDATE US_USER
+        SET STATUS_CODE = #{statusCode},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{updateId}
+        WHERE EMAIL_HASHING = #{emailHashing}
+    </update>
+
+    <update id="resetLoginFailCount">
+        UPDATE US_USER
+        SET LOGIN_FAIL_COUNT = 0,
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{updateId}
+        WHERE EMAIL_HASHING = #{emailHashing}
+    </update>
 </mapper>

@@ -3,6 +3,9 @@ package toy.recipit.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import toy.recipit.mapper.vo.InsertUserVo;
+import toy.recipit.mapper.vo.UserVo;
+
+import java.util.Optional;
 
 
 @Mapper
@@ -17,4 +20,16 @@ public interface UserMapper {
                                           @Param("phoneNumberHashing") String phoneNumberHashing);
 
     void insertUser(@Param("user") InsertUserVo user);
+
+    Optional<UserVo> getUserByEmail(@Param("emailHashing") String emailHashing);
+
+    void increaseLoginFailCount(@Param("emailHashing") String emailHashing,
+                                @Param("updateId") String updateId);
+
+    void updateStatusCode(@Param("emailHashing") String emailHashing,
+                          @Param("statusCode") String statusCode,
+                          @Param("updateId") String updateId);
+
+    void resetLoginFailCount(@Param("emailHashing") String emailHashing,
+                             @Param("updateId") String updateId);
 }
