@@ -17,7 +17,9 @@ public class ApiResponse<T> {
         ARGUMENT_ERROR("1002", "api.error.argument"),
         SERVER_ERROR("4001", "api.error.server"),
         DATA_MISSING("4002", "api.error.data_missing"),
-        DB_CONNECT_FAIL("4999", "api.error.db");
+        DB_CONNECT_FAIL("4999", "api.error.db"),
+        SESSION_NOT_FOUND("3001", "api.error.session"),
+        NOT_LOGIN_STATUS("3001", "api.error.not_login_status");
 
         private final String code;
         private final String messageKey;

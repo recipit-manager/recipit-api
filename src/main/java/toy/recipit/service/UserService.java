@@ -10,11 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
+import toy.recipit.controller.dto.response.AutoLoginResult;
 import toy.recipit.controller.dto.response.CountryCodeDto;
 import toy.recipit.controller.dto.response.LoginResult;
 import toy.recipit.mapper.UserMapper;
@@ -95,6 +97,53 @@ public class UserService {
     public void removeAutoLoginToken(String autoLoginToken) {
         redisTemplate.unlink(autoLoginToken);
     }
+
+    public AutoLoginResult autoLogin(String autoLoginToken) {
+        String userNo = redisTemplate.opsForValue().get(autoLoginToken);
+
+        if (userNo == null) {
+            throw new NotLoginStatusException();
+        }
+
+        Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
+
+        if (userVo.isPresent()) {
+            return new AutoLoginResult(userVo.get().getNickName(), userNo);
+        } else {
+            throw new NotLoginStatusException();
+        }
+    }
+
+    public String getUserNickName(String userNo) {
+        Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
+
+        if (userVo.isPresent()) {
+            return userVo.get().getNickName();
+        } else {
+            throw new NotLoginStatusException();
+        }
+    }
+
+    public String refreshAutoLoginToken(String autoLoginToken) {
+        String userNo = redisTemplate.opsForValue().get(autoLoginToken);
+
+        if (userNo == null) {
+            return autoLoginToken;
+        } else {
+            redisTemplate.unlink(autoLoginToken);
+
+            String newAutoLoginToken = UUID.randomUUID().toString();
+            redisTemplate.opsForValue().set(
+                    newAutoLoginToken,
+                    userNo,
+                    Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS,
+                    TimeUnit.DAYS
+            );
+
+            return newAutoLoginToken;
+        }
+    }
+
 
     private void validateNickname(String nickname) {
         if (isNicknameDuplicate(nickname)) {

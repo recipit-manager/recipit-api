@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -21,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.NotLoginStatusException;
+import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
+import toy.recipit.controller.dto.response.AutoLoginResult;
 import toy.recipit.controller.dto.response.LoginResult;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
@@ -98,11 +102,7 @@ public class UserController {
         sessionUtil.setSessionUserNo(request, loginResult.getUserNo());
 
         if (loginDto.isAutoLogin()) {
-            Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, loginResult.getAutoLoginToken());
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
-            response.addCookie(cookie);
+            setAutoLoginCookie(response, loginResult.getAutoLoginToken());
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
@@ -131,4 +131,50 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
     }
+
+    @GetMapping("/login/status")
+    public ResponseEntity<ApiResponse<String>> getLoginStatus(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
+            String autoLoginToken
+    ) {
+        if(sessionUtil.isSessionExists(request)) {
+            Optional<String> userNo = sessionUtil.getSessionUserNo(request);
+
+            if (userNo.isPresent()) {
+                String userNickName = userService.getUserNickName(userNo.get());
+
+                if(autoLoginToken != null) {
+                    String newAutoLoginToken = userService.refreshAutoLoginToken(autoLoginToken);
+                    setAutoLoginCookie(response, newAutoLoginToken);
+                }
+
+                return ResponseEntity.ok(apiResponseFactory.success(userNickName));
+            }
+
+            if(autoLoginToken == null) throw new NotLoginStatusException();
+        }
+
+        if(autoLoginToken != null) {
+            AutoLoginResult autoLoginResult = userService.autoLogin(autoLoginToken);
+            String newAutoLoginToken = userService.refreshAutoLoginToken(autoLoginToken);
+
+            sessionUtil.setSessionUserNo(request, autoLoginResult.getUserNo());
+            setAutoLoginCookie(response, newAutoLoginToken);
+
+            return ResponseEntity.ok(apiResponseFactory.success(autoLoginResult.getUserNickname()));
+        }
+
+        throw new SessionNotExistsException();
+    }
+
+    private void setAutoLoginCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
+        response.addCookie(cookie);
+    }
+
 }
