@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -143,25 +142,19 @@ public class UserController {
             Optional<String> userNo = sessionUtil.getSessionUserNo(request);
 
             if (userNo.isPresent()) {
-                String userNickName = userService.getUserNickName(userNo.get());
-
-                if(autoLoginToken != null) {
-                    String newAutoLoginToken = userService.refreshAutoLoginToken(autoLoginToken);
-                    setAutoLoginCookie(response, newAutoLoginToken);
-                }
-
-                return ResponseEntity.ok(apiResponseFactory.success(userNickName));
+                return ResponseEntity.ok(apiResponseFactory.success(userService.getUserNickName(userNo.get())));
             }
 
-            if(autoLoginToken == null) throw new NotLoginStatusException();
+            if(autoLoginToken == null) {
+                throw new NotLoginStatusException();
+            }
         }
 
         if(autoLoginToken != null) {
             AutoLoginResult autoLoginResult = userService.autoLogin(autoLoginToken);
-            String newAutoLoginToken = userService.refreshAutoLoginToken(autoLoginToken);
 
             sessionUtil.setSessionUserNo(request, autoLoginResult.getUserNo());
-            setAutoLoginCookie(response, newAutoLoginToken);
+            setAutoLoginCookie(response, autoLoginResult.getAutoLoginToken());
 
             return ResponseEntity.ok(apiResponseFactory.success(autoLoginResult.getUserNickname()));
         }

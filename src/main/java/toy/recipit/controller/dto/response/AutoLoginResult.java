@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class AutoLoginResult {
     private final String userNickname;
     private final String userNo;
+    private final String autoLoginToken;
 }

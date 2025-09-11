@@ -1,6 +1,7 @@
 package toy.recipit.common.util;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.SessionNotExistsException;
@@ -14,7 +15,7 @@ public class SessionUtil {
     }
 
     public Optional<String> getSessionUserNo(HttpServletRequest request) {
-        var session = request.getSession(false);
+        HttpSession session = request.getSession(false);
         if (session == null) {
             throw new SessionNotExistsException();
         }
@@ -28,14 +29,14 @@ public class SessionUtil {
     }
 
     public void removeSession(HttpServletRequest request) {
-        var session = request.getSession(false);
+        HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
     }
 
     public boolean isSessionExists(HttpServletRequest request) {
-        var session = request.getSession(false);
+        HttpSession session = request.getSession(false);
 
         return session != null;
     }

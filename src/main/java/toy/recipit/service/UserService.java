@@ -23,6 +23,7 @@ import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -108,9 +109,12 @@ public class UserService {
         Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
 
         if (userVo.isPresent()) {
-            return new AutoLoginResult(userVo.get().getNickName(), userNo);
+            return new AutoLoginResult(
+                    userVo.get().getNickName(),
+                    userNo,
+                    refreshAutoLoginToken(autoLoginToken, userNo));
         } else {
-            throw new NotLoginStatusException();
+            throw new NoSuchElementException();
         }
     }
 
@@ -120,28 +124,22 @@ public class UserService {
         if (userVo.isPresent()) {
             return userVo.get().getNickName();
         } else {
-            throw new NotLoginStatusException();
+            throw new NoSuchElementException();
         }
     }
 
-    public String refreshAutoLoginToken(String autoLoginToken) {
-        String userNo = redisTemplate.opsForValue().get(autoLoginToken);
+    private String refreshAutoLoginToken(String autoLoginToken, String userNo) {
+        redisTemplate.unlink(autoLoginToken);
 
-        if (userNo == null) {
-            return autoLoginToken;
-        } else {
-            redisTemplate.unlink(autoLoginToken);
+        String newAutoLoginToken = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(
+                newAutoLoginToken,
+                userNo,
+                Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS,
+                TimeUnit.DAYS
+        );
 
-            String newAutoLoginToken = UUID.randomUUID().toString();
-            redisTemplate.opsForValue().set(
-                    newAutoLoginToken,
-                    userNo,
-                    Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS,
-                    TimeUnit.DAYS
-            );
-
-            return newAutoLoginToken;
-        }
+        return newAutoLoginToken;
     }
 
 
