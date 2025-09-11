@@ -19,7 +19,7 @@ public class ApiResponse<T> {
         DATA_MISSING("4002", "api.error.data_missing"),
         DB_CONNECT_FAIL("4999", "api.error.db"),
         SESSION_NOT_FOUND("3001", "api.error.session"),
-        NOT_LOGIN_STATUS("3001", "api.error.not_login_status");
+        NOT_LOGIN_STATUS("3002", "api.error.not_login_status");
 
         private final String code;
         private final String messageKey;
