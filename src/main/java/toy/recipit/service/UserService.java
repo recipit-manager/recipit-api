@@ -22,7 +22,6 @@ import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -124,17 +123,7 @@ public class UserService {
                     userVo.get().getStatusCode(),
                     refreshAutoLoginToken(autoLoginToken, userNo));
         } else {
-            throw new NoSuchElementException();
-        }
-    }
-
-    public String getUserNickName(String userNo) {
-        Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
-
-        if (userVo.isPresent()) {
-            return userVo.get().getNickName();
-        } else {
-            throw new NoSuchElementException();
+            return new AutoLoginResultDto(true);
         }
     }
 

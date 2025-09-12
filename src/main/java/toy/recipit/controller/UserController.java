@@ -38,7 +38,6 @@ import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -158,7 +157,7 @@ public class UserController {
                     throw new UserStatusLockExeption();
                 }
 
-                return ResponseEntity.ok(apiResponseFactory.success(userService.getUserNickName(userInfo.get().getUserNo())));
+                return ResponseEntity.ok(apiResponseFactory.success(userInfo.get().getUserNickname()));
             }
 
             if(autoLoginToken == null) {
