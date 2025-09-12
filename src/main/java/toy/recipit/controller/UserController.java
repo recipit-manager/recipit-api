@@ -23,18 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
+import toy.recipit.common.exception.UserStatusInactiveExeption;
+import toy.recipit.common.exception.UserStatusLockExeption;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
-import toy.recipit.controller.dto.response.AutoLoginResult;
-import toy.recipit.controller.dto.response.LoginResult;
+import toy.recipit.controller.dto.response.AutoLoginResultDto;
+import toy.recipit.controller.dto.response.LoginResultDto;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
+import toy.recipit.controller.dto.response.SessionUserInfo;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -97,8 +101,13 @@ public class UserController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        LoginResult loginResult = userService.login(loginDto);
-        sessionUtil.setSessionUserNo(request, loginResult.getUserNo());
+        LoginResultDto loginResult = userService.login(loginDto);
+        sessionUtil.setSessionUserInfo(request,
+                new SessionUserInfo(
+                        loginResult.getUserNo(),
+                        loginResult.getUserNickname(),
+                        loginResult.getUserStatusCode()
+                ));
 
         if (loginDto.isAutoLogin()) {
             setAutoLoginCookie(response, loginResult.getAutoLoginToken());
@@ -109,14 +118,17 @@ public class UserController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Boolean>> logout(
+            HttpServletResponse response,
             HttpServletRequest request,
             @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
             String autoLoginToken
     ) {
         sessionUtil.removeSession(request);
 
-        if (autoLoginToken != null && !autoLoginToken.isEmpty()) {
-            userService.removeAutoLoginToken(autoLoginToken);
+        if (autoLoginToken != null) {
+            if(!userService.removeAutoLoginToken(autoLoginToken)) {
+                removeAutoLoginCookie(response);
+            }
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
@@ -139,24 +151,44 @@ public class UserController {
             String autoLoginToken
     ) {
         if(sessionUtil.isSessionExists(request)) {
-            Optional<String> userNo = sessionUtil.getSessionUserNo(request);
+            Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
 
-            if (userNo.isPresent()) {
-                return ResponseEntity.ok(apiResponseFactory.success(userService.getUserNickName(userNo.get())));
+            if (userInfo.isPresent()) {
+                if(userInfo.get().getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+                    throw new UserStatusLockExeption();
+                }
+
+                return ResponseEntity.ok(apiResponseFactory.success(userService.getUserNickName(userInfo.get().getUserNo())));
             }
 
             if(autoLoginToken == null) {
                 throw new NotLoginStatusException();
             }
-        }
+        } else if(autoLoginToken != null) {
+            AutoLoginResultDto autoLoginResult = userService.autoLogin(autoLoginToken);
 
-        if(autoLoginToken != null) {
-            AutoLoginResult autoLoginResult = userService.autoLogin(autoLoginToken);
+            if(autoLoginResult.isNeedDeleteToken()) {
+                removeAutoLoginCookie(response);
+                throw new NotLoginStatusException();
+            } else if(autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+                removeAutoLoginCookie(response);
+                throw new UserStatusLockExeption();
+            } else if (autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.INACTIVE)) {
+                removeAutoLoginCookie(response);
+                throw new UserStatusInactiveExeption();
+            } else {
+                sessionUtil.setSessionUserInfo(
+                        request,
+                        new SessionUserInfo(
+                                autoLoginResult.getUserNo(),
+                                autoLoginResult.getUserNickname(),
+                                autoLoginResult.getUserStatusCode()
+                        ));
 
-            sessionUtil.setSessionUserNo(request, autoLoginResult.getUserNo());
-            setAutoLoginCookie(response, autoLoginResult.getAutoLoginToken());
+                setAutoLoginCookie(response, autoLoginResult.getAutoLoginToken());
 
-            return ResponseEntity.ok(apiResponseFactory.success(autoLoginResult.getUserNickname()));
+                return ResponseEntity.ok(apiResponseFactory.success(autoLoginResult.getUserNickname()));
+            }
         }
 
         throw new SessionNotExistsException();
@@ -167,6 +199,14 @@ public class UserController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
+        response.addCookie(cookie);
+    }
+
+    private void removeAutoLoginCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
 

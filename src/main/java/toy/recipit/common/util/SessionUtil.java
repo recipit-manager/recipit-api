@@ -5,24 +5,25 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.SessionNotExistsException;
+import toy.recipit.controller.dto.response.SessionUserInfo;
 
 import java.util.Optional;
 
 @Component
 public class SessionUtil {
-    public void setSessionUserNo(HttpServletRequest request, String userNo) {
-        request.getSession(true).setAttribute(Constants.SessionKey.USER, userNo);
+    public void setSessionUserInfo(HttpServletRequest request, SessionUserInfo userInfo) {
+        request.getSession(true).setAttribute(Constants.SessionKey.USER, userInfo);
     }
 
-    public Optional<String> getSessionUserNo(HttpServletRequest request) {
+    public Optional<SessionUserInfo> getSessionUserInfo(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
             throw new SessionNotExistsException();
         }
 
         Object obj = session.getAttribute(Constants.SessionKey.USER);
-        if (obj instanceof String userNo) {
-            return Optional.of(userNo);
+        if (obj instanceof SessionUserInfo userInfo) {
+            return Optional.of(userInfo);
         }
 
         return Optional.empty();

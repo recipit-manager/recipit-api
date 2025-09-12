@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class LoginResult {
+public class LoginResultDto {
     private final String userNo;
+    private final String userNickname;
+    private final String userStatusCode;
     private final String autoLoginToken;
 }

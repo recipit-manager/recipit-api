@@ -3,10 +3,12 @@ package toy.recipit.controller.dto.response;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @RequiredArgsConstructor
-public class AutoLoginResult {
-    private final String userNickname;
+public class SessionUserInfo implements Serializable {
     private final String userNo;
-    private final String autoLoginToken;
+    private final String userNickname;
+    private final String userStatusCode;
 }

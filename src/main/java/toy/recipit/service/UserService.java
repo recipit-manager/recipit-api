@@ -10,15 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
-import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
-import toy.recipit.controller.dto.response.AutoLoginResult;
+import toy.recipit.controller.dto.response.AutoLoginResultDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
-import toy.recipit.controller.dto.response.LoginResult;
+import toy.recipit.controller.dto.response.LoginResultDto;
 import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
@@ -74,7 +73,7 @@ public class UserService {
     }
 
     @Transactional(noRollbackFor = loginFailException.class)
-    public LoginResult login(LoginDto loginDto) {
+    public LoginResultDto login(LoginDto loginDto) {
         String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
 
         UserVo userVo = userMapper.getUserByEmail(emailHashing)
@@ -92,26 +91,37 @@ public class UserService {
         autoLoginToken = loginDto.isAutoLogin() ?
                 createAutoLoginToken(userVo.getUserNo()) : StringUtils.EMPTY;
 
-        return new LoginResult(userVo.getUserNo(), autoLoginToken);
+        return new LoginResultDto(
+                userVo.getUserNo(),
+                userVo.getNickName(),
+                userVo.getStatusCode(),
+                autoLoginToken);
     }
 
-    public void removeAutoLoginToken(String autoLoginToken) {
-        redisTemplate.unlink(autoLoginToken);
+    public boolean removeAutoLoginToken(String autoLoginToken) {
+        if(redisTemplate.hasKey(autoLoginToken)) {
+            redisTemplate.unlink(autoLoginToken);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public AutoLoginResult autoLogin(String autoLoginToken) {
+    public AutoLoginResultDto autoLogin(String autoLoginToken) {
         String userNo = redisTemplate.opsForValue().get(autoLoginToken);
 
         if (userNo == null) {
-            throw new NotLoginStatusException();
+           return new AutoLoginResultDto(true);
         }
 
         Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
 
         if (userVo.isPresent()) {
-            return new AutoLoginResult(
+            return new AutoLoginResultDto(
+                    false,
                     userVo.get().getNickName(),
                     userNo,
+                    userVo.get().getStatusCode(),
                     refreshAutoLoginToken(autoLoginToken, userNo));
         } else {
             throw new NoSuchElementException();
