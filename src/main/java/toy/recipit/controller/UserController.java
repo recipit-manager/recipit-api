@@ -125,7 +125,7 @@ public class UserController {
         sessionUtil.removeSession(request);
 
         if (autoLoginToken != null) {
-            if(!userService.removeAutoLoginToken(autoLoginToken)) {
+            if(userService.isExistAutoLoginTokenAndRemove(autoLoginToken)) {
                 removeAutoLoginCookie(response);
             }
         }
@@ -163,12 +163,14 @@ public class UserController {
             if(autoLoginToken == null) {
                 throw new NotLoginStatusException();
             }
-        } else if(autoLoginToken != null) {
+        }
+
+        if(autoLoginToken != null) {
             AutoLoginResultDto autoLoginResult = userService.autoLogin(autoLoginToken);
 
             if(autoLoginResult.isNeedDeleteToken()) {
                 removeAutoLoginCookie(response);
-                throw new NotLoginStatusException();
+                throw new SessionNotExistsException();
             } else if(autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
                 removeAutoLoginCookie(response);
                 throw new UserStatusLockException();

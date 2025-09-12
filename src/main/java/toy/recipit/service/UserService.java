@@ -97,7 +97,7 @@ public class UserService {
                 autoLoginToken);
     }
 
-    public boolean removeAutoLoginToken(String autoLoginToken) {
+    public boolean isExistAutoLoginTokenAndRemove(String autoLoginToken) {
         if(redisTemplate.hasKey(autoLoginToken)) {
             redisTemplate.unlink(autoLoginToken);
             return true;
