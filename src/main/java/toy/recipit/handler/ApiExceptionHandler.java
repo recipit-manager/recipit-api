@@ -15,15 +15,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import toy.recipit.common.Constants;
 import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.exception.loginFailException;
-import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
-import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.response.ApiResponse;
+import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 
 import java.util.stream.Collectors;
 
@@ -113,14 +113,14 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(UserStatusLockException.class)
-    public ResponseEntity<ApiResponse<String>> handleUserStatusLockExeption(UserStatusLockException e, HttpServletRequest req) {
+    public ResponseEntity<ApiResponse<String>> handleUserStatusLockException(UserStatusLockException e, HttpServletRequest req) {
         log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.LOCK_LOGIN_STATUS));
     }
 
     @ExceptionHandler(UserStatusInactiveException.class)
-    public ResponseEntity<ApiResponse<String>> handleUserStatusInactiveExeption(UserStatusInactiveException e, HttpServletRequest req) {
+    public ResponseEntity<ApiResponse<String>> handleUserStatusInactiveException(UserStatusInactiveException e, HttpServletRequest req) {
         log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INACTIVE_LOGIN_STATUS));
