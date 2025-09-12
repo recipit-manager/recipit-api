@@ -15,11 +15,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import toy.recipit.common.exception.IngredientNotFoundException;
-import toy.recipit.common.exception.loginFailException;
-import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.IngredientNotFoundException;
+import toy.recipit.common.exception.NotLoginStatusException;
+import toy.recipit.common.exception.SessionNotExistsException;
+import toy.recipit.common.exception.UserStatusInactiveException;
+import toy.recipit.common.exception.UserStatusLockException;
+import toy.recipit.common.exception.loginFailException;
 import toy.recipit.controller.dto.response.ApiResponse;
+import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 
 import java.util.stream.Collectors;
 
@@ -92,6 +96,34 @@ public class ApiExceptionHandler {
         String details = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
+    }
+
+    @ExceptionHandler(SessionNotExistsException.class)
+    public ResponseEntity<ApiResponse<String>> handleSessionNotExistsException(SessionNotExistsException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.SESSION_ERROR, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.SESSION_NOT_FOUND));
+    }
+
+    @ExceptionHandler(NotLoginStatusException.class)
+    public ResponseEntity<ApiResponse<String>> handleNotLoginStatusException(NotLoginStatusException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.NOT_LOGIN_STATUS));
+    }
+
+    @ExceptionHandler(UserStatusLockException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserStatusLockException(UserStatusLockException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.LOCK_LOGIN_STATUS));
+    }
+
+    @ExceptionHandler(UserStatusInactiveException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserStatusInactiveException(UserStatusInactiveException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INACTIVE_LOGIN_STATUS));
     }
 
     @ExceptionHandler(Exception.class)

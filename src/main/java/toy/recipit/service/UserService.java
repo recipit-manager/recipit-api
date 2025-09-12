@@ -15,8 +15,9 @@ import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
+import toy.recipit.controller.dto.response.AutoLoginResultDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
-import toy.recipit.controller.dto.response.LoginResult;
+import toy.recipit.controller.dto.response.LoginResultDto;
 import toy.recipit.mapper.UserMapper;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
@@ -71,7 +72,7 @@ public class UserService {
     }
 
     @Transactional(noRollbackFor = loginFailException.class)
-    public LoginResult login(LoginDto loginDto) {
+    public LoginResultDto login(LoginDto loginDto) {
         String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
 
         UserVo userVo = userMapper.getUserByEmail(emailHashing)
@@ -89,12 +90,57 @@ public class UserService {
         autoLoginToken = loginDto.isAutoLogin() ?
                 createAutoLoginToken(userVo.getUserNo()) : StringUtils.EMPTY;
 
-        return new LoginResult(userVo.getUserNo(), autoLoginToken);
+        return new LoginResultDto(
+                userVo.getUserNo(),
+                userVo.getNickName(),
+                userVo.getStatusCode(),
+                autoLoginToken);
     }
 
-    public void removeAutoLoginToken(String autoLoginToken) {
-        redisTemplate.unlink(autoLoginToken);
+    public boolean isExistAutoLoginTokenAndRemove(String autoLoginToken) {
+        if(redisTemplate.hasKey(autoLoginToken)) {
+            redisTemplate.unlink(autoLoginToken);
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    public AutoLoginResultDto autoLogin(String autoLoginToken) {
+        String userNo = redisTemplate.opsForValue().get(autoLoginToken);
+
+        if (userNo == null) {
+           return new AutoLoginResultDto(true);
+        }
+
+        Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
+
+        if (userVo.isPresent()) {
+            return new AutoLoginResultDto(
+                    false,
+                    userVo.get().getNickName(),
+                    userNo,
+                    userVo.get().getStatusCode(),
+                    refreshAutoLoginToken(autoLoginToken, userNo));
+        } else {
+            return new AutoLoginResultDto(true);
+        }
+    }
+
+    private String refreshAutoLoginToken(String autoLoginToken, String userNo) {
+        redisTemplate.unlink(autoLoginToken);
+
+        String newAutoLoginToken = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(
+                newAutoLoginToken,
+                userNo,
+                Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS,
+                TimeUnit.DAYS
+        );
+
+        return newAutoLoginToken;
+    }
+
 
     private void validateNickname(String nickname) {
         if (isNicknameDuplicate(nickname)) {

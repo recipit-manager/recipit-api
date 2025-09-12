@@ -15,6 +15,8 @@ public final class Constants {
         String VALIDATION = "VALIDATION";
         String ARGUMENT = "ARGUMENT";
         String DATA_MISSING = "DATA_MISSING";
+        String SESSION_ERROR = "SESSION_ERROR";
+        String LOGIN_STATUS_ERROR = "LOGIN_STATUS_ERROR";
     }
 
     public interface GroupCode {

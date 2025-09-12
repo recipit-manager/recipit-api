@@ -32,4 +32,6 @@ public interface UserMapper {
 
     void resetLoginFailCount(@Param("emailHashing") String emailHashing,
                              @Param("updateId") String updateId);
+
+    Optional<UserVo> getUserByUserNo(@Param("userNo") String userNo);
 }

@@ -21,13 +21,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.NotLoginStatusException;
+import toy.recipit.common.exception.SessionNotExistsException;
+import toy.recipit.common.exception.UserStatusInactiveException;
+import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
-import toy.recipit.controller.dto.response.LoginResult;
+import toy.recipit.controller.dto.response.AutoLoginResultDto;
+import toy.recipit.controller.dto.response.LoginResultDto;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
+import toy.recipit.controller.dto.response.SessionUserInfo;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
@@ -94,15 +100,16 @@ public class UserController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        LoginResult loginResult = userService.login(loginDto);
-        sessionUtil.setSessionUserNo(request, loginResult.getUserNo());
+        LoginResultDto loginResult = userService.login(loginDto);
+        sessionUtil.setSessionUserInfo(request,
+                new SessionUserInfo(
+                        loginResult.getUserNo(),
+                        loginResult.getUserNickname(),
+                        loginResult.getUserStatusCode()
+                ));
 
         if (loginDto.isAutoLogin()) {
-            Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, loginResult.getAutoLoginToken());
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
-            response.addCookie(cookie);
+            setAutoLoginCookie(response, loginResult.getAutoLoginToken());
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
@@ -110,14 +117,17 @@ public class UserController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Boolean>> logout(
+            HttpServletResponse response,
             HttpServletRequest request,
             @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
             String autoLoginToken
     ) {
         sessionUtil.removeSession(request);
 
-        if (autoLoginToken != null && !autoLoginToken.isEmpty()) {
-            userService.removeAutoLoginToken(autoLoginToken);
+        if (autoLoginToken != null) {
+            if(userService.isExistAutoLoginTokenAndRemove(autoLoginToken)) {
+                removeAutoLoginCookie(response);
+            }
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
@@ -131,4 +141,74 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponseFactory.success(true));
     }
+
+    @GetMapping("/login/status")
+    public ResponseEntity<ApiResponse<String>> getLoginStatus(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
+            String autoLoginToken
+    ) {
+        if(sessionUtil.isSessionExists(request)) {
+            Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+            if (userInfo.isPresent()) {
+                if(userInfo.get().getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+                    throw new UserStatusLockException();
+                }
+
+                return ResponseEntity.ok(apiResponseFactory.success(userInfo.get().getUserNickname()));
+            }
+
+            if(autoLoginToken == null) {
+                throw new NotLoginStatusException();
+            }
+        }
+
+        if(autoLoginToken != null) {
+            AutoLoginResultDto autoLoginResult = userService.autoLogin(autoLoginToken);
+
+            if(autoLoginResult.isNeedDeleteToken()) {
+                removeAutoLoginCookie(response);
+                throw new SessionNotExistsException();
+            } else if(autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+                removeAutoLoginCookie(response);
+                throw new UserStatusLockException();
+            } else if (autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.INACTIVE)) {
+                removeAutoLoginCookie(response);
+                throw new UserStatusInactiveException();
+            } else {
+                sessionUtil.setSessionUserInfo(
+                        request,
+                        new SessionUserInfo(
+                                autoLoginResult.getUserNo(),
+                                autoLoginResult.getUserNickname(),
+                                autoLoginResult.getUserStatusCode()
+                        ));
+
+                setAutoLoginCookie(response, autoLoginResult.getAutoLoginToken());
+
+                return ResponseEntity.ok(apiResponseFactory.success(autoLoginResult.getUserNickname()));
+            }
+        }
+
+        throw new SessionNotExistsException();
+    }
+
+    private void setAutoLoginCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
+        response.addCookie(cookie);
+    }
+
+    private void removeAutoLoginCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
 }
