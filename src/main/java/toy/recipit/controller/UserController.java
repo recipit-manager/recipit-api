@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
-import toy.recipit.common.exception.UserStatusInactiveExeption;
-import toy.recipit.common.exception.UserStatusLockExeption;
+import toy.recipit.common.exception.UserStatusInactiveException;
+import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.LoginDto;
@@ -154,7 +154,7 @@ public class UserController {
 
             if (userInfo.isPresent()) {
                 if(userInfo.get().getUserStatusCode().equals(Constants.UserStatus.STOP)) {
-                    throw new UserStatusLockExeption();
+                    throw new UserStatusLockException();
                 }
 
                 return ResponseEntity.ok(apiResponseFactory.success(userInfo.get().getUserNickname()));
@@ -171,10 +171,10 @@ public class UserController {
                 throw new NotLoginStatusException();
             } else if(autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
                 removeAutoLoginCookie(response);
-                throw new UserStatusLockExeption();
+                throw new UserStatusLockException();
             } else if (autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.INACTIVE)) {
                 removeAutoLoginCookie(response);
-                throw new UserStatusInactiveExeption();
+                throw new UserStatusInactiveException();
             } else {
                 sessionUtil.setSessionUserInfo(
                         request,

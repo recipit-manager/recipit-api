@@ -18,8 +18,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
-import toy.recipit.common.exception.UserStatusInactiveExeption;
-import toy.recipit.common.exception.UserStatusLockExeption;
+import toy.recipit.common.exception.UserStatusInactiveException;
+import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.exception.loginFailException;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.common.Constants;
@@ -112,15 +112,15 @@ public class ApiExceptionHandler {
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.NOT_LOGIN_STATUS));
     }
 
-    @ExceptionHandler(UserStatusLockExeption.class)
-    public ResponseEntity<ApiResponse<String>> handleUserStatusLockExeption(UserStatusLockExeption e, HttpServletRequest req) {
+    @ExceptionHandler(UserStatusLockException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserStatusLockExeption(UserStatusLockException e, HttpServletRequest req) {
         log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.LOCK_LOGIN_STATUS));
     }
 
-    @ExceptionHandler(UserStatusInactiveExeption.class)
-    public ResponseEntity<ApiResponse<String>> handleUserStatusInactiveExeption(UserStatusInactiveExeption e, HttpServletRequest req) {
+    @ExceptionHandler(UserStatusInactiveException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserStatusInactiveExeption(UserStatusInactiveException e, HttpServletRequest req) {
         log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INACTIVE_LOGIN_STATUS));
