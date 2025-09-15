@@ -1,7 +1,9 @@
 package toy.recipit.controller.dto.request;
 
 import io.netty.util.internal.StringUtil;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -18,11 +20,9 @@ public class FindUserIdDto {
     @Size(max = 20, message = "validation.lastName.size")
     private final String lastName;
 
-    @NotBlank(message = "validation.groupCode.blank")
-    private final String groupCode;
-
-    @NotBlank(message = "validation.code.blank")
-    private final String code;
+    @NotNull(message = "validation.countryCode.null")
+    @Valid
+    private final CommonCodeDto countryCode;
 
     @NotBlank(message = "validation.phoneNumber.blank")
     private final String phoneNumber;
@@ -38,8 +38,7 @@ public class FindUserIdDto {
         this.firstName = firstName;
         this.middleName = (middleName == null) ? StringUtil.EMPTY_STRING : middleName;
         this.lastName = lastName;
-        this.groupCode = groupCode;
-        this.code = code;
+        this.countryCode = new CommonCodeDto(groupCode, code);
         this.phoneNumber = phoneNumber;
     }
 }

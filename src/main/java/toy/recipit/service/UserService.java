@@ -129,12 +129,7 @@ public class UserService {
     }
 
     public String findUserId(FindUserIdDto findUserIdDto) {
-        validateCountryAndPhoneNumber(
-                new CommonCodeDto(
-                        findUserIdDto.getGroupCode(),
-                        findUserIdDto.getCode()
-                ),
-                findUserIdDto.getPhoneNumber()
+        validateCountryAndPhoneNumber(findUserIdDto.getCountryCode(), findUserIdDto.getPhoneNumber()
         );
 
         UserVo userVo = userMapper.getUserByNameAndPhoneNumber(
