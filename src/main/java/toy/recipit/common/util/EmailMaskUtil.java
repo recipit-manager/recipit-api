@@ -1,19 +1,7 @@
 package toy.recipit.common.util;
 
-import org.springframework.stereotype.Component;
-
-import java.util.regex.Pattern;
-
-@Component
 public class EmailMaskUtil {
-    private final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-    );
-
-    public String emailMasking(String email) {
-        if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new RuntimeException();
-        }
+    public static String emailMasking(String email) {
 
         String[] parts = email.split("@", 2);
         String id = parts[0];
