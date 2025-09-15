@@ -28,7 +28,6 @@ import toy.recipit.mapper.vo.UserVo;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -40,9 +39,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     private final EmailVerificationService emailVerificationService;
     private final StringRedisTemplate redisTemplate;
-    private final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-    );
 
     public boolean isNicknameDuplicate(String nickname) {
         return userMapper.isNicknameDuplicate(nickname);
@@ -142,10 +138,6 @@ public class UserService {
         ).orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
 
         String userEmail = securityUtil.decrypt(userVo.getEmailEncrypt());
-
-        if (userEmail == null || !EMAIL_PATTERN.matcher(userEmail).matches()) {
-            throw new RuntimeException("잘못된 이메일 정보를 저장하고 있습니다.");
-        }
 
         return EmailMaskUtil.emailMasking(userEmail);
     }
