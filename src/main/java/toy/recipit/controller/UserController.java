@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -198,44 +199,10 @@ public class UserController {
 
     @GetMapping("/id")
     public ResponseEntity<ApiResponse<String>> findUserId(
-            @RequestParam
-            @NotBlank(message = "validation.firstName.blank")
-            @Size(max = 10, message = "validation.firstName.size")
-            String firstName,
-
-            @RequestParam(required = false)
-            @Size(max = 20, message = "validation.middleName.size")
-            String middleName,
-
-            @RequestParam
-            @NotBlank(message = "validation.lastName.blank")
-            @Size(max = 20, message = "validation.lastName.size")
-            String lastName,
-
-            @RequestParam
-            @NotBlank(message = "validation.groupCode.blank")
-            String groupCode,
-
-            @RequestParam
-            @NotBlank(message = "validation.code.blank")
-            String code,
-
-            @RequestParam
-            @NotBlank(message = "validation.phoneNumber.blank")
-            String phoneNumber
+            @Valid @ModelAttribute FindUserIdDto findUserIdDto
     ) {
-        FindUserIdDto findUserIdDto = new FindUserIdDto(
-                firstName,
-                middleName,
-                lastName,
-                groupCode,
-                code,
-                phoneNumber
-        );
-
         return ResponseEntity.ok(apiResponseFactory.success(userService.findUserId(findUserIdDto)));
     }
-
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);

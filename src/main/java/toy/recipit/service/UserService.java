@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.UserNotFoundException;
 import toy.recipit.common.exception.loginFailException;
+import toy.recipit.common.util.EmailMaskUtil;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
@@ -35,6 +36,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final CommonService commonService;
     private final SecurityUtil securityUtil;
+    private final EmailMaskUtil emailMaskUtil;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     private final EmailVerificationService emailVerificationService;
     private final StringRedisTemplate redisTemplate;
@@ -127,7 +129,13 @@ public class UserService {
     }
 
     public String findUserId(FindUserIdDto findUserIdDto) {
-        validateCountryAndPhoneNumber(findUserIdDto.getCountryCode(), findUserIdDto.getPhoneNumber());
+        validateCountryAndPhoneNumber(
+                new CommonCodeDto(
+                        findUserIdDto.getGroupCode(),
+                        findUserIdDto.getCode()
+                ),
+                findUserIdDto.getPhoneNumber()
+        );
 
         UserVo userVo = userMapper.getUserByNameAndPhoneNumber(
                 findUserIdDto.getFirstName(),
@@ -138,7 +146,7 @@ public class UserService {
 
         String userEmail = securityUtil.decrypt(userVo.getEmailEncrypt());
 
-        return maskEmail(userEmail);
+        return emailMaskUtil.emailMasking(userEmail);
     }
 
     private String refreshAutoLoginToken(String autoLoginToken, String userNo) {
@@ -237,21 +245,4 @@ public class UserService {
 
         return autoLoginToken;
     }
-
-    private String maskEmail(String email) {
-        if (email == null || !email.contains("@")) return "";
-
-        String[] parts = email.split("@", 2);
-        String id = parts[0];
-        String domain = parts[1];
-
-        if (id.length() <= 2) {
-            return "*".repeat(id.length()) + "@" + domain;
-        } else {
-            String visible = id.substring(0, 2);
-            String masked = "*".repeat(id.length() - 2);
-            return visible + masked + "@" + domain;
-        }
-    }
-
 }
