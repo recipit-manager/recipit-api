@@ -27,6 +27,7 @@ import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
+import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
@@ -195,6 +196,47 @@ public class UserController {
         throw new SessionNotExistsException();
     }
 
+    @GetMapping("/id")
+    public ResponseEntity<ApiResponse<String>> findUserId(
+            @RequestParam
+            @NotBlank(message = "validation.firstName.blank")
+            @Size(max = 10, message = "validation.firstName.size")
+            String firstName,
+
+            @RequestParam(required = false)
+            @Size(max = 20, message = "validation.middleName.size")
+            String middleName,
+
+            @RequestParam
+            @NotBlank(message = "validation.lastName.blank")
+            @Size(max = 20, message = "validation.lastName.size")
+            String lastName,
+
+            @RequestParam
+            @NotBlank(message = "validation.groupCode.blank")
+            String groupCode,
+
+            @RequestParam
+            @NotBlank(message = "validation.code.blank")
+            String code,
+
+            @RequestParam
+            @NotBlank(message = "validation.phoneNumber.blank")
+            String phoneNumber
+    ) {
+        FindUserIdDto findUserIdDto = new FindUserIdDto(
+                firstName,
+                middleName,
+                lastName,
+                groupCode,
+                code,
+                phoneNumber
+        );
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.findUserId(findUserIdDto)));
+    }
+
+
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);
         cookie.setHttpOnly(true);
@@ -210,5 +252,4 @@ public class UserController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
-
 }

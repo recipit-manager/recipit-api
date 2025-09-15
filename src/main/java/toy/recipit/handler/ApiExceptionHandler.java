@@ -19,6 +19,7 @@ import toy.recipit.common.Constants;
 import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
+import toy.recipit.common.exception.UserNotFoundException;
 import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.exception.loginFailException;
@@ -124,6 +125,15 @@ public class ApiExceptionHandler {
         log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INACTIVE_LOGIN_STATUS));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserNotFound(UserNotFoundException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.DATA_MISSING, req.getMethod(), req.getRequestURI(), e);
+
+        String details = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
     }
 
     @ExceptionHandler(Exception.class)
