@@ -20,8 +20,7 @@ public class TemporaryPasswordGenerator {
         temporaryPassword.add(getRandomChar(Constants.Password.SPECIAL_CHARACTERS, temporaryPassword));
 
         for (int i = temporaryPassword.size(); i < length; i++) {
-            temporaryPassword.add(Constants.Password.ALL_ALLOWED_CHARACTERS
-                    .charAt(RANDOM.nextInt(Constants.Password.ALL_ALLOWED_CHARACTERS.length())));
+            temporaryPassword.add(getRandomChar(Constants.Password.ALL_ALLOWED_CHARACTERS, temporaryPassword));
         }
 
         StringBuilder sb = new StringBuilder();
