@@ -1,5 +1,6 @@
 package toy.recipit.service;
 
+import io.netty.util.internal.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -135,7 +136,8 @@ public class UserService {
     public String findUserId(FindUserIdDto findUserIdDto) {
         validateCountryAndPhoneNumber(findUserIdDto.getCountryCode(), findUserIdDto.getPhoneNumber());
 
-        UserVo userVo = userMapper.getUserByNameAndPhoneNumber(
+        UserVo userVo = userMapper.getUserForFindAccount(
+                StringUtil.EMPTY_STRING,
                 findUserIdDto.getFirstName(),
                 findUserIdDto.getMiddleName(),
                 findUserIdDto.getLastName(),
@@ -151,7 +153,7 @@ public class UserService {
     public Boolean sendTemporaryPassword(FindUserPasswordDto findUserPasswordDto) {
         validateCountryAndPhoneNumber(findUserPasswordDto.getCountryCode(), findUserPasswordDto.getPhoneNumber());
 
-        UserVo userVo = userMapper.getUserByEmailAndNameAndPhoneNumber(
+        UserVo userVo = userMapper.getUserForFindAccount(
                 DigestUtils.sha256Hex(findUserPasswordDto.getEmail()),
                 findUserPasswordDto.getFirstName(),
                 findUserPasswordDto.getMiddleName(),
