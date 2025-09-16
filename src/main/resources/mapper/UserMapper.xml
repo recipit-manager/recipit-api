@@ -73,42 +73,6 @@
             )
     </insert>
 
-    <select id="getUserByEmail" parameterType="String" resultType="toy.recipit.mapper.vo.UserVo">
-        SELECT USER_NO,
-               EMAIL_HASHING,
-               EMAIL_ENCRYPT,
-               NICK_NAME,
-               PASSWORD,
-               FIRST_NAME,
-               MIDDLE_NAME,
-               LAST_NAME,
-               COUNTRY_CODE,
-               PHONE_NUMBER_HASHING,
-               PHONE_NUMBER_ENCRYPT,
-               LOGIN_FAIL_COUNT,
-               STATUS_CODE
-        FROM US_USER
-        WHERE EMAIL_HASHING = #{emailHashing}
-    </select>
-
-    <select id="getUserByUserNo" parameterType="String" resultType="toy.recipit.mapper.vo.UserVo">
-        SELECT USER_NO,
-               EMAIL_HASHING,
-               EMAIL_ENCRYPT,
-               NICK_NAME,
-               PASSWORD,
-               FIRST_NAME,
-               MIDDLE_NAME,
-               LAST_NAME,
-               COUNTRY_CODE,
-               PHONE_NUMBER_HASHING,
-               PHONE_NUMBER_ENCRYPT,
-               LOGIN_FAIL_COUNT,
-               STATUS_CODE
-        FROM US_USER
-        WHERE USER_NO = #{userNo}
-    </select>
-
     <update id="increaseLoginFailCount">
         UPDATE US_USER
         SET LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
@@ -134,7 +98,16 @@
         WHERE EMAIL_HASHING = #{emailHashing}
     </update>
 
-    <select id="getUserByNameAndPhoneNumber" resultType="toy.recipit.mapper.vo.UserVo">
+    <update id="updatePassword">
+        UPDATE US_USER
+        SET PASSWORD = #{password},
+            STATUS_CODE = #{statusCode},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{updateId}
+        WHERE USER_NO = #{userNo}
+    </update>
+
+    <sql id="getUser">
         SELECT USER_NO,
                EMAIL_HASHING,
                EMAIL_ENCRYPT,
@@ -149,9 +122,28 @@
                LOGIN_FAIL_COUNT,
                STATUS_CODE
         FROM US_USER
-        WHERE FIRST_NAME = #{firstName}
-          AND MIDDLE_NAME = #{middleName}
-          AND LAST_NAME = #{lastName}
-          AND PHONE_NUMBER_HASHING = #{phoneNumberHashing}
+    </sql>
+
+    <select id="getUserByUserNo" resultType="toy.recipit.mapper.vo.UserVo">
+        <include refid="getUser"/>
+        WHERE USER_NO = #{userNo}
+    </select>
+
+    <select id="getUserByEmail" resultType="toy.recipit.mapper.vo.UserVo">
+        <include refid="getUser"/>
+        WHERE EMAIL_HASHING = #{emailHashing}
+    </select>
+
+    <select id="getUserForFindAccount" resultType="toy.recipit.mapper.vo.UserVo">
+        <include refid="getUser"/>
+        <where>
+            <if test="emailHashing != null and emailHashing != ''">
+                AND EMAIL_HASHING = #{emailHashing}
+            </if>
+            AND FIRST_NAME = #{firstName}
+            AND MIDDLE_NAME = #{middleName}
+            AND LAST_NAME = #{lastName}
+            AND PHONE_NUMBER_HASHING = #{phoneNumberHashing}
+        </where>
     </select>
 </mapper>

@@ -75,4 +75,13 @@ public final class Constants {
         String USER = "user";
     }
 
+    public interface Password {
+        String UPPERCASE_LETTERS   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String LOWERCASE_LETTERS   = "abcdefghijklmnopqrstuvwxyz";
+        String DIGITS              = "0123456789";
+        String SPECIAL_CHARACTERS  = "!@#$%*";
+        String ALL_ALLOWED_CHARACTERS = UPPERCASE_LETTERS + LOWERCASE_LETTERS + DIGITS + SPECIAL_CHARACTERS;
+        int MIN_LENGTH = 8;
+        int MAX_LENGTH = 16;
+    }
 }
