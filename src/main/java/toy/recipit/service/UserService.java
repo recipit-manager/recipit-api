@@ -18,6 +18,7 @@ import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.EmailMaskUtil;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.common.util.TemporaryPasswordGenerator;
+import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.FindUserPasswordDto;
@@ -171,6 +172,18 @@ public class UserService {
         );
 
         sendTemporaryPasswordEmail(findUserPasswordDto.getEmail(), temporaryPassword);
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean changeTemporaryPassword(String userNo, ChangeTemporaryPasswordDto changeTemporaryPasswordDto) {
+        userMapper.updatePassword(
+                userNo,
+                passwordEncoder.encode(changeTemporaryPasswordDto.getPassword()),
+                Constants.UserStatus.ACTIVE,
+                userNo
+        );
 
         return true;
     }

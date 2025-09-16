@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,7 @@ import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
+import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.FindUserPasswordDto;
@@ -210,6 +212,25 @@ public class UserController {
             @RequestBody @Valid FindUserPasswordDto findUserPasswordDto
     ) {
         return ResponseEntity.ok(apiResponseFactory.success(userService.sendTemporaryPassword(findUserPasswordDto)));
+    }
+
+    @PatchMapping("/password/temporary")
+    public ResponseEntity<ApiResponse<Boolean>> changeTemporaryPassword(
+            HttpServletRequest request,
+            @RequestBody @Valid ChangeTemporaryPasswordDto changeTemporaryPasswordDto
+    ) {
+        if(sessionUtil.isSessionExists(request)) {
+            Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+            if (userInfo.isPresent()) {
+                return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
+            } else {
+                throw new NotLoginStatusException();
+            }
+        }
+        else {
+            throw new SessionNotExistsException();
+        }
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
