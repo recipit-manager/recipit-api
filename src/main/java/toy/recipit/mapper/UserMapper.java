@@ -39,4 +39,15 @@ public interface UserMapper {
                                                  @Param("middleName") String middleName,
                                                  @Param("lastName") String lastName,
                                                  @Param("phoneNumberHashing") String phoneNumberHashing);
+
+    Optional<UserVo> getUserByEmailAndNameAndPhoneNumber(@Param("emailHashing") String emailHashing,
+                                                         @Param("firstName") String firstName,
+                                                         @Param("middleName") String middleName,
+                                                         @Param("lastName") String lastName,
+                                                         @Param("phoneNumberHashing") String phoneNumberHashing);
+
+    void updatePassword(@Param("userNo") String userNo,
+                        @Param("password") String password,
+                        @Param("statusCode") String statusCode,
+                        @Param("updateId") String updateId);
 }

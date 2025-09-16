@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,8 +16,10 @@ import toy.recipit.common.exception.UserNotFoundException;
 import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.EmailMaskUtil;
 import toy.recipit.common.util.SecurityUtil;
+import toy.recipit.common.util.TemporaryPasswordGenerator;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
+import toy.recipit.controller.dto.request.FindUserPasswordDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.AutoLoginResultDto;
@@ -39,6 +43,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     private final EmailVerificationService emailVerificationService;
     private final StringRedisTemplate redisTemplate;
+    private final JavaMailSender mailSender;
 
     public boolean isNicknameDuplicate(String nickname) {
         return userMapper.isNicknameDuplicate(nickname);
@@ -142,6 +147,32 @@ public class UserService {
         return EmailMaskUtil.emailMasking(userEmail);
     }
 
+    @Transactional
+    public Boolean sendTemporaryPassword(FindUserPasswordDto findUserPasswordDto) {
+        validateCountryAndPhoneNumber(findUserPasswordDto.getCountryCode(), findUserPasswordDto.getPhoneNumber());
+
+        UserVo userVo = userMapper.getUserByEmailAndNameAndPhoneNumber(
+                DigestUtils.sha256Hex(findUserPasswordDto.getEmail()),
+                findUserPasswordDto.getFirstName(),
+                findUserPasswordDto.getMiddleName(),
+                findUserPasswordDto.getLastName(),
+                DigestUtils.sha256Hex(findUserPasswordDto.getPhoneNumber())
+        ).orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
+
+        String temporaryPassword = TemporaryPasswordGenerator.PasswordGenerate();
+
+        userMapper.updatePassword(
+                userVo.getUserNo(),
+                passwordEncoder.encode(temporaryPassword),
+                Constants.UserStatus.STOP,
+                Constants.SystemId.SYSTEM_NUMBER
+        );
+
+        sendTemporaryPasswordEmail(findUserPasswordDto.getEmail(), temporaryPassword);
+
+        return true;
+    }
+
     private String refreshAutoLoginToken(String autoLoginToken, String userNo) {
         redisTemplate.unlink(autoLoginToken);
 
@@ -237,5 +268,13 @@ public class UserService {
         );
 
         return autoLoginToken;
+    }
+
+    private void sendTemporaryPasswordEmail(String email, String temporalPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("[RECIPIT] 임시비밀번호");
+        message.setText("비밀번호: " + temporalPassword + "\n해당 임시 비밀번호로 로그인한 후 새로운 비밀번호로 변경이 필요합니다");
+        mailSender.send(message);
     }
 }

@@ -29,6 +29,7 @@ import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
+import toy.recipit.controller.dto.request.FindUserPasswordDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
@@ -202,6 +203,13 @@ public class UserController {
             @Valid @ModelAttribute FindUserIdDto findUserIdDto
     ) {
         return ResponseEntity.ok(apiResponseFactory.success(userService.findUserId(findUserIdDto)));
+    }
+
+    @PostMapping("/password/temporary")
+    public ResponseEntity<ApiResponse<Boolean>> sendTemporaryPassword(
+            @RequestBody @Valid FindUserPasswordDto findUserPasswordDto
+    ) {
+        return ResponseEntity.ok(apiResponseFactory.success(userService.sendTemporaryPassword(findUserPasswordDto)));
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {

@@ -154,4 +154,35 @@
           AND LAST_NAME = #{lastName}
           AND PHONE_NUMBER_HASHING = #{phoneNumberHashing}
     </select>
+
+    <select id="getUserByEmailAndNameAndPhoneNumber" resultType="toy.recipit.mapper.vo.UserVo">
+        SELECT USER_NO,
+               EMAIL_HASHING,
+               EMAIL_ENCRYPT,
+               NICK_NAME,
+               PASSWORD,
+               FIRST_NAME,
+               MIDDLE_NAME,
+               LAST_NAME,
+               COUNTRY_CODE,
+               PHONE_NUMBER_HASHING,
+               PHONE_NUMBER_ENCRYPT,
+               LOGIN_FAIL_COUNT,
+               STATUS_CODE
+        FROM US_USER
+        WHERE EMAIL_HASHING = #{emailHashing}
+          AND FIRST_NAME = #{firstName}
+          AND MIDDLE_NAME = #{middleName}
+          AND LAST_NAME = #{lastName}
+          AND PHONE_NUMBER_HASHING = #{phoneNumberHashing}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE US_USER
+        SET PASSWORD = #{password},
+            STATUS_CODE = #{statusCode},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{updateId}
+        WHERE USER_NO = #{userNo}
+    </update>
 </mapper>
