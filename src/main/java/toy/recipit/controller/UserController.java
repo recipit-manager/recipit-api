@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,7 @@ import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.EmailDto;
+import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
@@ -195,6 +197,13 @@ public class UserController {
         throw new SessionNotExistsException();
     }
 
+    @GetMapping("/id")
+    public ResponseEntity<ApiResponse<String>> findUserId(
+            @Valid @ModelAttribute FindUserIdDto findUserIdDto
+    ) {
+        return ResponseEntity.ok(apiResponseFactory.success(userService.findUserId(findUserIdDto)));
+    }
+
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);
         cookie.setHttpOnly(true);
@@ -210,5 +219,4 @@ public class UserController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
-
 }

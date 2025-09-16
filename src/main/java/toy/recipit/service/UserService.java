@@ -10,9 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.UserNotFoundException;
 import toy.recipit.common.exception.loginFailException;
+import toy.recipit.common.util.EmailMaskUtil;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.controller.dto.request.CommonCodeDto;
+import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.LoginDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.AutoLoginResultDto;
@@ -76,7 +79,7 @@ public class UserService {
         String emailHashing = DigestUtils.sha256Hex(loginDto.getEmail());
 
         UserVo userVo = userMapper.getUserByEmail(emailHashing)
-                .orElseThrow(() -> new IllegalArgumentException("login.notFoundUser"));
+                .orElseThrow(() -> new UserNotFoundException("login.notFoundUser"));
 
         checkUserStatus(userVo.getStatusCode());
         checkPassword(loginDto, userVo);
@@ -113,18 +116,30 @@ public class UserService {
            return new AutoLoginResultDto(true);
         }
 
-        Optional<UserVo> userVo = userMapper.getUserByUserNo(userNo);
+        UserVo userVo = userMapper.getUserByUserNo(userNo)
+                .orElseThrow(() -> new UserNotFoundException("login.notFoundUser"));
 
-        if (userVo.isPresent()) {
-            return new AutoLoginResultDto(
-                    false,
-                    userVo.get().getNickName(),
-                    userNo,
-                    userVo.get().getStatusCode(),
-                    refreshAutoLoginToken(autoLoginToken, userNo));
-        } else {
-            return new AutoLoginResultDto(true);
-        }
+        return new AutoLoginResultDto(
+                false,
+                userVo.getNickName(),
+                userNo,
+                userVo.getStatusCode(),
+                refreshAutoLoginToken(autoLoginToken, userNo));
+    }
+
+    public String findUserId(FindUserIdDto findUserIdDto) {
+        validateCountryAndPhoneNumber(findUserIdDto.getCountryCode(), findUserIdDto.getPhoneNumber());
+
+        UserVo userVo = userMapper.getUserByNameAndPhoneNumber(
+                findUserIdDto.getFirstName(),
+                findUserIdDto.getMiddleName(),
+                findUserIdDto.getLastName(),
+                DigestUtils.sha256Hex(findUserIdDto.getPhoneNumber())
+        ).orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
+
+        String userEmail = securityUtil.decrypt(userVo.getEmailEncrypt());
+
+        return EmailMaskUtil.emailMasking(userEmail);
     }
 
     private String refreshAutoLoginToken(String autoLoginToken, String userNo) {

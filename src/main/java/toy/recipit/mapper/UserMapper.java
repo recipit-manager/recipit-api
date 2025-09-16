@@ -34,4 +34,9 @@ public interface UserMapper {
                              @Param("updateId") String updateId);
 
     Optional<UserVo> getUserByUserNo(@Param("userNo") String userNo);
+
+    Optional<UserVo> getUserByNameAndPhoneNumber(@Param("firstName") String firstName,
+                                                 @Param("middleName") String middleName,
+                                                 @Param("lastName") String lastName,
+                                                 @Param("phoneNumberHashing") String phoneNumberHashing);
 }
