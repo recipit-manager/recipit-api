@@ -159,7 +159,7 @@ public class UserService {
                 DigestUtils.sha256Hex(findUserPasswordDto.getPhoneNumber())
         ).orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
 
-        String temporaryPassword = TemporaryPasswordGenerator.PasswordGenerate();
+        String temporaryPassword = TemporaryPasswordGenerator.passwordGenerate();
 
         userMapper.updatePassword(
                 userVo.getUserNo(),
@@ -273,7 +273,7 @@ public class UserService {
     private void sendTemporaryPasswordEmail(String email, String temporalPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("[RECIPIT] 임시비밀번호");
+        message.setSubject("[RECIPIT] 비밀번호 재설정");
         message.setText("비밀번호: " + temporalPassword + "\n해당 임시 비밀번호로 로그인한 후 새로운 비밀번호로 변경이 필요합니다");
         mailSender.send(message);
     }
