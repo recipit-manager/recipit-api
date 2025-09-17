@@ -18,6 +18,7 @@ import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.EmailMaskUtil;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.common.util.TemporaryPasswordGenerator;
+import toy.recipit.controller.dto.request.ChangePasswordDto;
 import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
@@ -184,6 +185,29 @@ public class UserService {
                 Constants.UserStatus.ACTIVE,
                 userNo
         );
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean changePassword(String userNo, ChangePasswordDto changePasswordDto) {
+        UserVo userVo = userMapper.getUserByUserNo(userNo)
+                .orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
+
+        if (passwordEncoder.matches(changePasswordDto.getPassword(), userVo.getPassword())) {
+            throw new IllegalArgumentException("changePassword.sameAsCurrentPassword");
+        }
+
+        if (passwordEncoder.matches(changePasswordDto.getCurrentPassword(), userVo.getPassword())) {
+            userMapper.updatePassword(
+                    userNo,
+                    passwordEncoder.encode(changePasswordDto.getPassword()),
+                    Constants.UserStatus.ACTIVE,
+                    userNo
+            );
+        } else {
+            throw new IllegalArgumentException("changePassword.wrongPassword");
+        }
 
         return true;
     }

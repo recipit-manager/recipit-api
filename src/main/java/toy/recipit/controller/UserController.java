@@ -28,6 +28,7 @@ import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
+import toy.recipit.controller.dto.request.ChangePasswordDto;
 import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
@@ -224,6 +225,25 @@ public class UserController {
 
             if (userInfo.isPresent()) {
                 return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
+            } else {
+                throw new NotLoginStatusException();
+            }
+        }
+        else {
+            throw new SessionNotExistsException();
+        }
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<ApiResponse<Boolean>> changePassword(
+            HttpServletRequest request,
+            @RequestBody @Valid ChangePasswordDto changePasswordDto
+    ) {
+        if(sessionUtil.isSessionExists(request)) {
+            Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+            if (userInfo.isPresent()) {
+                return ResponseEntity.ok(apiResponseFactory.success(userService.changePassword(userInfo.get().getUserNo(), changePasswordDto)));
             } else {
                 throw new NotLoginStatusException();
             }
