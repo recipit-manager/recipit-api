@@ -220,7 +220,7 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangeTemporaryPasswordDto changeTemporaryPasswordDto
     ) {
-        if (sessionUtil.isSessionExists(request)) {
+        if (!sessionUtil.isSessionExists(request)) {
             throw new SessionNotExistsException();
         }
 
@@ -238,7 +238,7 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangePasswordDto changePasswordDto
     ) {
-        if (sessionUtil.isSessionExists(request)) {
+        if (!sessionUtil.isSessionExists(request)) {
             throw new SessionNotExistsException();
         }
 
