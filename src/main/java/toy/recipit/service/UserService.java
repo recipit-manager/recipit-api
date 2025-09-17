@@ -18,6 +18,7 @@ import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.EmailMaskUtil;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.common.util.TemporaryPasswordGenerator;
+import toy.recipit.controller.dto.request.ChangeNicknameDto;
 import toy.recipit.controller.dto.request.ChangePasswordDto;
 import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.CommonCodeDto;
@@ -225,6 +226,24 @@ public class UserService {
                 securityUtil.decrypt(userVo.getPhoneNumberEncrypt()),
                 userVo.getCountryCode()
         );
+    }
+
+    @Transactional
+    public Boolean changeNickname(String userNo, ChangeNicknameDto changeNicknameDto) {
+        UserVo userVo = userMapper.getUserByUserNo(userNo)
+                .orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
+
+        if (userVo.getNickName().equals(changeNicknameDto.getNickname())) {
+            throw new IllegalArgumentException("changeNickname.sameAsCurrentNickname");
+        }
+
+        if(userMapper.isNicknameDuplicate(changeNicknameDto.getNickname())) {
+            throw new IllegalArgumentException("signUp.duplicateNickname");
+        }
+
+        userMapper.updateNickname(userNo, changeNicknameDto.getNickname());
+
+        return true;
     }
 
     private String refreshAutoLoginToken(String autoLoginToken, String userNo) {

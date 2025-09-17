@@ -28,6 +28,7 @@ import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
+import toy.recipit.controller.dto.request.ChangeNicknameDto;
 import toy.recipit.controller.dto.request.ChangePasswordDto;
 import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.EmailDto;
@@ -267,6 +268,24 @@ public class UserController {
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(userService.getUserInfo(userInfo.get().getUserNo())));
+    }
+
+    @PatchMapping("/nickname")
+    public ResponseEntity<ApiResponse<Boolean>> changeNickname(
+            HttpServletRequest request,
+            @RequestBody @Valid ChangeNicknameDto changeNicknameDto
+    ) {
+        if (!sessionUtil.isSessionExists(request)) {
+            throw new SessionNotExistsException();
+        }
+
+        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+        if (userInfo.isEmpty()) {
+            throw new NotLoginStatusException();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.get().getUserNo(), changeNicknameDto)));
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
