@@ -232,6 +232,7 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
     }
+
     @PatchMapping("/password")
     public ResponseEntity<ApiResponse<Boolean>> changePassword(
             HttpServletRequest request,
