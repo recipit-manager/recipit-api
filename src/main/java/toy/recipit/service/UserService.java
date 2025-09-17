@@ -30,7 +30,6 @@ import toy.recipit.controller.dto.response.CountryCodeDto;
 import toy.recipit.controller.dto.response.LoginResultDto;
 import toy.recipit.controller.dto.response.UserInfoDto;
 import toy.recipit.mapper.UserMapper;
-import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
 
@@ -111,7 +110,7 @@ public class UserService {
     }
 
     public boolean isExistAutoLoginTokenAndRemove(String autoLoginToken) {
-        if(redisTemplate.hasKey(autoLoginToken)) {
+        if (redisTemplate.hasKey(autoLoginToken)) {
             redisTemplate.unlink(autoLoginToken);
             return true;
         } else {
@@ -123,7 +122,7 @@ public class UserService {
         String userNo = redisTemplate.opsForValue().get(autoLoginToken);
 
         if (userNo == null) {
-           return new AutoLoginResultDto(true);
+            return new AutoLoginResultDto(true);
         }
 
         UserVo userVo = userMapper.getUserByUserNo(userNo)
@@ -225,7 +224,7 @@ public class UserService {
                 userVo.getLastName(),
                 securityUtil.decrypt(userVo.getPhoneNumberEncrypt()),
                 userVo.getCountryCode()
-                );
+        );
     }
 
     private String refreshAutoLoginToken(String autoLoginToken, String userNo) {
