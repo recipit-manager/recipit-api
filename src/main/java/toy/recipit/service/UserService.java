@@ -28,7 +28,9 @@ import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.AutoLoginResultDto;
 import toy.recipit.controller.dto.response.CountryCodeDto;
 import toy.recipit.controller.dto.response.LoginResultDto;
+import toy.recipit.controller.dto.response.UserInfoDto;
 import toy.recipit.mapper.UserMapper;
+import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.InsertUserVo;
 import toy.recipit.mapper.vo.UserVo;
 
@@ -210,6 +212,20 @@ public class UserService {
         }
 
         return true;
+    }
+
+    public UserInfoDto getUserInfo(String userNo) {
+        UserVo userVo = userMapper.getUserByUserNo(userNo)
+                .orElseThrow(() -> new UserNotFoundException("findUserAccount.notFoundUser"));
+
+        return new UserInfoDto(securityUtil.decrypt(userVo.getEmailEncrypt()),
+                userVo.getNickName(),
+                userVo.getFirstName(),
+                userVo.getMiddleName(),
+                userVo.getLastName(),
+                securityUtil.decrypt(userVo.getPhoneNumberEncrypt()),
+                userVo.getCountryCode()
+                );
     }
 
     private String refreshAutoLoginToken(String autoLoginToken, String userNo) {
