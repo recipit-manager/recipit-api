@@ -40,6 +40,7 @@ import toy.recipit.controller.dto.response.AutoLoginResultDto;
 import toy.recipit.controller.dto.response.LoginResultDto;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.controller.dto.response.SessionUserInfo;
+import toy.recipit.controller.dto.response.UserInfoDto;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.UserService;
@@ -249,6 +250,23 @@ public class UserController {
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(userService.changePassword(userInfo.get().getUserNo(), changePasswordDto)));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(
+            HttpServletRequest request
+    ) {
+        if (!sessionUtil.isSessionExists(request)) {
+            throw new SessionNotExistsException();
+        }
+
+        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+        if (userInfo.isEmpty()) {
+            throw new NotLoginStatusException();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.getUserInfo(userInfo.get().getUserNo())));
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
