@@ -45,4 +45,7 @@ public interface UserMapper {
                         @Param("password") String password,
                         @Param("statusCode") String statusCode,
                         @Param("updateId") String updateId);
+
+    void updateNickname(@Param("userNo") String userNo,
+                        @Param("nickname") String nickname);
 }

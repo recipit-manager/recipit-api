@@ -107,6 +107,14 @@
         WHERE USER_NO = #{userNo}
     </update>
 
+    <update id="updateNickname">
+        UPDATE US_USER
+        SET NICK_NAME = #{nickname},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{userNo}
+        WHERE USER_NO = #{userNo}
+    </update>
+
     <sql id="getUser">
         SELECT USER_NO,
                EMAIL_HASHING,
