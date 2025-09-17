@@ -28,6 +28,7 @@ import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.common.exception.UserStatusInactiveException;
 import toy.recipit.common.exception.UserStatusLockException;
 import toy.recipit.common.util.SessionUtil;
+import toy.recipit.controller.dto.request.ChangePasswordDto;
 import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
 import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
@@ -130,7 +131,7 @@ public class UserController {
         sessionUtil.removeSession(request);
 
         if (autoLoginToken != null) {
-            if(userService.isExistAutoLoginTokenAndRemove(autoLoginToken)) {
+            if (userService.isExistAutoLoginTokenAndRemove(autoLoginToken)) {
                 removeAutoLoginCookie(response);
             }
         }
@@ -154,29 +155,29 @@ public class UserController {
             @CookieValue(value = Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, required = false)
             String autoLoginToken
     ) {
-        if(sessionUtil.isSessionExists(request)) {
+        if (sessionUtil.isSessionExists(request)) {
             Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
 
             if (userInfo.isPresent()) {
-                if(userInfo.get().getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+                if (userInfo.get().getUserStatusCode().equals(Constants.UserStatus.STOP)) {
                     throw new UserStatusLockException();
                 }
 
                 return ResponseEntity.ok(apiResponseFactory.success(userInfo.get().getUserNickname()));
             }
 
-            if(autoLoginToken == null) {
+            if (autoLoginToken == null) {
                 throw new NotLoginStatusException();
             }
         }
 
-        if(autoLoginToken != null) {
+        if (autoLoginToken != null) {
             AutoLoginResultDto autoLoginResult = userService.autoLogin(autoLoginToken);
 
-            if(autoLoginResult.isNeedDeleteToken()) {
+            if (autoLoginResult.isNeedDeleteToken()) {
                 removeAutoLoginCookie(response);
                 throw new SessionNotExistsException();
-            } else if(autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+            } else if (autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
                 removeAutoLoginCookie(response);
                 throw new UserStatusLockException();
             } else if (autoLoginResult.getUserStatusCode().equals(Constants.UserStatus.INACTIVE)) {
@@ -219,18 +220,35 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangeTemporaryPasswordDto changeTemporaryPasswordDto
     ) {
-        if(sessionUtil.isSessionExists(request)) {
-            Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
-
-            if (userInfo.isPresent()) {
-                return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
-            } else {
-                throw new NotLoginStatusException();
-            }
-        }
-        else {
+        if (!sessionUtil.isSessionExists(request)) {
             throw new SessionNotExistsException();
         }
+
+        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+        if (userInfo.isEmpty()) {
+            throw new NotLoginStatusException();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<ApiResponse<Boolean>> changePassword(
+            HttpServletRequest request,
+            @RequestBody @Valid ChangePasswordDto changePasswordDto
+    ) {
+        if (!sessionUtil.isSessionExists(request)) {
+            throw new SessionNotExistsException();
+        }
+
+        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+        if (userInfo.isEmpty()) {
+            throw new NotLoginStatusException();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.changePassword(userInfo.get().getUserNo(), changePasswordDto)));
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
