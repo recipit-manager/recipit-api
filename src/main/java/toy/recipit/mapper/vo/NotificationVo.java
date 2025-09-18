@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class NotificationVo {
-    private String noticeNo;
-    private String userNo;
-    private String recipeNo;
-    private String categoryCode;
-    private String readYn;
-    private String contents;
-    private String createDateTime;
+    final private String noticeNo;
+    final private String userNo;
+    final private String recipeNo;
+    final private String categoryCode;
+    final private String readYn;
+    final private String contents;
+    final private String createDateTime;
 }
