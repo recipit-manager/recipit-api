@@ -162,19 +162,13 @@ public class UserController {
             String autoLoginToken
     ) {
         if (sessionUtil.isSessionExists(request)) {
-            Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+            SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-            if (userInfo.isPresent()) {
-                if (userInfo.get().getUserStatusCode().equals(Constants.UserStatus.STOP)) {
-                    throw new UserStatusLockException();
-                }
-
-                return ResponseEntity.ok(apiResponseFactory.success(userInfo.get().getUserNickname()));
+            if (userInfo.getUserStatusCode().equals(Constants.UserStatus.STOP)) {
+                throw new UserStatusLockException();
             }
 
-            if (autoLoginToken == null) {
-                throw new NotLoginStatusException();
-            }
+            return ResponseEntity.ok(apiResponseFactory.success(userInfo.getUserNickname()));
         }
 
         if (autoLoginToken != null) {
@@ -226,9 +220,9 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangeTemporaryPasswordDto changeTemporaryPasswordDto
     ) {
-        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.getUserNo(), changeTemporaryPasswordDto)));
     }
 
     @PatchMapping("/password")
@@ -236,18 +230,18 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangePasswordDto changePasswordDto
     ) {
-        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(userService.changePassword(userInfo.get().getUserNo(), changePasswordDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.changePassword(userInfo.getUserNo(), changePasswordDto)));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(
             HttpServletRequest request
     ) {
-        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(userService.getUserInfo(userInfo.get().getUserNo())));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.getUserInfo(userInfo.getUserNo())));
     }
 
     @PatchMapping("/nickname")
@@ -255,18 +249,18 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangeNicknameDto changeNicknameDto
     ) {
-        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.get().getUserNo(), changeNicknameDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.getUserNo(), changeNicknameDto)));
     }
 
     @GetMapping("/notification/list")
     public ResponseEntity<ApiResponse<List<NotificationDto>>> getNotifications(
             HttpServletRequest request
     ) {
-        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(notificationService.getNotifications(userInfo.get().getUserNo())));
+        return ResponseEntity.ok(apiResponseFactory.success(notificationService.getNotifications(userInfo.getUserNo())));
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {

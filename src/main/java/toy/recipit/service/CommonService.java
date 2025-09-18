@@ -6,22 +6,20 @@ import toy.recipit.common.Constants;
 import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.common.util.ImageKitUtil;
 import toy.recipit.controller.dto.response.CountryCodeDto;
-import toy.recipit.controller.dto.response.RecipeCategoryDto;
-import toy.recipit.controller.dto.response.IngredientTypeDto;
 import toy.recipit.controller.dto.response.DifficultyDto;
-import toy.recipit.controller.dto.response.ReportCategoryDto;
-import toy.recipit.controller.dto.response.IngredientGroupDto;
 import toy.recipit.controller.dto.response.IngredientCategoryDto;
+import toy.recipit.controller.dto.response.IngredientGroupDto;
 import toy.recipit.controller.dto.response.IngredientItemDto;
+import toy.recipit.controller.dto.response.IngredientTypeDto;
+import toy.recipit.controller.dto.response.RecipeCategoryDto;
+import toy.recipit.controller.dto.response.ReportCategoryDto;
 import toy.recipit.mapper.CommonMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.CommonGroupCodeWithDetailsVo;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
