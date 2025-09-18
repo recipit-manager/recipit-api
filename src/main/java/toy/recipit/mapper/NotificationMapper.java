@@ -10,4 +10,7 @@ import java.util.List;
 public interface NotificationMapper {
     List<NotificationVo> getNotifications(@Param("userNo") String userNo,
                                           @Param("groupCode") String groupCode);
+
+    int updateReadYn(@Param("userNo") String userNo,
+                     @Param("noticeNoList") List<String> noticeNoList);
 }

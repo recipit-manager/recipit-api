@@ -34,6 +34,7 @@ import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.FindUserPasswordDto;
 import toy.recipit.controller.dto.request.LoginDto;
+import toy.recipit.controller.dto.request.NotificationReadDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.AutoLoginResultDto;
@@ -260,6 +261,17 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponseFactory.success(notificationService.getNotifications(userInfo.getUserNo())));
     }
+
+    @PatchMapping("/notification/list/read")
+    public ResponseEntity<ApiResponse<Boolean>> readNotifications(
+            HttpServletRequest request,
+            @RequestBody @Valid NotificationReadDto notificationReadDto
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(notificationService.readNotifications(userInfo.getUserNo(), notificationReadDto)));
+    }
+
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);

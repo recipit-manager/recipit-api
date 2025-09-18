@@ -21,4 +21,16 @@
         ORDER BY n.CREATE_DATETIME DESC
     </select>
 
+    <update id="updateReadYn" parameterType="map">
+        UPDATE US_NOTICE
+        SET READ_YN = 'Y',
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{userNo}
+        WHERE USER_NO = #{userNo}
+        AND NOTICE_NO IN
+        <foreach collection="noticeNoList" item="noticeNo" open="(" separator="," close=")">
+            #{noticeNo}
+        </foreach>
+    </update>
+
 </mapper>
