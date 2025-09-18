@@ -252,6 +252,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.getUserNo(), changeNicknameDto)));
     }
 
+    //테스트용 주석
     @GetMapping("/notification/list")
     public ResponseEntity<ApiResponse<List<NotificationDto>>> getNotifications(
             HttpServletRequest request
