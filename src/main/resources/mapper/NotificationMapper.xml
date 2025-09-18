@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.NotificationMapper">
+
+    <select id="getNotifications" parameterType="string" resultType="toy.recipit.mapper.vo.NotificationVo">
+        SELECT n.NOTICE_NO         AS noticeNo,
+               n.USER_NO           AS userNo,
+               n.RECIPE_NO         AS recipeNo,
+               n.CATEGORY_CODE     AS categoryCode,
+               c.CODE_NAME         AS categoryCodeName,
+               n.READ_YN           AS readYn,
+               n.CONTENTS          AS contents,
+               n.CREATE_DATETIME   AS createDateTime
+        FROM US_NOTICE n
+            INNER JOIN CM_DETAIL_CODE c
+                 ON n.CATEGORY_CODE = c.CODE
+                AND c.GROUP_CODE = #{groupCode}
+                AND c.USE_YN = 'Y'
+        WHERE n.USER_NO = #{userNo}
+        ORDER BY n.CREATE_DATETIME DESC
+    </select>
+
+</mapper>

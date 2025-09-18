@@ -4,10 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import toy.recipit.common.Constants;
+import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
 import toy.recipit.controller.dto.response.SessionUserInfo;
-
-import java.util.Optional;
 
 @Component
 public class SessionUtil {
@@ -15,7 +14,7 @@ public class SessionUtil {
         request.getSession(true).setAttribute(Constants.SessionKey.USER, userInfo);
     }
 
-    public Optional<SessionUserInfo> getSessionUserInfo(HttpServletRequest request) {
+    public SessionUserInfo getSessionUserInfo(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
             throw new SessionNotExistsException();
@@ -23,10 +22,10 @@ public class SessionUtil {
 
         Object obj = session.getAttribute(Constants.SessionKey.USER);
         if (obj instanceof SessionUserInfo userInfo) {
-            return Optional.of(userInfo);
+            return userInfo;
         }
 
-        return Optional.empty();
+        throw new NotLoginStatusException();
     }
 
     public void removeSession(HttpServletRequest request) {
