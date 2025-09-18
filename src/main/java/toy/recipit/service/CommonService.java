@@ -19,7 +19,9 @@ import toy.recipit.mapper.vo.CommonGroupCodeWithDetailsVo;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -131,6 +133,11 @@ public class CommonService {
                         commonDetailCodeVo.getNote2(),
                         commonDetailCodeVo.getNote3()
                 ));
+    }
+
+    public Map<String, String> getCommonCodeNameMap(String groupCode, List<String> codes) {
+        return commonMapper.getCommonDetailCodes(groupCode).stream()
+                .collect(Collectors.toMap(CommonDetailCodeVo::getCode, CommonDetailCodeVo::getCodeName));
     }
 
 }

@@ -29,6 +29,7 @@ public final class Constants {
             private final String groupCode;
         }
 
+        String NOTIFICATION = "AC300";
         String EMAIL_DOMAIN = "AC400";
         String RECIPE_CATEGORY = "RC100";
         String INGREDIENT_TYPE = "RC300";

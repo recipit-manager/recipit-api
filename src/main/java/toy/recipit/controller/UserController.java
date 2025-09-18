@@ -39,13 +39,16 @@ import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.AutoLoginResultDto;
 import toy.recipit.controller.dto.response.LoginResultDto;
+import toy.recipit.controller.dto.response.NotificationDto;
 import toy.recipit.controller.dto.response.SendEmailAuthenticationDto;
 import toy.recipit.controller.dto.response.SessionUserInfo;
 import toy.recipit.controller.dto.response.UserInfoDto;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.EmailVerificationService;
+import toy.recipit.service.NotificationService;
 import toy.recipit.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +62,7 @@ public class UserController {
     private final EmailVerificationService emailVerificationService;
     private final ApiResponseFactory apiResponseFactory;
     private final SessionUtil sessionUtil;
+    private final NotificationService notificationService;
 
     @GetMapping("/nickname/{nickname}/duplicateYn")
     public ResponseEntity<ApiResponse<String>> checkNicknameDuplicate(
@@ -222,15 +226,7 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangeTemporaryPasswordDto changeTemporaryPasswordDto
     ) {
-        if (!sessionUtil.isSessionExists(request)) {
-            throw new SessionNotExistsException();
-        }
-
         Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
-
-        if (userInfo.isEmpty()) {
-            throw new NotLoginStatusException();
-        }
 
         return ResponseEntity.ok(apiResponseFactory.success(userService.changeTemporaryPassword(userInfo.get().getUserNo(), changeTemporaryPasswordDto)));
     }
@@ -240,15 +236,7 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangePasswordDto changePasswordDto
     ) {
-        if (!sessionUtil.isSessionExists(request)) {
-            throw new SessionNotExistsException();
-        }
-
         Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
-
-        if (userInfo.isEmpty()) {
-            throw new NotLoginStatusException();
-        }
 
         return ResponseEntity.ok(apiResponseFactory.success(userService.changePassword(userInfo.get().getUserNo(), changePasswordDto)));
     }
@@ -257,15 +245,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserInfoDto>> getUserInfo(
             HttpServletRequest request
     ) {
-        if (!sessionUtil.isSessionExists(request)) {
-            throw new SessionNotExistsException();
-        }
-
         Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
-
-        if (userInfo.isEmpty()) {
-            throw new NotLoginStatusException();
-        }
 
         return ResponseEntity.ok(apiResponseFactory.success(userService.getUserInfo(userInfo.get().getUserNo())));
     }
@@ -275,17 +255,18 @@ public class UserController {
             HttpServletRequest request,
             @RequestBody @Valid ChangeNicknameDto changeNicknameDto
     ) {
-        if (!sessionUtil.isSessionExists(request)) {
-            throw new SessionNotExistsException();
-        }
-
         Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
 
-        if (userInfo.isEmpty()) {
-            throw new NotLoginStatusException();
-        }
-
         return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.get().getUserNo(), changeNicknameDto)));
+    }
+
+    @GetMapping("/notification/list")
+    public ResponseEntity<ApiResponse<List<NotificationDto>>> getNotifications(
+            HttpServletRequest request
+    ) {
+        Optional<SessionUserInfo> userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(notificationService.getNotifications(userInfo.get().getUserNo())));
     }
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {

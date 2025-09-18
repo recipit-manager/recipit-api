@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.NotificationMapper">
+
+    <select id="getNotifications" parameterType="string" resultType="toy.recipit.mapper.vo.NotificationVo">
+        SELECT
+            NOTICE_NO       AS noticeNo,
+            USER_NO         AS userNo,
+            RECIPE_NO       AS recipeNo,
+            CATEGORY_CODE   AS categoryCode,
+            READ_YN         AS readYn,
+            CONTENTS        AS contents,
+            CREATE_DATETIME AS createDateTime
+        FROM US_NOTICE
+        WHERE USER_NO = #{userNo}
+        ORDER BY CREATE_DATETIME DESC
+    </select>
+</mapper>
