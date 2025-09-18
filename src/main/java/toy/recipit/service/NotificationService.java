@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
-import toy.recipit.controller.dto.request.NotificationReadDto;
 import toy.recipit.controller.dto.response.CommonCodeAndNameDto;
 import toy.recipit.controller.dto.response.NotificationDto;
 import toy.recipit.mapper.NotificationMapper;
@@ -33,9 +32,9 @@ public class NotificationService {
     }
 
     @Transactional
-    public boolean readNotifications(String userNo, NotificationReadDto notificationReadDto) {
-        if (notificationMapper.updateReadYn(userNo, notificationReadDto.getNotificationIdList())
-                != notificationReadDto.getNotificationIdList().size()) {
+    public boolean readNotifications(String userNo, List<String> notificationIdList) {
+        if (notificationMapper.updateReadStatusYes(userNo, notificationIdList, Constants.Yn.YES)
+                != notificationIdList.size()) {
             throw new RuntimeException("알림 읽음 처리에 실패한 항목이 있습니다.");
         }
 

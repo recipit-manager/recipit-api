@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,6 @@ import toy.recipit.controller.dto.request.EmailDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.FindUserPasswordDto;
 import toy.recipit.controller.dto.request.LoginDto;
-import toy.recipit.controller.dto.request.NotificationReadDto;
 import toy.recipit.controller.dto.request.SignUpDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.AutoLoginResultDto;
@@ -265,11 +265,14 @@ public class UserController {
     @PatchMapping("/notification/list/read")
     public ResponseEntity<ApiResponse<Boolean>> readNotifications(
             HttpServletRequest request,
-            @RequestBody @Valid NotificationReadDto notificationReadDto
+            @RequestBody
+            @NotEmpty (message = "validation.notification_id_list.empty")
+            List<String> notificationIdList
+
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(notificationService.readNotifications(userInfo.getUserNo(), notificationReadDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(notificationService.readNotifications(userInfo.getUserNo(), notificationIdList)));
     }
 
 

@@ -21,9 +21,9 @@
         ORDER BY n.CREATE_DATETIME DESC
     </select>
 
-    <update id="updateReadYn" parameterType="map">
+    <update id="updateReadStatusYes" parameterType="map">
         UPDATE US_NOTICE
-        SET READ_YN = 'Y',
+        SET READ_YN = #{readStatus},
             EDIT_DATETIME = NOW(),
             EDIT_USER = #{userNo}
         WHERE USER_NO = #{userNo}
