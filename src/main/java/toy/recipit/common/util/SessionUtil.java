@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.NotLoginStatusException;
 import toy.recipit.common.exception.SessionNotExistsException;
-import toy.recipit.common.exception.UserNotFoundException;
 import toy.recipit.controller.dto.response.SessionUserInfo;
-
-import java.util.Optional;
 
 @Component
 public class SessionUtil {
