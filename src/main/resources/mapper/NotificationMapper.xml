@@ -4,16 +4,20 @@
 <mapper namespace="toy.recipit.mapper.NotificationMapper">
 
     <select id="getNotifications" parameterType="string" resultType="toy.recipit.mapper.vo.NotificationVo">
-        SELECT
-            NOTICE_NO       AS noticeNo,
-            USER_NO         AS userNo,
-            RECIPE_NO       AS recipeNo,
-            CATEGORY_CODE   AS categoryCode,
-            READ_YN         AS readYn,
-            CONTENTS        AS contents,
-            CREATE_DATETIME AS createDateTime
-        FROM US_NOTICE
-        WHERE USER_NO = #{userNo}
-        ORDER BY CREATE_DATETIME DESC
+        SELECT n.NOTICE_NO         AS noticeNo,
+               n.USER_NO           AS userNo,
+               n.RECIPE_NO         AS recipeNo,
+               n.CATEGORY_CODE     AS categoryCode,
+               c.CODE_NAME         AS categoryCodeName,
+               n.READ_YN           AS readYn,
+               n.CONTENTS          AS contents,
+               n.CREATE_DATETIME   AS createDateTime
+        FROM US_NOTICE n
+            INNER JOIN CM_DETAIL_CODE c ON n.CATEGORY_CODE = c.CODE
+                                              AND c.GROUP_CODE = #{groupCode}
+                                              AND c.USE_YN = 'Y'
+        WHERE n.USER_NO = #{userNo}
+        ORDER BY n.CREATE_DATETIME DESC
     </select>
+
 </mapper>

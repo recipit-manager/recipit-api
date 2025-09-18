@@ -8,5 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface NotificationMapper {
-    List<NotificationVo> getNotifications(@Param("userNo") String userNo);
+    List<NotificationVo> getNotifications(@Param("userNo") String userNo,
+                                          @Param("groupCode") String groupCode);
 }

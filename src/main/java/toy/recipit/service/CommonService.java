@@ -134,10 +134,4 @@ public class CommonService {
                         commonDetailCodeVo.getNote3()
                 ));
     }
-
-    public Map<String, String> getCommonCodeNameMap(String groupCode, List<String> codes) {
-        return commonMapper.getCommonDetailCodes(groupCode).stream()
-                .collect(Collectors.toMap(CommonDetailCodeVo::getCode, CommonDetailCodeVo::getCodeName));
-    }
-
 }
