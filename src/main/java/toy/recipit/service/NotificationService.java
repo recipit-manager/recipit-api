@@ -33,9 +33,9 @@ public class NotificationService {
 
     @Transactional
     public boolean readNotifications(String userNo, List<String> notificationIdList) {
-        if (notificationMapper.updateReadStatusYes(userNo, notificationIdList, Constants.Yn.YES)
+        if (notificationMapper.updateReadYn(userNo, notificationIdList, Constants.Yn.YES)
                 != notificationIdList.size()) {
-            throw new RuntimeException("알림 읽음 처리에 실패한 항목이 있습니다.");
+            throw new IllegalArgumentException("notification.notValidNoticeNoList");
         }
 
         return true;

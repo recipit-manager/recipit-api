@@ -268,7 +268,6 @@ public class UserController {
             @RequestBody
             @NotEmpty (message = "validation.notification_id_list.empty")
             List<String> notificationIdList
-
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 

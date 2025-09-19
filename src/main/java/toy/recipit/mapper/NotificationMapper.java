@@ -11,7 +11,7 @@ public interface NotificationMapper {
     List<NotificationVo> getNotifications(@Param("userNo") String userNo,
                                           @Param("groupCode") String groupCode);
 
-    int updateReadStatusYes(@Param("userNo") String userNo,
+    int updateReadYn(@Param("userNo") String userNo,
                      @Param("noticeNoList") List<String> noticeNoList,
                      @Param("readStatus") String readStatus);
 }
