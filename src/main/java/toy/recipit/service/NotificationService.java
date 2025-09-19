@@ -2,6 +2,7 @@ package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.controller.dto.response.CommonCodeAndNameDto;
 import toy.recipit.controller.dto.response.NotificationDto;
@@ -28,5 +29,15 @@ public class NotificationService {
                 ))
                 .toList();
 
+    }
+
+    @Transactional
+    public boolean readNotifications(String userNo, List<String> notificationIdList) {
+        if (notificationMapper.updateReadYn(userNo, notificationIdList, Constants.Yn.YES)
+                != notificationIdList.size()) {
+            throw new IllegalArgumentException("notification.notValidNoticeNoList");
+        }
+
+        return true;
     }
 }

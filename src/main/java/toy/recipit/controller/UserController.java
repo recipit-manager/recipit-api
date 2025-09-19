@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -260,6 +261,19 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponseFactory.success(notificationService.getNotifications(userInfo.getUserNo())));
     }
+
+    @PatchMapping("/notification/list/read")
+    public ResponseEntity<ApiResponse<Boolean>> readNotifications(
+            HttpServletRequest request,
+            @RequestBody
+            @NotEmpty (message = "validation.notification_id_list.empty")
+            List<String> notificationIdList
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(notificationService.readNotifications(userInfo.getUserNo(), notificationIdList)));
+    }
+
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);
