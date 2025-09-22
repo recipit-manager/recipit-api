@@ -50,11 +50,15 @@ public class CommonService {
     public List<RecipeCategoryDto> getRecipeCategories() {
         return commonMapper.getCommonDetailCodes(Constants.GroupCode.RECIPE_CATEGORY)
                 .stream()
-                .map(CommonDetailCodeVo -> new RecipeCategoryDto(
-                        CommonDetailCodeVo.getCode(),
-                        CommonDetailCodeVo.getCodeName(),
-                        imageKitUtil.getUrl(CommonDetailCodeVo.getNote1())
-                ))
+                .map(CommonDetailCodeVo -> {
+                    String imageUrl = imageKitUtil.getUrl(CommonDetailCodeVo.getNote1())
+                            .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + CommonDetailCodeVo.getNote1()));
+                    return new RecipeCategoryDto(
+                            CommonDetailCodeVo.getCode(),
+                            CommonDetailCodeVo.getCodeName(),
+                            imageUrl
+                    );
+                })
                 .toList();
     }
 
@@ -108,6 +112,7 @@ public class CommonService {
                                     .map(commonCodeDetailVo -> new IngredientItemDto(
                                             commonCodeDetailVo.getCodeName(),
                                             imageKitUtil.getUrl(commonCodeDetailVo.getNote1())
+                                                    .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + commonCodeDetailVo.getNote1()))
                                     ))
                                     .toList();
 

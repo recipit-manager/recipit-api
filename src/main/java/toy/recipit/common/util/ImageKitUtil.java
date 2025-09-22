@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,33 +41,18 @@ public class ImageKitUtil {
         return imageKit.upload(fileCreateRequest).getFilePath();
     }
 
-    public String getUrl(String filePath) {
+    public Optional<String> getUrl(String filePath) {
         return getUrl(filePath, defaultExpireSeconds);
     }
 
-    public String getUrl(String filePath, int expireSeconds) {
+    public Optional<String> getUrl(String filePath, int expireSeconds) {
         String url = imageKit.getUrl(Map.of(
                 "path", filePath,
                 "signed", true,
                 "expireSeconds", expireSeconds));
 
-        if(url==null || !existsByUrl(url)) {
-            throw new RuntimeException("잘못된 경로입니다." + filePath);
-        }
-
-        return url;
-    }
-
-    private boolean existsByUrl(String signedUrl) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(signedUrl).openConnection();
-            connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(3000);
-            connection.setReadTimeout(3000);
-
-            return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
-        } catch (Exception e) {
-            return false;
-        }
+        return url == null
+                ? Optional.empty()
+                : Optional.of(url);
     }
 }

@@ -17,13 +17,15 @@ public class RecipeService {
     private final ImageKitUtil imageKitUtil;
 
     public List<PopularRecipeDto> getPopularRecipes(String userNo, int size) {
-        List<PopularRecipeVo> popularRecipes = recipeMapper.getPopularRecipes(userNo, size, Constants.Image.THUMBNAIL);
+        List<PopularRecipeVo> popularRecipes =
+                recipeMapper.getPopularRecipes(userNo, size, Constants.Image.THUMBNAIL);
 
         return popularRecipes.stream()
                 .map(popularRecipeVo -> new PopularRecipeDto(
                         popularRecipeVo.getRecipeNo(),
                         popularRecipeVo.getTitle(),
-                        imageKitUtil.getUrl(popularRecipeVo.getImagePath()),
+                        imageKitUtil.getUrl(popularRecipeVo.getImagePath())
+                                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + popularRecipeVo.getImagePath())),
                         popularRecipeVo.getLikeCount(),
                         popularRecipeVo.getIsLiked()
                 ))
