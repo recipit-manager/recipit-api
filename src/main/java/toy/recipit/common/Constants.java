@@ -86,7 +86,7 @@ public final class Constants {
         int MAX_LENGTH = 16;
     }
 
-    public interface image{
+    public interface Image{
         String THUMBNAIL = "IM01";
         String STEP = "IM02";
         String COMPLETE = "IM03";

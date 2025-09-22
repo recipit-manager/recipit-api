@@ -17,7 +17,7 @@ public class RecipeService {
     private final ImageKitUtil imageKitUtil;
 
     public List<PopularRecipeDto> getPopularRecipes(String userNo, int size) {
-        List<PopularRecipeVo> popularRecipes = recipeMapper.getPopularRecipes(userNo, size, Constants.image.THUMBNAIL);
+        List<PopularRecipeVo> popularRecipes = recipeMapper.getPopularRecipes(userNo, size, Constants.Image.THUMBNAIL);
 
         return popularRecipes.stream()
                 .map(popularRecipeVo -> new PopularRecipeDto(

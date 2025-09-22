@@ -13,7 +13,7 @@
         FROM RC_WEEKLY W
                  INNER JOIN RC_RECIPE R
                       ON W.RECIPE_NO = R.RECIPE_NO
-                 LEFT JOIN RC_IMAGE IMG
+                 INNER JOIN RC_IMAGE IMG
                            ON R.RECIPE_NO = IMG.RECIPE_NO
                            AND IMG.TYPE_CODE = #{imageTypeCode}
                  LEFT JOIN RC_LIKE LU
