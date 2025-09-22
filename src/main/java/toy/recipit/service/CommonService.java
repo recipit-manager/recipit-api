@@ -53,7 +53,7 @@ public class CommonService {
                 .map(CommonDetailCodeVo -> new RecipeCategoryDto(
                         CommonDetailCodeVo.getCode(),
                         CommonDetailCodeVo.getCodeName(),
-                        imageKitUtil.getUrl(CommonDetailCodeVo.getNote1()).orElse(null)
+                        imageKitUtil.getUrl(CommonDetailCodeVo.getNote1())
                 ))
                 .toList();
     }
@@ -107,7 +107,7 @@ public class CommonService {
                             commonCodeGroupWithDetailsVo.getCommonCodeDetailVoList().stream()
                                     .map(commonCodeDetailVo -> new IngredientItemDto(
                                             commonCodeDetailVo.getCodeName(),
-                                            imageKitUtil.getUrl(commonCodeDetailVo.getNote1()).orElse(null)
+                                            imageKitUtil.getUrl(commonCodeDetailVo.getNote1())
                                     ))
                                     .toList();
 

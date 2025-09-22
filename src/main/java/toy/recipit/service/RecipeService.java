@@ -23,7 +23,7 @@ public class RecipeService {
                 .map(popularRecipeVo -> new PopularRecipeDto(
                         popularRecipeVo.getRecipeNo(),
                         popularRecipeVo.getTitle(),
-                        imageKitUtil.getUrl(popularRecipeVo.getImagePath()).orElse(null),
+                        imageKitUtil.getUrl(popularRecipeVo.getImagePath()),
                         popularRecipeVo.getLikeCount(),
                         popularRecipeVo.getIsLiked()
                 ))

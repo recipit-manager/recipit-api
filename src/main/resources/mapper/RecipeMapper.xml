@@ -5,30 +5,24 @@
 
     <select id="getPopularRecipes" parameterType="map" resultType="toy.recipit.mapper.vo.PopularRecipeVo">
         SELECT
-            R.RECIPE_NO      AS recipeNo,
-            R.TITLE          AS title,
-            IMG.URL          AS imagePath,
-            COALESCE(LC.totalLikes, 0) AS likeCount,
-            CASE WHEN LU.USER_NO IS NOT NULL THEN TRUE ELSE FALSE END AS isLiked
+            R.RECIPE_NO AS recipeNo,
+            R.TITLE     AS title,
+            IMG.URL     AS imagePath,
+            SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS likeCount,
+            MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS isLiked
         FROM RC_WEEKLY W
                  INNER JOIN RC_RECIPE R
-                      ON W.RECIPE_NO = R.RECIPE_NO
-                 INNER JOIN RC_IMAGE IMG
+                            ON W.RECIPE_NO = R.RECIPE_NO
+                 LEFT JOIN RC_IMAGE IMG
                            ON R.RECIPE_NO = IMG.RECIPE_NO
-                           AND IMG.TYPE_CODE = #{imageTypeCode}
-                 LEFT JOIN RC_LIKE LU
-                           ON R.RECIPE_NO = LU.RECIPE_NO
-                           AND LU.USER_NO = #{userNo}
-                           AND LU.LIKE_YN = 'Y'
-                 LEFT JOIN (
-                           SELECT RECIPE_NO, COUNT(1) AS totalLikes
-                           FROM RC_LIKE
-                           WHERE LIKE_YN = 'Y'
-                           GROUP BY RECIPE_NO
-                           ) LC ON R.RECIPE_NO = LC.RECIPE_NO
+                               AND IMG.TYPE_CODE = #{imageTypeCode}
+                 LEFT JOIN RC_LIKE L
+                           ON R.RECIPE_NO = L.RECIPE_NO
         WHERE W.RECOMMENDED_DATE = CURDATE()
+        GROUP BY R.RECIPE_NO
         ORDER BY W.SORT_SEQUENCE
         LIMIT #{size}
     </select>
+
 
 </mapper>
