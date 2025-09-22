@@ -54,7 +54,7 @@ public class ImageKitUtil {
                 "expireSeconds", expireSeconds));
 
         if(url==null || !existsByUrl(url)) {
-            throw new RuntimeException("이미지가 존재하지 않습니다" + filePath);
+            throw new RuntimeException("잘못된 경로입니다." + filePath);
         }
 
         return url;
