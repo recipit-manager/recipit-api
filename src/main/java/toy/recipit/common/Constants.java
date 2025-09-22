@@ -85,4 +85,10 @@ public final class Constants {
         int MIN_LENGTH = 8;
         int MAX_LENGTH = 16;
     }
+
+    public interface image{
+        String THUMBNAIL = "IM01";
+        String STEP = "IM02";
+        String COMPLETE = "IM03";
+    }
 }
