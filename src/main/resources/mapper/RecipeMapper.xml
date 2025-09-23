@@ -30,4 +30,53 @@
         WHERE USER_NO = #{userNo}
           AND STATUS_CODE = #{statusCode}
     </select>
+
+    <select id="isRecipeExists" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM RC_RECIPE
+            WHERE RECIPE_NO = #{recipeNo}
+        )
+    </select>
+
+    <select id="isLikeExists" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM RC_LIKE
+            WHERE USER_NO = #{userNo}
+              AND RECIPE_NO = #{recipeNo}
+        )
+    </select>
+
+    <update id="updateLike">
+        UPDATE RC_LIKE
+        SET LIKE_YN = #{likeYn},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{userNo}
+        WHERE USER_NO = #{userNo}
+          AND RECIPE_NO = #{recipeNo}
+    </update>
+
+    <insert id="insertLike">
+        INSERT INTO RC_LIKE
+        (
+         USER_NO,
+         RECIPE_NO,
+         LIKE_YN,
+         CREATE_DATETIME,
+         CREATE_USER,
+         EDIT_DATETIME,
+         EDIT_USER
+        )
+        VALUES
+            (
+                #{userNo},
+                #{recipeNo},
+                #{likeYn},
+                NOW(),
+                #{userNo},
+                NOW(),
+                #{userNo}
+            )
+    </insert>
 </mapper>

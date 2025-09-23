@@ -13,5 +13,18 @@ public interface RecipeMapper {
                                             @Param("imageTypeCode") String imageTypeCode);
 
     int getRecipeCount(@Param("userNo") String userNo,
-                                  @Param("statusCode") String statusCode);
+                       @Param("statusCode") String statusCode);
+
+    Boolean isRecipeExists(@Param("recipeNo") String recipeNo);
+
+    Boolean isLikeExists(@Param("userNo") String userNo,
+                         @Param("recipeNo") String recipeNo);
+
+    void updateLike(@Param("userNo") String userNo,
+                    @Param("recipeNo") String recipeNo,
+                    @Param("likeYn") String likeYn);
+
+    void insertLike(@Param("userNo") String userNo,
+                    @Param("recipeNo") String recipeNo,
+                    @Param("likeYn") String likeYn);
 }

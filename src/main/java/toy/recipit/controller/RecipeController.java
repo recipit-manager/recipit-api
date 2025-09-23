@@ -4,7 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +32,7 @@ public class RecipeController {
     public ResponseEntity<ApiResponse<List<PopularRecipeDto>>> getPopularRecipes(
             HttpServletRequest request,
             @RequestParam
-            @Min(value = 1, message = "Recipe.list.size.min")
+            @Min(value = 1, message = "recipe.list.size.min")
             int size
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
@@ -44,5 +47,27 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getDraftRecipeCount(userInfo.getUserNo())));
+    }
+
+    @PostMapping("/{recipeNo}/like")
+    public ResponseEntity<ApiResponse<Boolean>> likeRecipe(
+            HttpServletRequest request,
+            @PathVariable
+            String recipeNo
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.likeRecipe(userInfo.getUserNo(), recipeNo)));
+    }
+
+    @DeleteMapping("/{recipeNo}/like")
+    public ResponseEntity<ApiResponse<Boolean>> unlikeRecipe(
+            HttpServletRequest request,
+            @PathVariable
+            String recipeNo
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.unlikeRecipe(userInfo.getUserNo(), recipeNo)));
     }
 }
