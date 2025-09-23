@@ -32,7 +32,7 @@ public class RecipeService {
                 .toList();
     }
 
-    public Integer getDraftRecipeCount(String userNo) {
+    public int getDraftRecipeCount(String userNo) {
         return recipeMapper.getRecipeCount(userNo, Constants.Recipe.DRAFT);
     }
 }
