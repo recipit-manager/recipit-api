@@ -12,6 +12,6 @@ public interface RecipeMapper {
                                             @Param("size") int size,
                                             @Param("imageTypeCode") String imageTypeCode);
 
-    Integer getRecipeCount(@Param("userNo") String userNo,
+    int getRecipeCount(@Param("userNo") String userNo,
                                   @Param("statusCode") String statusCode);
 }
