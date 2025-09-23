@@ -31,4 +31,8 @@ public class RecipeService {
                 ))
                 .toList();
     }
+
+    public int getDraftRecipeCount(String userNo) {
+        return recipeMapper.getRecipeCount(userNo, Constants.Recipe.DRAFT);
+    }
 }

@@ -91,4 +91,11 @@ public final class Constants {
         String STEP = "IM02";
         String COMPLETE = "IM03";
     }
+
+    public interface Recipe{
+        String RELEASE = "RS1";
+        String PRIVATE = "RS2";
+        String DRAFT = "RS3";
+        String DELETED = "RS4";
+    }
 }

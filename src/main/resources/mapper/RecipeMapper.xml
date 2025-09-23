@@ -24,5 +24,10 @@
         LIMIT #{size}
     </select>
 
-
+    <select id="getRecipeCount" resultType="int">
+        SELECT COUNT(*)
+        FROM RC_RECIPE
+        WHERE USER_NO = #{userNo}
+          AND STATUS_CODE = #{statusCode}
+    </select>
 </mapper>

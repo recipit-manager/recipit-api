@@ -36,4 +36,13 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getPopularRecipes(userInfo.getUserNo(), size)));
     }
+
+    @GetMapping("/draft/count")
+    public ResponseEntity<ApiResponse<Integer>> getDraftRecipeCount(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getDraftRecipeCount(userInfo.getUserNo())));
+    }
 }

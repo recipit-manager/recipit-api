@@ -11,4 +11,7 @@ public interface RecipeMapper {
     List<PopularRecipeVo> getPopularRecipes(@Param("userNo") String userNo,
                                             @Param("size") int size,
                                             @Param("imageTypeCode") String imageTypeCode);
+
+    int getRecipeCount(@Param("userNo") String userNo,
+                                  @Param("statusCode") String statusCode);
 }
