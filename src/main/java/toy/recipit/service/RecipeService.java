@@ -70,7 +70,7 @@ public class RecipeService {
     }
 
     public RecipeListDto getRecentRecipes(String userNo, GetRecipeListDto getRecipeListDto) {
-        List<SearchRecipeVo> recipeListVo = recipeMapper.getRecentRecipes(
+        List<SearchRecipeVo> recipeVoList = recipeMapper.getRecentRecipes(
                 userNo,
                 getRecipeListDto.getCategoryCode(),
                 getRecipeListDto.getKeyword(),
@@ -80,7 +80,7 @@ public class RecipeService {
                 Constants.GroupCode.DIFFICULTY
         );
 
-        List<RecipeDto> recipelist = recipeListVo.stream()
+        List<RecipeDto> recipelist = recipeVoList.stream()
                 .map(searchRecipeVo -> new RecipeDto(
                         searchRecipeVo.getRecipeNo(),
                         searchRecipeVo.getCategoryCode(),
@@ -96,12 +96,12 @@ public class RecipeService {
                 ))
                 .toList();
 
-        List<CommonDetailCodeVo> categoryListVo = recipeMapper.getRecipeCategorys(
+        List<CommonDetailCodeVo> categoryVoList = recipeMapper.getRecipeCategories(
                 getRecipeListDto.getKeyword(),
                 Constants.GroupCode.RECIPE_CATEGORY
         );
 
-        List<CommonCodeAndNameDto> categorylist = categoryListVo.stream()
+        List<CommonCodeAndNameDto> categorylist = categoryVoList.stream()
                 .map(commonDetailCodeVo
                         -> new CommonCodeAndNameDto(commonDetailCodeVo.getCode(), commonDetailCodeVo.getCodeName()))
                 .toList();

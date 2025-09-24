@@ -79,13 +79,11 @@ public class RecipeController {
             HttpServletRequest request,
             GetRecipeListDto requestDto
     ) {
-        String userNo;
+        String userNo = StringUtils.EMPTY;
 
         if(sessionUtil.isSessionExists(request)) {
             SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
             userNo = userInfo.getUserNo();
-        } else {
-            userNo = StringUtils.EMPTY;
         }
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecentRecipes(userNo, requestDto)));

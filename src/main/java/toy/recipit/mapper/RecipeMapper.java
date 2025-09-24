@@ -38,7 +38,7 @@ public interface RecipeMapper {
                                           @Param("imageTypeCode") String imageTypeCode,
                                           @Param("difficultyGroupCode") String difficultyGroupCode);
 
-    List<CommonDetailCodeVo> getRecipeCategorys(@Param("keyword") String keyword,
+    List<CommonDetailCodeVo> getRecipeCategories(@Param("keyword") String keyword,
                                                 @Param("categoryGroupCode") String categoryGroupCode);
 
 }

@@ -82,7 +82,6 @@
 
     <select id="getRecentRecipes"
             resultType="toy.recipit.mapper.vo.SearchRecipeVo">
-
         SELECT
         R.RECIPE_NO        AS recipeNo,
         R.CATEGORY_CODE    AS categoryCode,
@@ -93,27 +92,29 @@
         R.DIFFICULTY_CODE  AS difficultyCode,
         DC.CODE_NAME       AS difficultyCodeName,
         COALESCE(SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END), 0) AS likeCount,
-
         <choose>
             <when test="userNo != ''">
-                MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END)
+                MAX(
+                    CASE
+                        WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1
+                        ELSE 0
+                    END
+                )
             </when>
             <otherwise>
                 0
             </otherwise>
         </choose> AS isLiked
-
         FROM RC_RECIPE R
-                INNER JOIN RC_IMAGE IMG
-                    ON R.RECIPE_NO = IMG.RECIPE_NO
-                    AND IMG.TYPE_CODE = #{imageTypeCode}
-                LEFT JOIN RC_LIKE L
-                    ON R.RECIPE_NO = L.RECIPE_NO
-                INNER JOIN CM_DETAIL_CODE DC
-                    ON R.DIFFICULTY_CODE = DC.CODE
-                    AND DC.GROUP_CODE = #{difficultyGroupCode}
-                    AND DC.USE_YN = 'Y'
-
+        INNER JOIN RC_IMAGE IMG
+            ON R.RECIPE_NO = IMG.RECIPE_NO
+            AND IMG.TYPE_CODE = #{imageTypeCode}
+        LEFT JOIN RC_LIKE L
+            ON R.RECIPE_NO = L.RECIPE_NO
+        INNER JOIN CM_DETAIL_CODE DC
+            ON R.DIFFICULTY_CODE = DC.CODE
+            AND DC.GROUP_CODE = #{difficultyGroupCode}
+            AND DC.USE_YN = 'Y'
         <where>
             <if test="categoryCode != ''">
                 R.CATEGORY_CODE = #{categoryCode}
@@ -125,36 +126,31 @@
                 )
             </if>
         </where>
-
         GROUP BY R.RECIPE_NO
         ORDER BY R.RECIPE_NO DESC
         LIMIT #{offset}, #{size}
     </select>
 
-
-    <select id="getRecipeCategorys"
+    <select id="getRecipeCategories"
             resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
-
         SELECT DISTINCT
         CC.CODE      AS code,
         CC.CODE_NAME AS codeName,
-        CC.NOTE_1          AS note1,
-        CC.NOTE_2          AS note2,
-        CC.NOTE_3          AS note3,
-        CC.NOTE_4          AS note4
+        CC.NOTE_1    AS note1,
+        CC.NOTE_2    AS note2,
+        CC.NOTE_3    AS note3,
+        CC.NOTE_4    AS note4
         FROM RC_RECIPE R
-                INNER JOIN CM_DETAIL_CODE CC
-                    ON R.CATEGORY_CODE = CC.CODE
-                    AND CC.GROUP_CODE = #{categoryGroupCode}
-                    AND CC.USE_YN = 'Y'
-
+            INNER JOIN CM_DETAIL_CODE CC
+                ON R.CATEGORY_CODE = CC.CODE
+                AND CC.GROUP_CODE = #{categoryGroupCode}
+                AND CC.USE_YN = 'Y'
         <where>
             <if test="keyword != ''">
                 (R.TITLE LIKE CONCAT('%', #{keyword}, '%')
                 OR R.DESCRIPTION LIKE CONCAT('%', #{keyword}, '%'))
             </if>
         </where>
-
         GROUP BY CC.CODE, CC.CODE_NAME
         ORDER BY CC.CODE
     </select>
