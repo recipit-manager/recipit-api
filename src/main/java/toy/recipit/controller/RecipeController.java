@@ -1,5 +1,6 @@
 package toy.recipit.controller;
 
+import io.netty.util.internal.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +80,7 @@ public class RecipeController {
             HttpServletRequest request,
             GetRecipeListDto requestDto
     ) {
-        String userNo = StringUtils.EMPTY;
+        String userNo = StringUtil.EMPTY_STRING;
 
         if(sessionUtil.isSessionExists(request)) {
             SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
