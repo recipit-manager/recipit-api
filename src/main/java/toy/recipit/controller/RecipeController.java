@@ -1,8 +1,10 @@
 package toy.recipit.controller;
 
+import io.netty.util.internal.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import toy.recipit.common.util.SessionUtil;
+import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
+import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.SessionUserInfo;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.RecipeService;
@@ -69,5 +73,20 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.unlikeRecipe(userInfo.getUserNo(), recipeNo)));
+    }
+
+    @GetMapping("/list/recent-order")
+    public ResponseEntity<ApiResponse<RecipeListDto>> getRecentRecipeList(
+            HttpServletRequest request,
+            GetRecipeListDto requestDto
+    ) {
+        String userNo = StringUtil.EMPTY_STRING;
+
+        if(sessionUtil.isSessionExists(request)) {
+            SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+            userNo = userInfo.getUserNo();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecentRecipes(userNo, requestDto)));
     }
 }
