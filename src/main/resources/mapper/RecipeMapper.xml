@@ -135,7 +135,7 @@
     <select id="getRecipeCategorys"
             resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
 
-        SELECT
+        SELECT DISTINCT
         CC.CODE      AS code,
         CC.CODE_NAME AS codeName,
         CC.NOTE_1          AS note1,
