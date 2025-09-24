@@ -98,4 +98,9 @@ public final class Constants {
         String DRAFT = "RS3";
         String DELETED = "RS4";
     }
+
+    public interface SortType {
+        String RECENT = "RECENT";
+        String LIKE = "LIKE";
+    }
 }

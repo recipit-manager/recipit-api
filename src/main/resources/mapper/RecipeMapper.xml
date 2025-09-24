@@ -80,7 +80,7 @@
             )
     </insert>
 
-    <select id="getRecentRecipes"
+    <select id="getRecipes"
             resultType="toy.recipit.mapper.vo.SearchRecipeVo">
         SELECT
             R.RECIPE_NO        AS recipeNo,
@@ -127,7 +127,14 @@
             </if>
         </where>
         GROUP BY R.RECIPE_NO
-        ORDER BY R.RECIPE_NO DESC
+        <choose>
+            <when test="sortType == 'LIKE'">
+                ORDER BY likeCount DESC, R.RECIPE_NO DESC
+            </when>
+            <otherwise>
+                ORDER BY R.RECIPE_NO DESC
+            </otherwise>
+        </choose>
         LIMIT #{offset}, #{size}
     </select>
 
