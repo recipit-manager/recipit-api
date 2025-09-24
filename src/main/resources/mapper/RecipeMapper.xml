@@ -83,15 +83,15 @@
     <select id="getRecentRecipes"
             resultType="toy.recipit.mapper.vo.SearchRecipeVo">
         SELECT
-        R.RECIPE_NO        AS recipeNo,
-        R.CATEGORY_CODE    AS categoryCode,
-        R.TITLE            AS name,
-        R.DESCRIPTION      AS description,
-        IMG.URL            AS imageUrl,
-        R.COOKING_TIME     AS cookingTime,
-        R.DIFFICULTY_CODE  AS difficultyCode,
-        DC.CODE_NAME       AS difficultyCodeName,
-        COALESCE(SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END), 0) AS likeCount,
+            R.RECIPE_NO        AS recipeNo,
+            R.CATEGORY_CODE    AS categoryCode,
+            R.TITLE            AS name,
+            R.DESCRIPTION      AS description,
+            IMG.URL            AS imageUrl,
+            R.COOKING_TIME     AS cookingTime,
+            R.DIFFICULTY_CODE  AS difficultyCode,
+            DC.CODE_NAME       AS difficultyCodeName,
+            COALESCE(SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END), 0) AS likeCount,
         <choose>
             <when test="userNo != ''">
                 MAX(
@@ -134,12 +134,12 @@
     <select id="getRecipeCategories"
             resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
         SELECT DISTINCT
-        CC.CODE      AS code,
-        CC.CODE_NAME AS codeName,
-        CC.NOTE_1    AS note1,
-        CC.NOTE_2    AS note2,
-        CC.NOTE_3    AS note3,
-        CC.NOTE_4    AS note4
+            CC.CODE      AS code,
+            CC.CODE_NAME AS codeName,
+            CC.NOTE_1    AS note1,
+            CC.NOTE_2    AS note2,
+            CC.NOTE_3    AS note3,
+            CC.NOTE_4    AS note4
         FROM RC_RECIPE R
             INNER JOIN CM_DETAIL_CODE CC
                 ON R.CATEGORY_CODE = CC.CODE
