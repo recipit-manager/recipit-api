@@ -106,15 +106,15 @@
             </otherwise>
         </choose> AS isLiked
         FROM RC_RECIPE R
-        INNER JOIN RC_IMAGE IMG
-            ON R.RECIPE_NO = IMG.RECIPE_NO
-            AND IMG.TYPE_CODE = #{imageTypeCode}
-        LEFT JOIN RC_LIKE L
-            ON R.RECIPE_NO = L.RECIPE_NO
-        INNER JOIN CM_DETAIL_CODE DC
-            ON R.DIFFICULTY_CODE = DC.CODE
-            AND DC.GROUP_CODE = #{difficultyGroupCode}
-            AND DC.USE_YN = 'Y'
+            INNER JOIN RC_IMAGE IMG
+                ON R.RECIPE_NO = IMG.RECIPE_NO
+                AND IMG.TYPE_CODE = #{imageTypeCode}
+            LEFT JOIN RC_LIKE L
+                ON R.RECIPE_NO = L.RECIPE_NO
+            INNER JOIN CM_DETAIL_CODE DC
+                ON R.DIFFICULTY_CODE = DC.CODE
+                AND DC.GROUP_CODE = #{difficultyGroupCode}
+                AND DC.USE_YN = 'Y'
         <where>
             <if test="categoryCode != ''">
                 R.CATEGORY_CODE = #{categoryCode}
