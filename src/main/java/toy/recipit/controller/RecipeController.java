@@ -2,12 +2,13 @@ package toy.recipit.controller;
 
 import io.netty.util.internal.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,7 +79,7 @@ public class RecipeController {
     @GetMapping("/list/recent-order")
     public ResponseEntity<ApiResponse<RecipeListDto>> getRecentRecipeList(
             HttpServletRequest request,
-            GetRecipeListDto requestDto
+            @Valid @ModelAttribute GetRecipeListDto requestDto
     ) {
         String userNo = StringUtil.EMPTY_STRING;
 
@@ -93,7 +94,7 @@ public class RecipeController {
     @GetMapping("/list/like-order")
     public ResponseEntity<ApiResponse<RecipeListDto>> getLikeRecipeList(
             HttpServletRequest request,
-            GetRecipeListDto requestDto
+            @Valid @ModelAttribute GetRecipeListDto requestDto
     ) {
         String userNo = StringUtil.EMPTY_STRING;
 
