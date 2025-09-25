@@ -70,16 +70,36 @@ public class RecipeService {
     }
 
     public RecipeListDto getRecentRecipes(String userNo, GetRecipeListDto getRecipeListDto) {
-        List<SearchRecipeVo> recipeVoList = recipeMapper.getRecentRecipes(
+        List<SearchRecipeVo> recipeVoList = recipeMapper.getRecipes(
                 userNo,
                 getRecipeListDto.getCategoryCode(),
                 getRecipeListDto.getKeyword(),
                 (getRecipeListDto.getPage() - 1) * getRecipeListDto.getSize(),
                 getRecipeListDto.getSize(),
                 Constants.Image.THUMBNAIL,
-                Constants.GroupCode.DIFFICULTY
+                Constants.GroupCode.DIFFICULTY,
+                Constants.SortType.RECENT
         );
 
+        return createRecipeListDto(recipeVoList, getRecipeListDto);
+    }
+
+    public RecipeListDto getLikeRecipes(String userNo, GetRecipeListDto getRecipeListDto) {
+        List<SearchRecipeVo> recipeVoList = recipeMapper.getRecipes(
+                userNo,
+                getRecipeListDto.getCategoryCode(),
+                getRecipeListDto.getKeyword(),
+                (getRecipeListDto.getPage() - 1) * getRecipeListDto.getSize(),
+                getRecipeListDto.getSize(),
+                Constants.Image.THUMBNAIL,
+                Constants.GroupCode.DIFFICULTY,
+                Constants.SortType.LIKE
+        );
+
+        return createRecipeListDto(recipeVoList, getRecipeListDto);
+    }
+
+    private RecipeListDto createRecipeListDto(List<SearchRecipeVo> recipeVoList, GetRecipeListDto getRecipeListDto) {
         List<RecipeDto> recipelist = recipeVoList.stream()
                 .map(searchRecipeVo -> new RecipeDto(
                         searchRecipeVo.getRecipeNo(),

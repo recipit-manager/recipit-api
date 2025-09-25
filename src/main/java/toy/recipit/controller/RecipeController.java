@@ -89,4 +89,19 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecentRecipes(userNo, requestDto)));
     }
+
+    @GetMapping("/list/like-order")
+    public ResponseEntity<ApiResponse<RecipeListDto>> getLikeRecipeList(
+            HttpServletRequest request,
+            GetRecipeListDto requestDto
+    ) {
+        String userNo = StringUtil.EMPTY_STRING;
+
+        if(sessionUtil.isSessionExists(request)) {
+            SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+            userNo = userInfo.getUserNo();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getLikeRecipes(userNo, requestDto)));
+    }
 }
