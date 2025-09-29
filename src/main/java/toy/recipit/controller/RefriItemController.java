@@ -43,7 +43,7 @@ public class RefriItemController {
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<RefriItemRecipeListDto>>> getRefriItemList(
             HttpServletRequest request,
-            @Valid @ModelAttribute GetRefriItemListDto gregorySearchDto
+            @Valid @ModelAttribute GetRefriItemListDto getRefriItemListDto
     ) {
         String userNo = StringUtil.EMPTY_STRING;
 
@@ -52,6 +52,6 @@ public class RefriItemController {
             userNo = userInfo.getUserNo();
         }
 
-        return ResponseEntity.ok(apiResponseFactory.success(refriItemService.getRefriItemRecipes(userNo, gregorySearchDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(refriItemService.getRefriItemRecipes(userNo, getRefriItemListDto)));
     }
 }
