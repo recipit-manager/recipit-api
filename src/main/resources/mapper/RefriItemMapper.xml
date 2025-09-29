@@ -10,4 +10,106 @@
         ORDER BY NAME
     </select>
 
+    <select id="getRefriItemRecipeList" resultType="toy.recipit.mapper.vo.SearchRefriVo">
+        WITH SearchRecipes AS (
+            SELECT
+                R.RECIPE_NO,
+                R.TITLE,
+                R.DESCRIPTION,
+                R.COOKING_TIME,
+                R.SERVING_SIZE,
+                R.DIFFICULTY_CODE,
+                R.CATEGORY_CODE,
+                I.TYPE_CODE,
+                I.NAME
+            FROM RC_RECIPE R
+            INNER JOIN RC_INGREDIENT I
+                ON R.RECIPE_NO = I.RECIPE_NO
+                AND I.NAME IN
+                <foreach collection="keywordList" item="ingredient" open="(" separator="," close=")">
+                    #{ingredient}
+                </foreach>
+        ),
+        LikeRank AS (
+            SELECT
+                L.RECIPE_NO,
+                COUNT(*) AS likeCount,
+                CUME_DIST() OVER (ORDER BY COUNT(*) DESC) AS likePercentile
+            FROM RC_LIKE L
+            INNER JOIN SearchRecipes SR
+                ON L.RECIPE_NO = SR.RECIPE_NO
+            WHERE L.LIKE_YN = 'Y'
+            GROUP BY L.RECIPE_NO
+        )
+        SELECT
+            SR.RECIPE_NO AS id,
+            SR.TITLE AS name,
+            SR.DESCRIPTION AS description,
+            IMG.URL AS imageUrl,
+            SR.COOKING_TIME AS cookingTime,
+            SR.SERVING_SIZE AS servingSize,
+            SR.DIFFICULTY_CODE AS difficultyCode,
+            DC.CODE_NAME AS difficulty,
+            COALESCE(LR.likeCount, 0) AS likeCount,
+            CASE WHEN UL.USER_NO IS NOT NULL THEN TRUE ELSE FALSE END AS isLiked
+        FROM SearchRecipes SR
+            INNER JOIN RC_IMAGE IMG
+                ON SR.RECIPE_NO = IMG.RECIPE_NO
+                AND IMG.TYPE_CODE = #{imageTypeCode}
+            INNER JOIN CM_DETAIL_CODE DC
+                ON SR.DIFFICULTY_CODE = DC.CODE
+                AND DC.GROUP_CODE = #{difficultyGroupCode}
+                AND DC.USE_YN = 'Y'
+            LEFT JOIN LikeRank LR
+                ON SR.RECIPE_NO = LR.RECIPE_NO
+            LEFT JOIN RC_LIKE UL
+                ON SR.RECIPE_NO = UL.RECIPE_NO
+                AND UL.USER_NO = #{userNo}
+                AND UL.LIKE_YN = 'Y'
+            LEFT JOIN RC_PREFER_CATEGORY PC
+                ON SR.CATEGORY_CODE = PC.CATEGORY_CODE
+                AND PC.USER_NO = #{userNo}
+        GROUP BY SR.RECIPE_NO, LR.likePercentile, PC.STATUS_CODE
+        ORDER BY (
+            (20 + SUM(
+                CASE SR.TYPE_CODE
+                    WHEN 'I01' THEN 10
+                    WHEN 'I02' THEN 8
+                    WHEN 'I03' THEN 6
+                    WHEN 'I04' THEN 4
+                    WHEN 'I05' THEN 3
+                    ELSE 0
+                    END
+            ))
+            + CASE
+                WHEN LR.likePercentile &lt;= 0.1 THEN 30
+                WHEN LR.likePercentile &lt;= 0.3 THEN 25
+                WHEN LR.likePercentile &lt;= 0.5 THEN 20
+                WHEN LR.likePercentile &lt;= 0.7 THEN 15
+                ELSE 10
+            END
+            + CASE PC.STATUS_CODE
+                WHEN 'RF01' THEN 10
+                WHEN 'RF02' THEN 5
+                ELSE 0
+            END
+        ) DESC, SR.RECIPE_NO DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="getUnMatchIngredients" resultType="toy.recipit.mapper.vo.UnMatchIngredientVo">
+        SELECT
+            I.RECIPE_NO AS recipeId,
+            I.NAME AS ingredient
+        FROM RC_INGREDIENT I
+        WHERE I.RECIPE_NO IN
+        <foreach collection="recipeNos" item="recipeNo" open="(" separator="," close=")">
+            #{recipeNo}
+        </foreach>
+        AND I.NAME NOT IN
+        <foreach collection="keywordList" item="ingredient" open="(" separator="," close=")">
+            #{ingredient}
+        </foreach>
+    </select>
+
 </mapper>
