@@ -117,7 +117,7 @@ public class RecipeController {
             @RequestPart(required = false) MultipartFile mainImage,
             @RequestPart(required = false) MultipartFile[] stepImages,
             @RequestPart(required = false) MultipartFile[] completionImages
-    ) {
+    ) throws Exception {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.saveDraftRecipe(

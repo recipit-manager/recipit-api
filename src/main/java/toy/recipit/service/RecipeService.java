@@ -140,7 +140,7 @@ public class RecipeService {
                                    DraftRecipeDto recipeInfo,
                                    MultipartFile mainImage,
                                    MultipartFile[] stepImages,
-                                   MultipartFile[] completionImages) {
+                                   MultipartFile[] completionImages) throws Exception {
 
         InsertRecipeVo recipe = new InsertRecipeVo(
                 userNo,
@@ -169,28 +169,24 @@ public class RecipeService {
     private void insertImages(String recipeNo,
                               String userNo,
                               MultipartFile mainImage,
-                              MultipartFile[] completionImages) {
-        try {
-            int sortSequence = 0;
+                              MultipartFile[] completionImages) throws Exception {
+        int sortSequence = 0;
 
-            if (mainImage != null && !mainImage.isEmpty()) {
-                recipeMapper.insertRecipeImage(recipeNo, imageKitUtil.upload(mainImage), Constants.Image.THUMBNAIL, sortSequence, userNo);
-            }
+        if (mainImage != null && !mainImage.isEmpty()) {
+            recipeMapper.insertRecipeImage(recipeNo, imageKitUtil.upload(mainImage), Constants.Image.THUMBNAIL, sortSequence, userNo);
+        }
 
-            if (completionImages != null) {
-                for (MultipartFile completionImage : completionImages) {
-                    recipeMapper.insertRecipeImage(recipeNo, imageKitUtil.upload(completionImage), Constants.Image.COMPLETE, sortSequence++, userNo);
-                }
+        if (completionImages != null) {
+            for (MultipartFile completionImage : completionImages) {
+                recipeMapper.insertRecipeImage(recipeNo, imageKitUtil.upload(completionImage), Constants.Image.COMPLETE, sortSequence++, userNo);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     private void insertSteps(String recipeNo,
                              String userNo,
                              DraftRecipeDto recipeInfo,
-                             MultipartFile[] stepImages) {
+                             MultipartFile[] stepImages) throws Exception {
         if (recipeInfo.getStepList().isEmpty()) {
             return;
         }
@@ -211,20 +207,16 @@ public class RecipeService {
                 continue;
             }
 
-            try {
-                int imgSequence = 0;
+            int imgSequence = 0;
 
-                for (int idx : stepDto.getImageIndexes()) {
-                    MultipartFile stepImage = stepImages[idx];
-                    recipeMapper.insertStepImage(
-                            stepVo.getStepNo(),
-                            imageKitUtil.upload(stepImage),
-                            imgSequence++,
-                            userNo
-                    );
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            for (int idx : stepDto.getImageIndexes()) {
+                MultipartFile stepImage = stepImages[idx];
+                recipeMapper.insertStepImage(
+                        stepVo.getStepNo(),
+                        imageKitUtil.upload(stepImage),
+                        imgSequence++,
+                        userNo
+                );
             }
         }
     }
