@@ -151,7 +151,7 @@ public class RecipeService {
         recipeMapper.insertRecipe(recipe);
         String recipeNo = recipe.getRecipeNo();
 
-        insertIngredients(recipeNo, recipeInfo);
+        insertIngredients(recipeNo, userNo, recipeInfo);
 
         insertImages(recipeNo, userNo, mainImage, completionImages);
 
@@ -166,9 +166,9 @@ public class RecipeService {
         }
     }
 
-    private void insertIngredients(String recipeNo, DraftRecipeDto recipeInfo) {
+    private void insertIngredients(String recipeNo, String userNo, DraftRecipeDto recipeInfo) {
         if (!recipeInfo.getIngredientList().isEmpty()) {
-            recipeMapper.insertIngredients(recipeNo, recipeInfo.getIngredientList());
+            recipeMapper.insertIngredients(recipeNo, userNo, recipeInfo.getIngredientList());
         }
     }
 
@@ -200,28 +200,36 @@ public class RecipeService {
                              DraftRecipeDto recipeInfo,
                              MultipartFile[] stepImages) {
         try {
-            if (!recipeInfo.getStepList().isEmpty()) {
-                int stepSequence = 0;
+            if (recipeInfo.getStepList().isEmpty()) {
+                return;
+            }
 
-                for (StepDto stepDto : recipeInfo.getStepList()) {
-                    StepVo stepVo = new StepVo(
-                            null,
-                            recipeNo,
-                            stepDto.getContents(),
-                            stepSequence++
+            int stepSequence = 0;
+
+            for (StepDto stepDto : recipeInfo.getStepList()) {
+                StepVo stepVo = new StepVo(
+                        null,
+                        recipeNo,
+                        stepDto.getContents(),
+                        stepSequence++
+                );
+
+                recipeMapper.insertStep(stepVo, userNo);
+
+                if (stepDto.getImageIndexes() == null || stepImages == null) {
+                    continue;
+                }
+
+                int imgSequence = 0;
+                for (int idx : stepDto.getImageIndexes()) {
+                    MultipartFile stepImage = stepImages[idx];
+                    validateFileSize(stepImage);
+                    recipeMapper.insertStepImage(
+                            stepVo.getStepNo(),
+                            imageKitUtil.upload(stepImage),
+                            imgSequence++,
+                            userNo
                     );
-
-                    recipeMapper.insertStep(stepVo);
-
-                    if (stepDto.getImageIndexes() != null && stepImages != null) {
-                        int imgSequence = 0;
-
-                        for (int idx : stepDto.getImageIndexes()) {
-                            MultipartFile stepImage = stepImages[idx];
-                            validateFileSize(stepImage);
-                            recipeMapper.insertStepImage(stepVo.getStepNo(), imageKitUtil.upload(stepImage), imgSequence++, userNo);
-                        }
-                    }
                 }
             }
         } catch (Exception e) {

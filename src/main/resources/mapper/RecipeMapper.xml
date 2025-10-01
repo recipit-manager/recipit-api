@@ -219,9 +219,9 @@
                 #{item.unit},
                 #{item.tip},
                 NOW(),
-                #{recipeNo},
+                #{userNo},
                 NOW(),
-                #{recipeNo}
+                #{userNo}
             )
         </foreach>
     </insert>
@@ -249,8 +249,7 @@
         )
     </insert>
 
-    <insert id="insertStep" parameterType="toy.recipit.mapper.vo.StepVo"
-            useGeneratedKeys="true" keyProperty="stepNo">
+    <insert id="insertStep" useGeneratedKeys="true" keyProperty="step.stepNo">
         INSERT INTO RC_STEP (
             RECIPE_NO,
             CONTENTS,
@@ -261,13 +260,13 @@
             EDIT_USER
         )
         VALUES (
-            #{recipeNo},
-            #{contents},
-            #{sortSequence},
+            #{step.recipeNo},
+            #{step.contents},
+            #{step.sortSequence},
             NOW(),
-            #{recipeNo},
+            #{userNo},
             NOW(),
-            #{recipeNo}
+            #{userNo}
         )
     </insert>
 

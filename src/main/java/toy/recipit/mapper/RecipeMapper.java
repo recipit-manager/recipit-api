@@ -48,6 +48,7 @@ public interface RecipeMapper {
     void insertRecipe(InsertRecipeVo recipe);
 
     void insertIngredients(@Param("recipeNo") String recipeNo,
+                           @Param("userNo") String userNo,
                            @Param("ingredientList") List<IngredientDto> ingredientList);
 
     void insertRecipeImage(@Param("recipeNo") String recipeNo,
@@ -56,7 +57,8 @@ public interface RecipeMapper {
                            @Param("sortSequence") int sortSequence,
                            @Param("userNo") String userNo);
 
-    void insertStep(StepVo stepVo);
+    void insertStep(@Param("step") StepVo stepVo,
+                    @Param("userNo") String userNo);
 
     void insertStepImage(@Param("stepNo") String stepNo,
                          @Param("url") String url,
