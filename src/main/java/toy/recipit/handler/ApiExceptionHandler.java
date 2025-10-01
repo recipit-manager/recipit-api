@@ -16,6 +16,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.common.exception.NotLoginStatusException;
@@ -80,6 +81,15 @@ public class ApiExceptionHandler {
         log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
 
         String details = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<String>> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+
+        String details = messageSource.getMessage("image.large.size", null, LocaleContextHolder.getLocale());
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
     }
