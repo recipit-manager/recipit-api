@@ -162,4 +162,133 @@
         ORDER BY CC.CODE
     </select>
 
+    <insert id="insertRecipe" parameterType="toy.recipit.mapper.vo.InsertRecipeVo"
+            useGeneratedKeys="true" keyProperty="recipeNo">
+        INSERT INTO RC_RECIPE (
+            USER_NO,
+            TITLE,
+            DESCRIPTION,
+            CATEGORY_CODE,
+            COOKING_TIME,
+            SERVING_SIZE,
+            DIFFICULTY_CODE,
+            STATUS_CODE,
+            LAST_NOTIFIED_LIKE_COUNT,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES (
+            #{userNo},
+            #{title},
+            #{description},
+            #{categoryCode},
+            #{cookingTime},
+            #{servingSize},
+            #{difficultyCode},
+            #{statusCode},
+            0,
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        )
+    </insert>
+
+    <insert id="insertIngredients">
+        INSERT INTO RC_INGREDIENT (
+            RECIPE_NO,
+            TYPE_CODE,
+            NAME,
+            QUANTITY,
+            UNIT,
+            TIP,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES
+        <foreach collection="ingredientList" item="item" separator=",">
+            (
+                #{recipeNo},
+                #{item.categoryCode},
+                #{item.name},
+                #{item.quantity},
+                #{item.unit},
+                #{item.tip},
+                NOW(),
+                #{recipeNo},
+                NOW(),
+                #{recipeNo}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertRecipeImage">
+        INSERT INTO RC_IMAGE (
+            RECIPE_NO,
+            URL,
+            TYPE_CODE,
+            SORT_SEQUENCE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES (
+            #{recipeNo},
+            #{url},
+            #{typeCode},
+            #{sortSequence},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        )
+    </insert>
+
+    <insert id="insertStep" parameterType="toy.recipit.mapper.vo.StepVo"
+            useGeneratedKeys="true" keyProperty="stepNo">
+        INSERT INTO RC_STEP (
+            RECIPE_NO,
+            CONTENTS,
+            SORT_SEQUENCE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES (
+            #{recipeNo},
+            #{contents},
+            #{sortSequence},
+            NOW(),
+            #{recipeNo},
+            NOW(),
+            #{recipeNo}
+        )
+    </insert>
+
+    <insert id="insertStepImage">
+        INSERT INTO RC_STEP_IMAGE (
+            STEP_NO,
+            URL,
+            SORT_SEQUENCE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES (
+            #{stepNo},
+            #{url},
+            #{sortSequence},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        )
+    </insert>
 </mapper>

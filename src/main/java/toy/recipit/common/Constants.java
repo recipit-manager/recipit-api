@@ -103,4 +103,10 @@ public final class Constants {
         String RECENT = "RECENT";
         String LIKE = "LIKE";
     }
+
+    public interface Difficulty {
+        String EASY = "D1";
+        String NORMAL = "D2";
+        String HARD = "D3";
+    }
 }

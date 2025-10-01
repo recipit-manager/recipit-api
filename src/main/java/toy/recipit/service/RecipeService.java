@@ -3,9 +3,12 @@ package toy.recipit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.ImageKitUtil;
+import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
+import toy.recipit.controller.dto.request.StepDto;
 import toy.recipit.controller.dto.response.CommonCodeAndNameDto;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
 import toy.recipit.controller.dto.response.RecipeDto;
@@ -13,7 +16,9 @@ import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
+import toy.recipit.mapper.vo.InsertRecipeVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
+import toy.recipit.mapper.vo.StepVo;
 
 import java.util.List;
 
@@ -22,6 +27,7 @@ import java.util.List;
 public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final ImageKitUtil imageKitUtil;
+    private final int MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     public List<PopularRecipeDto> getPopularRecipes(String userNo, int size) {
         List<PopularRecipeVo> popularRecipes =
@@ -129,4 +135,97 @@ public class RecipeService {
         return new RecipeListDto(recipelist, categorylist);
     }
 
+    @Transactional
+    public Boolean saveDraftRecipe(String userNo,
+                                   DraftRecipeDto recipeInfo,
+                                   MultipartFile mainImage,
+                                   MultipartFile[] stepImages,
+                                   MultipartFile[] completionImages) {
+
+        InsertRecipeVo recipe = new InsertRecipeVo(
+                userNo,
+                recipeInfo,
+                Constants.Recipe.DRAFT
+        );
+
+        recipeMapper.insertRecipe(recipe);
+        String recipeNo = recipe.getRecipeNo();
+
+        insertIngredients(recipeNo, recipeInfo);
+
+        insertImages(recipeNo, userNo, mainImage, completionImages);
+
+        insertSteps(recipeNo, userNo, recipeInfo, stepImages);
+
+        return true;
+    }
+
+    private void validateFileSize(MultipartFile file) {
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException("image.large.size");
+        }
+    }
+
+    private void insertIngredients(String recipeNo, DraftRecipeDto recipeInfo) {
+        if (!recipeInfo.getIngredientList().isEmpty()) {
+            recipeMapper.insertIngredients(recipeNo, recipeInfo.getIngredientList());
+        }
+    }
+
+    private void insertImages(String recipeNo,
+                              String userNo,
+                              MultipartFile mainImage,
+                              MultipartFile[] completionImages) {
+        try {
+            int sortSequence = 0;
+
+            if (mainImage != null && !mainImage.isEmpty()) {
+                validateFileSize(mainImage);
+                recipeMapper.insertRecipeImage(recipeNo, imageKitUtil.upload(mainImage), Constants.Image.THUMBNAIL, sortSequence, userNo);
+            }
+
+            if (completionImages != null) {
+                for (MultipartFile completionImage : completionImages) {
+                    validateFileSize(completionImage);
+                    recipeMapper.insertRecipeImage(recipeNo, imageKitUtil.upload(completionImage), Constants.Image.COMPLETE, sortSequence++, userNo);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void insertSteps(String recipeNo,
+                             String userNo,
+                             DraftRecipeDto recipeInfo,
+                             MultipartFile[] stepImages) {
+        try {
+            if (!recipeInfo.getStepList().isEmpty()) {
+                int stepSequence = 0;
+
+                for (StepDto stepDto : recipeInfo.getStepList()) {
+                    StepVo stepVo = new StepVo(
+                            null,
+                            recipeNo,
+                            stepDto.getContents(),
+                            stepSequence++
+                    );
+
+                    recipeMapper.insertStep(stepVo);
+
+                    if (stepDto.getImageIndexes() != null && stepImages != null) {
+                        int imgSequence = 0;
+
+                        for (int idx : stepDto.getImageIndexes()) {
+                            MultipartFile stepImage = stepImages[idx];
+                            validateFileSize(stepImage);
+                            recipeMapper.insertStepImage(stepVo.getStepNo(), imageKitUtil.upload(stepImage), imgSequence++, userNo);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

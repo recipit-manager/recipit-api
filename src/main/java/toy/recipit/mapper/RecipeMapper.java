@@ -2,9 +2,12 @@ package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import toy.recipit.controller.dto.request.IngredientDto;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
+import toy.recipit.mapper.vo.InsertRecipeVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
+import toy.recipit.mapper.vo.StepVo;
 
 import java.util.List;
 
@@ -42,4 +45,21 @@ public interface RecipeMapper {
     List<CommonDetailCodeVo> getRecipeCategories(@Param("keyword") String keyword,
                                                 @Param("categoryGroupCode") String categoryGroupCode);
 
+    void insertRecipe(InsertRecipeVo recipe);
+
+    void insertIngredients(@Param("recipeNo") String recipeNo,
+                           @Param("ingredientList") List<IngredientDto> ingredientList);
+
+    void insertRecipeImage(@Param("recipeNo") String recipeNo,
+                           @Param("url") String url,
+                           @Param("typeCode") String typeCode,
+                           @Param("sortSequence") int sortSequence,
+                           @Param("userNo") String userNo);
+
+    void insertStep(StepVo stepVo);
+
+    void insertStepImage(@Param("stepNo") String stepNo,
+                         @Param("url") String url,
+                         @Param("sortSequence") int sortSequence,
+                         @Param("userNo") String userNo);
 }
