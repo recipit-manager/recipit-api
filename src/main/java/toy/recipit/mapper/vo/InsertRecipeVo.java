@@ -1,7 +1,7 @@
 package toy.recipit.mapper.vo;
 
 import lombok.Getter;
-import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.controller.dto.request.RecipeInfoDto;
 
 @Getter
 public class InsertRecipeVo {
@@ -16,7 +16,7 @@ public class InsertRecipeVo {
     private final String statusCode;
 
     public InsertRecipeVo(String userNo,
-                          DraftRecipeDto draftRecipeDto,
+                          RecipeInfoDto draftRecipeDto,
                           String statusCode) {
         this.recipeNo = null;
         this.userNo = userNo;

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.ImageKitUtil;
-import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.controller.dto.request.RecipeInfoDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.IngredientDto;
 import toy.recipit.controller.dto.request.StepDto;
@@ -137,7 +137,7 @@ public class RecipeService {
 
     @Transactional
     public Boolean saveDraftRecipe(String userNo,
-                                   DraftRecipeDto recipeInfo,
+                                   RecipeInfoDto recipeInfo,
                                    MultipartFile mainImage,
                                    MultipartFile[] stepImages,
                                    MultipartFile[] completionImages) throws Exception {
@@ -146,6 +146,31 @@ public class RecipeService {
                 userNo,
                 recipeInfo,
                 Constants.Recipe.DRAFT
+        );
+
+        recipeMapper.insertRecipe(recipe);
+        String recipeNo = recipe.getRecipeNo();
+
+        insertIngredients(recipeNo, userNo, recipeInfo.getIngredientList());
+
+        insertImages(recipeNo, userNo, mainImage, completionImages);
+
+        insertSteps(recipeNo, userNo, recipeInfo, stepImages);
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean uploadRecipe(String userNo,
+                                   RecipeInfoDto recipeInfo,
+                                   MultipartFile mainImage,
+                                   MultipartFile[] stepImages,
+                                   MultipartFile[] completionImages) throws Exception {
+
+        InsertRecipeVo recipe = new InsertRecipeVo(
+                userNo,
+                recipeInfo,
+                Constants.Recipe.RELEASE
         );
 
         recipeMapper.insertRecipe(recipe);
@@ -185,7 +210,7 @@ public class RecipeService {
 
     private void insertSteps(String recipeNo,
                              String userNo,
-                             DraftRecipeDto recipeInfo,
+                             RecipeInfoDto recipeInfo,
                              MultipartFile[] stepImages) throws Exception {
         if (recipeInfo.getStepList().isEmpty()) {
             return;

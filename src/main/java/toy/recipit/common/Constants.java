@@ -92,6 +92,12 @@ public final class Constants {
         String COMPLETE = "IM03";
     }
 
+    public interface ImageParameterName {
+        String MAIN_IMAGE = "mainImage";
+        String STEP_IMAGE = "stepImage";
+        String COMPLETE_IMAGE = "completeImage";
+    }
+
     public interface Recipe{
         String RELEASE = "RS1";
         String PRIVATE = "RS2";
