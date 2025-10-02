@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.util.SessionUtil;
-import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.common.validation.Draft;
+import toy.recipit.common.validation.Upload;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
+import toy.recipit.controller.dto.request.RecipeInfoDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
@@ -113,7 +116,7 @@ public class RecipeController {
     @PostMapping(value = "/draft", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Boolean>> saveDraftRecipe(
             HttpServletRequest request,
-            @Valid @RequestPart DraftRecipeDto recipeInfo,
+            @Validated(Draft.class) @RequestPart RecipeInfoDto recipeInfo,
             @RequestPart(required = false) MultipartFile mainImage,
             @RequestPart(required = false) MultipartFile[] stepImages,
             @RequestPart(required = false) MultipartFile[] completionImages
@@ -121,6 +124,25 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.saveDraftRecipe(
+                userInfo.getUserNo(),
+                recipeInfo,
+                mainImage,
+                stepImages,
+                completionImages
+        )));
+    }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<Boolean>> uploadRecipe(
+            HttpServletRequest request,
+            @Validated(Upload.class) @RequestPart RecipeInfoDto recipeInfo,
+            @RequestPart MultipartFile mainImage,
+            @RequestPart(required = false) MultipartFile[] stepImages,
+            @RequestPart(required = false) MultipartFile[] completionImages
+    ) throws Exception{
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.uploadRecipe(
                 userInfo.getUserNo(),
                 recipeInfo,
                 mainImage,

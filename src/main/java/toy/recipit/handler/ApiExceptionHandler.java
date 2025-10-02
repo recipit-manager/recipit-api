@@ -1,10 +1,12 @@
 package toy.recipit.handler;
 
+import io.netty.util.internal.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import toy.recipit.common.Constants;
 import toy.recipit.common.exception.IngredientNotFoundException;
 import toy.recipit.common.exception.NotLoginStatusException;
@@ -91,6 +94,18 @@ public class ApiExceptionHandler {
 
         String details = messageSource.getMessage("image.large.size", null, LocaleContextHolder.getLocale());
 
+        return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ApiResponse<String>> handleMissingServletRequestPart(MissingServletRequestPartException e, HttpServletRequest req) {
+        log.warn("{} {} - {}", Constants.LogTag.ARGUMENT, req.getMethod(), req.getRequestURI(), e);
+
+        String details = StringUtils.EMPTY;
+
+        if (Constants.ImageParameterName.MAIN_IMAGE.equals(e.getRequestPartName())) {
+            details = messageSource.getMessage("validation.recipe.mainImage.null", null, LocaleContextHolder.getLocale());
+        }
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.BAD_REQUEST, details));
     }
 
