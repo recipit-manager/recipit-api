@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import toy.recipit.common.validation.Draft;
-import toy.recipit.common.validation.Upload;
 
 @Getter
 @RequiredArgsConstructor
