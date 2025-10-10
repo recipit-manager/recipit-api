@@ -43,5 +43,4 @@ public class InsertRecipeVo {
         this.difficultyCode = uploadRecipeDto.getDifficultyCode();
         this.statusCode = statusCode;
     }
-    //TODO : DTO 분리하기
 }

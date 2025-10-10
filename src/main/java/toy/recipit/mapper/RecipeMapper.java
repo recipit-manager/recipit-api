@@ -2,7 +2,8 @@ package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import toy.recipit.controller.dto.request.IngredientDto;
+import toy.recipit.controller.dto.request.DraftIngredientDto;
+import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
@@ -47,9 +48,13 @@ public interface RecipeMapper {
 
     void insertRecipe(InsertRecipeVo recipe);
 
-    void insertIngredients(@Param("recipeNo") String recipeNo,
+    void insertDraftIngredients(@Param("recipeNo") String recipeNo,
                            @Param("userNo") String userNo,
-                           @Param("ingredientList") List<IngredientDto> ingredientList);
+                           @Param("ingredientList") List<DraftIngredientDto> ingredientList);
+
+    void insertUploadIngredients(@Param("recipeNo") String recipeNo,
+                                @Param("userNo") String userNo,
+                                @Param("ingredientList") List<UploadIngredientDto> ingredientList);
 
     void insertRecipeImage(@Param("recipeNo") String recipeNo,
                            @Param("url") String url,

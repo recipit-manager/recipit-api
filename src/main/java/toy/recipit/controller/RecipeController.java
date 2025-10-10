@@ -22,7 +22,8 @@ import toy.recipit.common.util.SessionUtil;
 import toy.recipit.common.validation.Draft;
 import toy.recipit.common.validation.Upload;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
-import toy.recipit.controller.dto.request.RecipeInfoDto;
+import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
@@ -116,7 +117,7 @@ public class RecipeController {
     @PostMapping(value = "/draft", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Boolean>> saveDraftRecipe(
             HttpServletRequest request,
-            @Validated(Draft.class) @RequestPart RecipeInfoDto recipeInfo,
+            @Validated(Draft.class) @RequestPart DraftRecipeDto recipeInfo,
             @RequestPart(required = false) MultipartFile mainImage,
             @RequestPart(required = false) MultipartFile[] stepImages,
             @RequestPart(required = false) MultipartFile[] completionImages
@@ -135,7 +136,7 @@ public class RecipeController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Boolean>> uploadRecipe(
             HttpServletRequest request,
-            @Validated(Upload.class) @RequestPart RecipeInfoDto recipeInfo,
+            @Validated(Upload.class) @RequestPart UploadRecipeDto recipeInfo,
             @RequestPart MultipartFile mainImage,
             @RequestPart(required = false) MultipartFile[] stepImages,
             @RequestPart(required = false) MultipartFile[] completionImages
