@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.util.SessionUtil;
-import toy.recipit.common.validation.Draft;
-import toy.recipit.common.validation.Upload;
-import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
@@ -117,7 +114,7 @@ public class RecipeController {
     @PostMapping(value = "/draft", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Boolean>> saveDraftRecipe(
             HttpServletRequest request,
-            @Validated(Draft.class) @RequestPart DraftRecipeDto recipeInfo,
+            @Valid @RequestPart DraftRecipeDto recipeInfo,
             @RequestPart(required = false) MultipartFile mainImage,
             @RequestPart(required = false) MultipartFile[] stepImages,
             @RequestPart(required = false) MultipartFile[] completionImages
@@ -136,7 +133,7 @@ public class RecipeController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Boolean>> uploadRecipe(
             HttpServletRequest request,
-            @Validated(Upload.class) @RequestPart UploadRecipeDto recipeInfo,
+            @Valid @RequestPart UploadRecipeDto recipeInfo,
             @RequestPart MultipartFile mainImage,
             @RequestPart(required = false) MultipartFile[] stepImages,
             @RequestPart(required = false) MultipartFile[] completionImages
