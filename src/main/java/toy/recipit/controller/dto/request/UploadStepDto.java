@@ -1,5 +1,6 @@
 package toy.recipit.controller.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,8 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class StepDto {
+public class UploadStepDto {
+    @NotBlank(message = "validation.recipe.step.contents.blank")
     @Size(max = 500, message = "validation.recipe.step.contents.size")
     private final String contents;
 

@@ -2,6 +2,7 @@ package toy.recipit.mapper.vo;
 
 import lombok.Getter;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.controller.dto.request.UploadRecipeDto;
 
 @Getter
 public class InsertRecipeVo {
@@ -26,6 +27,20 @@ public class InsertRecipeVo {
         this.cookingTime = draftRecipeDto.getCookingTime();
         this.servingSize = draftRecipeDto.getServingSize();
         this.difficultyCode = draftRecipeDto.getDifficultyCode();
+        this.statusCode = statusCode;
+    }
+
+    public InsertRecipeVo(String userNo,
+                          UploadRecipeDto uploadRecipeDto,
+                          String statusCode) {
+        this.recipeNo = null;
+        this.userNo = userNo;
+        this.title = uploadRecipeDto.getTitle();
+        this.description = uploadRecipeDto.getDescription();
+        this.categoryCode = uploadRecipeDto.getCategoryCode();
+        this.cookingTime = uploadRecipeDto.getCookingTime();
+        this.servingSize = uploadRecipeDto.getServingSize();
+        this.difficultyCode = uploadRecipeDto.getDifficultyCode();
         this.statusCode = statusCode;
     }
 }

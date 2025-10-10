@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
+import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
@@ -121,6 +122,25 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.saveDraftRecipe(
+                userInfo.getUserNo(),
+                recipeInfo,
+                mainImage,
+                stepImages,
+                completionImages
+        )));
+    }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<Boolean>> uploadRecipe(
+            HttpServletRequest request,
+            @Valid @RequestPart UploadRecipeDto recipeInfo,
+            @RequestPart MultipartFile mainImage,
+            @RequestPart(required = false) MultipartFile[] stepImages,
+            @RequestPart(required = false) MultipartFile[] completionImages
+    ) throws Exception{
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.uploadRecipe(
                 userInfo.getUserNo(),
                 recipeInfo,
                 mainImage,

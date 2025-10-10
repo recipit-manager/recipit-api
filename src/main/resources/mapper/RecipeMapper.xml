@@ -196,7 +196,7 @@
         )
     </insert>
 
-    <insert id="insertIngredients">
+    <insert id="insertDraftIngredients">
         INSERT INTO RC_INGREDIENT (
             RECIPE_NO,
             TYPE_CODE,
@@ -222,6 +222,36 @@
                 #{userNo},
                 NOW(),
                 #{userNo}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertUploadIngredients">
+        INSERT INTO RC_INGREDIENT (
+        RECIPE_NO,
+        TYPE_CODE,
+        NAME,
+        QUANTITY,
+        UNIT,
+        TIP,
+        CREATE_DATETIME,
+        CREATE_USER,
+        EDIT_DATETIME,
+        EDIT_USER
+        )
+        VALUES
+        <foreach collection="ingredientList" item="item" separator=",">
+            (
+            #{recipeNo},
+            #{item.categoryCode},
+            #{item.name},
+            #{item.quantity},
+            #{item.unit},
+            #{item.tip},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
             )
         </foreach>
     </insert>

@@ -29,11 +29,11 @@ public class DraftRecipeDto {
 
     @Valid
     @Size(max = 50, message = "validation.recipe.ingredient.size")
-    private final List<IngredientDto> ingredientList;
+    private final List<DraftIngredientDto> ingredientList;
 
     @Valid
     @Size(max = 20, message = "validation.recipe.step.size")
-    private final List<StepDto> stepList;
+    private final List<DraftStepDto> stepList;
 
     public DraftRecipeDto(
             String title,
@@ -42,8 +42,8 @@ public class DraftRecipeDto {
             Integer cookingTime,
             Integer servingSize,
             String difficultyCode,
-            List<IngredientDto> ingredientList,
-            List<StepDto> stepList
+            List<DraftIngredientDto> ingredientList,
+            List<DraftStepDto> stepList
     ) {
         this.title = (title == null ? StringUtils.EMPTY : title);
         this.description = (description == null ? StringUtils.EMPTY : description);
