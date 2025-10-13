@@ -1,14 +1,15 @@
 package toy.recipit.mapper.vo;
 
-
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
+@Setter
+@NoArgsConstructor
 public class StepVo {
-    private final String stepNo;
-    private final String recipeNo;
-    private final String contents;
-    private final int sortSequence;
+    private String content;
+    private List<String> imagePathList;
 }

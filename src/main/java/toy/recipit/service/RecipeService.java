@@ -6,25 +6,32 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.Constants;
 import toy.recipit.common.util.ImageKitUtil;
-import toy.recipit.controller.dto.request.DraftRecipeDto;
-import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.DraftIngredientDto;
+import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.DraftStepDto;
+import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.request.UploadStepDto;
 import toy.recipit.controller.dto.response.CommonCodeAndNameDto;
+import toy.recipit.controller.dto.response.IngredientDto;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
+import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
+import toy.recipit.controller.dto.response.StepDto;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
+import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
+import toy.recipit.mapper.vo.InsertStepVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
+import toy.recipit.mapper.vo.RecipeDetailVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
 import toy.recipit.mapper.vo.StepVo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +61,7 @@ public class RecipeService {
 
     @Transactional
     public Boolean likeRecipe(String userNo, String recipeNo) {
-        if(!recipeMapper.isRecipeExists(recipeNo)) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
             throw new IllegalArgumentException("recipe.notFoundRecipe");
         }
 
@@ -69,7 +76,7 @@ public class RecipeService {
 
     @Transactional
     public Boolean unlikeRecipe(String userNo, String recipeNo) {
-        if(!recipeMapper.isRecipeExists(recipeNo)) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
             throw new IllegalArgumentException("recipe.notFoundRecipe");
         }
 
@@ -165,10 +172,10 @@ public class RecipeService {
 
     @Transactional
     public Boolean uploadRecipe(String userNo,
-                                   UploadRecipeDto recipeInfo,
-                                   MultipartFile mainImage,
-                                   MultipartFile[] stepImages,
-                                   MultipartFile[] completionImages) throws Exception {
+                                UploadRecipeDto recipeInfo,
+                                MultipartFile mainImage,
+                                MultipartFile[] stepImages,
+                                MultipartFile[] completionImages) throws Exception {
 
         InsertRecipeVo recipe = new InsertRecipeVo(
                 userNo,
@@ -186,6 +193,105 @@ public class RecipeService {
         insertUploadSteps(recipeNo, userNo, recipeInfo, stepImages);
 
         return true;
+    }
+
+    public RecipeDetailDto getRecipeDetail(String recipeNo, String userNo) {
+        RecipeDetailVo recipeDetailVo = getRecipeDetailVo(recipeNo, userNo);
+
+        List<IngredientDto> ingredientDtoList = getIngredientDtoList(recipeNo);
+
+        List<StepDto> stepDtoList = getStepDtoList(recipeNo);
+
+        String mainImageUrl = imageKitUtil.getUrl(recipeDetailVo.getMainImagePath())
+                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다: " + recipeDetailVo.getMainImagePath()));
+
+        List<String> completionImageUrls = getCompletionImageUrls(recipeDetailVo);
+
+        return buildRecipeDetailDto(recipeDetailVo, mainImageUrl, completionImageUrls, ingredientDtoList, stepDtoList);
+    }
+
+    private RecipeDetailVo getRecipeDetailVo(String recipeNo, String userNo) {
+        RecipeDetailVo recipeDetailVo = recipeMapper.getRecipeDetail(
+                recipeNo,
+                userNo,
+                Constants.GroupCode.DIFFICULTY,
+                Constants.GroupCode.RECIPE_STATUS,
+                Constants.Image.THUMBNAIL,
+                Constants.Image.COMPLETE
+        );
+
+        if (recipeDetailVo == null) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        return recipeDetailVo;
+    }
+
+
+    private List<IngredientDto> getIngredientDtoList(String recipeNo) {
+        List<IngredientVo> ingredientVoList = recipeMapper.getIngredients(recipeNo);
+
+        return ingredientVoList == null ? List.of()
+                : ingredientVoList.stream()
+                .map(vo -> new IngredientDto(
+                        vo.getName(),
+                        vo.getCategoryCode(),
+                        vo.getQuantity(),
+                        vo.getUnit(),
+                        vo.getTip()
+                ))
+                .toList();
+    }
+
+    private RecipeDetailDto buildRecipeDetailDto(
+            RecipeDetailVo recipeDetailVo,
+            String mainImageUrl,
+            List<String> completionImageUrls,
+            List<IngredientDto> ingredientDtoList,
+            List<StepDto> stepDtoList
+    ) {
+        return new RecipeDetailDto(
+                recipeDetailVo.getNickname(),
+                recipeDetailVo.getRecipeNo(),
+                recipeDetailVo.getTitle(),
+                recipeDetailVo.getDescription(),
+                recipeDetailVo.getCookingTime(),
+                recipeDetailVo.getServingSize(),
+                recipeDetailVo.getDifficulty(),
+                mainImageUrl,
+                completionImageUrls,
+                ingredientDtoList,
+                stepDtoList,
+                recipeDetailVo.getLikeCount(),
+                recipeDetailVo.getLikeYn(),
+                recipeDetailVo.getBookmarkYn(),
+                recipeDetailVo.getReportYn(),
+                recipeDetailVo.getStatusCode(),
+                recipeDetailVo.getStatusName()
+        );
+    }
+
+    private List<String> getCompletionImageUrls(RecipeDetailVo recipeDetailVo) {
+        return recipeDetailVo.getCompletionImagePathList() == null ? List.of()
+                : recipeDetailVo.getCompletionImagePathList().stream()
+                .map(completionImagePath -> imageKitUtil.getUrl(completionImagePath)
+                        .orElseThrow(() -> new RuntimeException("잘못된 경로입니다: " + completionImagePath)))
+                .toList();
+    }
+
+    private List<StepDto> getStepDtoList(String recipeNo) {
+        List<StepVo> stepVoList = recipeMapper.getSteps(recipeNo);
+
+        return stepVoList == null ? List.of()
+                : stepVoList.stream()
+                .map(stepVo -> new StepDto(
+                        stepVo.getContent(),
+                        stepVo.getImagePathList().stream()
+                                .map(stepImagePath -> imageKitUtil.getUrl(stepImagePath)
+                                        .orElseThrow(() -> new RuntimeException("잘못된 경로입니다: " + stepImagePath)))
+                                .toList()
+                ))
+                .toList();
     }
 
     private void insertDraftIngredients(String recipeNo, String userNo, List<DraftIngredientDto> ingredientList) {
@@ -218,9 +324,9 @@ public class RecipeService {
     }
 
     private void insertDraftSteps(String recipeNo,
-                             String userNo,
-                             DraftRecipeDto recipeInfo,
-                             MultipartFile[] stepImages) throws Exception {
+                                  String userNo,
+                                  DraftRecipeDto recipeInfo,
+                                  MultipartFile[] stepImages) throws Exception {
         if (recipeInfo.getStepList().isEmpty()) {
             return;
         }
@@ -228,7 +334,7 @@ public class RecipeService {
         int stepSequence = 0;
 
         for (DraftStepDto stepDto : recipeInfo.getStepList()) {
-            StepVo stepVo = new StepVo(
+            InsertStepVo stepVo = new InsertStepVo(
                     null,
                     recipeNo,
                     stepDto.getContents(),
@@ -256,9 +362,9 @@ public class RecipeService {
     }
 
     private void insertUploadSteps(String recipeNo,
-                                  String userNo,
-                                  UploadRecipeDto recipeInfo,
-                                  MultipartFile[] stepImages) throws Exception {
+                                   String userNo,
+                                   UploadRecipeDto recipeInfo,
+                                   MultipartFile[] stepImages) throws Exception {
         if (recipeInfo.getStepList().isEmpty()) {
             return;
         }
@@ -266,7 +372,7 @@ public class RecipeService {
         int stepSequence = 0;
 
         for (UploadStepDto stepDto : recipeInfo.getStepList()) {
-            StepVo stepVo = new StepVo(
+            InsertStepVo stepVo = new InsertStepVo(
                     null,
                     recipeNo,
                     stepDto.getContents(),

@@ -320,4 +320,143 @@
             #{userNo}
         )
     </insert>
+
+    <select id="getRecipeDetail" parameterType="map" resultMap="RecipeDetailMap">
+
+        SELECT
+        R.RECIPE_NO             AS recipeNo,
+        U.NICK_NAME              AS nickname,
+        R.TITLE                 AS title,
+        R.DESCRIPTION           AS description,
+        R.COOKING_TIME          AS cookingTime,
+        R.SERVING_SIZE          AS servingSize,
+        DC.CODE_NAME            AS difficulty,
+        SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END)     AS likeCount,
+        R.STATUS_CODE           AS statusCode,
+        SC.CODE_NAME            AS statusName,
+
+        CASE
+            WHEN I.TYPE_CODE = #{thumbnailImageCode}
+                THEN I.URL
+        END AS mainImagePath,
+
+        MAX(
+            CASE
+                WHEN L.USER_NO = #{userNo}
+                    AND L.LIKE_YN = 'Y'
+                    THEN 'Y'
+                ELSE 'N'
+            END
+        ) AS likeYn,
+
+        MAX(CASE
+                WHEN B.USER_NO = #{userNo}
+                    THEN 'Y'
+                ELSE 'N'
+            END
+        ) AS bookmarkYn,
+
+        MAX(
+            CASE
+                WHEN RP.USER_NO = #{userNo}
+                    THEN 'Y'
+                ELSE 'N'
+            END
+        ) AS reportYn
+
+        FROM RC_RECIPE R
+            INNER JOIN US_USER U
+                ON U.USER_NO = R.USER_NO
+            INNER JOIN CM_DETAIL_CODE DC
+                ON DC.CODE = R.DIFFICULTY_CODE
+                AND DC.GROUP_CODE = #{difficultyGroupCode}
+                AND DC.USE_YN = 'Y'
+            INNER JOIN CM_DETAIL_CODE SC
+                ON SC.CODE = R.STATUS_CODE
+                AND SC.GROUP_CODE = #{recipeStatusGroupCode}
+                AND SC.USE_YN = 'Y'
+            LEFT JOIN RC_IMAGE I
+                ON I.RECIPE_NO = R.RECIPE_NO
+                AND I.TYPE_CODE = #{thumbnailImageCode}
+            LEFT JOIN RC_LIKE L
+                ON L.RECIPE_NO = R.RECIPE_NO
+            LEFT JOIN RC_BOOKMARK_RECIPE B
+                ON B.RECIPE_NO = R.RECIPE_NO
+                AND B.USER_NO = #{userNo}
+            LEFT JOIN RC_REPORT RP
+                ON RP.RECIPE_NO = R.RECIPE_NO
+                AND RP.USER_NO = #{userNo}
+        WHERE R.RECIPE_NO = #{recipeNo}
+    </select>
+
+    <select id="getCompletionImages"
+            parameterType="string"
+            resultType="string">
+        SELECT
+            URL
+        FROM RC_IMAGE
+        WHERE RECIPE_NO = #{recipeNo}
+          AND TYPE_CODE = 'IM03'
+        ORDER BY SORT_SEQUENCE
+    </select>
+
+    <resultMap id="RecipeDetailMap" type="toy.recipit.mapper.vo.RecipeDetailVo">
+        <id     property="recipeNo" column="recipeNo"/>
+        <result property="nickname" column="nickname"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="cookingTime" column="cookingTime"/>
+        <result property="servingSize" column="servingSize"/>
+        <result property="difficulty" column="difficulty"/>
+        <result property="likeCount" column="likeCount"/>
+        <result property="statusCode" column="statusCode"/>
+        <result property="statusName" column="statusName"/>
+        <result property="mainImagePath" column="mainImagePath"/>
+        <result property="likeYn" column="likeYn"/>
+        <result property="bookmarkYn" column="bookmarkYn"/>
+        <result property="reportYn" column="reportYn"/>
+
+        <collection property="completionImagePathList"
+                    column="recipeNo"
+                    select="getCompletionImages"/>
+    </resultMap>
+
+    <select id="getIngredients" resultType="toy.recipit.mapper.vo.IngredientVo">
+
+        SELECT
+            I.NAME           AS name,
+            I.TYPE_CODE      AS categoryCode,
+            I.QUANTITY       AS quantity,
+            I.UNIT           AS unit,
+            I.TIP            AS tip
+        FROM RC_INGREDIENT I
+        WHERE I.RECIPE_NO = #{recipeNo}
+        ORDER BY I.INGREDIENT_NO
+    </select>
+
+    <select id="getSteps" resultMap="StepMap">
+
+        SELECT
+            S.STEP_NO     AS stepNo,
+            S.CONTENTS    AS content
+        FROM RC_STEP S
+        WHERE S.RECIPE_NO = #{recipeNo}
+        ORDER BY S.STEP_NO
+    </select>
+
+    <select id="getStepImages" resultType="string">
+        SELECT
+            SI.URL
+        FROM RC_STEP_IMAGE SI
+        WHERE SI.STEP_NO = #{stepNo}
+        ORDER BY SI.SORT_SEQUENCE
+    </select>
+
+    <resultMap id="StepMap" type="toy.recipit.mapper.vo.StepVo">
+        <result property="content" column="content"/>
+
+        <collection property="imagePathList"
+                    column="stepNo"
+                    select="getStepImages"/>
+    </resultMap>
 </mapper>

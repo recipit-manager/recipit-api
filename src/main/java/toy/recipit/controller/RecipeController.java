@@ -23,6 +23,7 @@ import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
+import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.SessionUserInfo;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
@@ -147,5 +148,20 @@ public class RecipeController {
                 stepImages,
                 completionImages
         )));
+    }
+
+    @GetMapping("/{recipeNo}")
+    public ResponseEntity<ApiResponse<RecipeDetailDto>> getRecipeDetail(
+            @PathVariable("recipeNo") String recipeNo,
+            HttpServletRequest request) {
+
+        String userNo = StringUtil.EMPTY_STRING;
+
+        if (sessionUtil.isSessionExists(request)) {
+            SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+            userNo = userInfo.getUserNo();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecipeDetail(recipeNo, userNo)));
     }
 }
