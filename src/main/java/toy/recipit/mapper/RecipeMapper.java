@@ -5,9 +5,12 @@ import org.apache.ibatis.annotations.Param;
 import toy.recipit.controller.dto.request.DraftIngredientDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
+import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
+import toy.recipit.mapper.vo.RecipeDetailVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
+import toy.recipit.mapper.vo.InsertStepVo;
 import toy.recipit.mapper.vo.StepVo;
 
 import java.util.List;
@@ -62,11 +65,22 @@ public interface RecipeMapper {
                            @Param("sortSequence") int sortSequence,
                            @Param("userNo") String userNo);
 
-    void insertStep(@Param("step") StepVo stepVo,
+    void insertStep(@Param("step") InsertStepVo stepVo,
                     @Param("userNo") String userNo);
 
     void insertStepImage(@Param("stepNo") String stepNo,
                          @Param("url") String url,
                          @Param("sortSequence") int sortSequence,
                          @Param("userNo") String userNo);
+
+    RecipeDetailVo getRecipeDetail(@Param("recipeNo") String recipeNo,
+                                   @Param("userNo") String userNo,
+                                   @Param("difficultyGroupCode") String difficultyGroupCode,
+                                   @Param("recipeStatusGroupCode") String recipeStatusGroupCode,
+                                   @Param("thumbnailImageCode") String thumbnailImageCode,
+                                   @Param("completeImageCode") String completeImageCode);
+
+    List<IngredientVo> getIngredients(@Param("recipeNo") String recipeNo);
+
+    List<StepVo> getSteps(@Param("recipeNo") String recipeNo);
 }

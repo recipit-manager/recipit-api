@@ -32,6 +32,7 @@ public final class Constants {
         String NOTIFICATION = "AC300";
         String EMAIL_DOMAIN = "AC400";
         String RECIPE_CATEGORY = "RC100";
+        String RECIPE_STATUS = "RC200";
         String INGREDIENT_TYPE = "RC300";
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY = "RC320";
