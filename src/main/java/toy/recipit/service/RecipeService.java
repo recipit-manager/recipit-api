@@ -9,6 +9,7 @@ import toy.recipit.common.util.ImageKitUtil;
 import toy.recipit.controller.dto.request.DraftIngredientDto;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.DraftStepDto;
+import toy.recipit.controller.dto.request.EditPreferCategoryDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
@@ -259,6 +260,17 @@ public class RecipeService {
                                 .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + preferCategoryVo.getIconUrl()))
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public Boolean changePreferenceCategoryStatus(String userNo, EditPreferCategoryDto editPreferCategoryDto) {
+        recipeMapper.changePreferenceCategoryStatus(
+                userNo,
+                editPreferCategoryDto.getCategoryCode(),
+                editPreferCategoryDto.getStatusCode()
+        );
+
+        return true;
     }
 
     private RecipeDetailVo getRecipeDetailVo(String recipeNo, String userNo) {
