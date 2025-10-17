@@ -210,6 +210,28 @@ public class RecipeService {
         return buildRecipeDetailDto(recipeDetailVo, mainImageUrl, completionImageUrls, ingredientDtoList, stepDtoList);
     }
 
+    @Transactional
+    public Boolean bookmarkRecipe(String userNo, String recipeNo) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        recipeMapper.insertBookmark(userNo, recipeNo);
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean unBookmarkRecipe(String userNo, String recipeNo) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        recipeMapper.deleteBookmark(userNo, recipeNo);
+
+        return true;
+    }
+
     private RecipeDetailVo getRecipeDetailVo(String recipeNo, String userNo) {
         RecipeDetailVo recipeDetailVo = recipeMapper.getRecipeDetail(
                 recipeNo,

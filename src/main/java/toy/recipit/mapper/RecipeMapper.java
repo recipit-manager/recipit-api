@@ -83,4 +83,10 @@ public interface RecipeMapper {
     List<IngredientVo> getIngredients(@Param("recipeNo") String recipeNo);
 
     List<StepVo> getSteps(@Param("recipeNo") String recipeNo);
+
+    void insertBookmark(@Param("userNo") String userNo,
+                        @Param("recipeNo") String recipeNo);
+
+    void deleteBookmark(@Param("userNo") String userNo,
+                        @Param("recipeNo") String recipeNo);
 }
