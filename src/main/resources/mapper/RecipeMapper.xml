@@ -534,4 +534,11 @@
         WHERE P.USER_NO = #{userNo}
         ORDER BY C.SORT_SEQUENCE
     </select>
+
+    <update id="changePreferenceCategoryStatus">
+        UPDATE RC_PREFER_CATEGORY
+        SET STATUS_CODE = #{statusCode}
+        WHERE CATEGORY_CODE = #{categoryCode}
+          AND USER_NO = #{userNo}
+    </update>
 </mapper>

@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
+import toy.recipit.controller.dto.request.EditPreferCategoryDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
@@ -195,5 +198,15 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getPreferenceCategories(userInfo.getUserNo())));
+    }
+
+    @PatchMapping("/preference-category/status")
+    public ResponseEntity<ApiResponse<Boolean>> changePreferenceCategoryStatus(
+            HttpServletRequest request,
+            @RequestBody @Valid EditPreferCategoryDto editPreferCategoryDto
+            ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.changePreferenceCategoryStatus(userInfo.getUserNo(), editPreferCategoryDto)));
     }
 }

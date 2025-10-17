@@ -100,4 +100,8 @@ public interface RecipeMapper {
     List<PreferCategoryVo> getPreferenceCategories(@Param("userNo") String userNo,
                                                    @Param("categoryGroupCode") String categoryGroupCode,
                                                    @Param("statusGroupCode") String statusGroupCode);
+
+    void changePreferenceCategoryStatus(@Param("userNo") String userNo,
+                                        @Param("categoryCode") String categoryCode,
+                                        @Param("statusCode") String statusCode);
 }
