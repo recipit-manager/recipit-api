@@ -459,4 +459,31 @@
                     column="stepNo"
                     select="getStepImages"/>
     </resultMap>
+
+    <insert id="insertBookmark">
+        INSERT INTO RC_BOOKMARK_RECIPE
+        (
+            USER_NO,
+            RECIPE_NO,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES
+            (
+                #{userNo},
+                #{recipeNo},
+                NOW(),
+                #{userNo},
+                NOW(),
+                #{userNo}
+            )
+    </insert>
+
+    <delete id="deleteBookmark">
+        DELETE FROM RC_BOOKMARK_RECIPE
+        WHERE USER_NO = #{userNo}
+          AND RECIPE_NO = #{recipeNo}
+    </delete>
 </mapper>

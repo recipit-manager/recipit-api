@@ -31,7 +31,6 @@ import toy.recipit.mapper.vo.SearchRecipeVo;
 import toy.recipit.mapper.vo.StepVo;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -208,6 +207,28 @@ public class RecipeService {
         List<String> completionImageUrls = getCompletionImageUrls(recipeDetailVo);
 
         return buildRecipeDetailDto(recipeDetailVo, mainImageUrl, completionImageUrls, ingredientDtoList, stepDtoList);
+    }
+
+    @Transactional
+    public Boolean bookmarkRecipe(String userNo, String recipeNo) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        recipeMapper.insertBookmark(userNo, recipeNo);
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean unBookmarkRecipe(String userNo, String recipeNo) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        recipeMapper.deleteBookmark(userNo, recipeNo);
+
+        return true;
     }
 
     private RecipeDetailVo getRecipeDetailVo(String recipeNo, String userNo) {

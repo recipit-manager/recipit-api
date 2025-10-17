@@ -164,4 +164,26 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecipeDetail(recipeNo, userNo)));
     }
+
+    @PostMapping("/{recipeNo}/bookmark")
+    public ResponseEntity<ApiResponse<Boolean>> bookmarkRecipe(
+            HttpServletRequest request,
+            @PathVariable
+            String recipeNo
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.bookmarkRecipe(userInfo.getUserNo(), recipeNo)));
+    }
+
+    @DeleteMapping("/{recipeNo}/bookmark")
+    public ResponseEntity<ApiResponse<Boolean>> unBookmarkRecipe(
+            HttpServletRequest request,
+            @PathVariable
+            String recipeNo
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.unBookmarkRecipe(userInfo.getUserNo(), recipeNo)));
+    }
 }
