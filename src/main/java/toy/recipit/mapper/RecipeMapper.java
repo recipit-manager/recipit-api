@@ -6,11 +6,12 @@ import toy.recipit.controller.dto.request.DraftIngredientDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
-import toy.recipit.mapper.vo.PopularRecipeVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
+import toy.recipit.mapper.vo.InsertStepVo;
+import toy.recipit.mapper.vo.PopularRecipeVo;
+import toy.recipit.mapper.vo.PreferCategoryVo;
 import toy.recipit.mapper.vo.RecipeDetailVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
-import toy.recipit.mapper.vo.InsertStepVo;
 import toy.recipit.mapper.vo.StepVo;
 
 import java.util.List;
@@ -89,4 +90,14 @@ public interface RecipeMapper {
 
     void deleteBookmark(@Param("userNo") String userNo,
                         @Param("recipeNo") String recipeNo);
+
+    boolean isPreferCategoriesExists(@Param("userNo") String userNo);
+
+    void insertPreferCategories(@Param("userNo") String userNo,
+                                       @Param("categoryGroupCode") String categoryGroupCode,
+                                       @Param("defaultStatusCode") String defaultStatusCode);
+
+    List<PreferCategoryVo> getPreferenceCategories(@Param("userNo") String userNo,
+                                                   @Param("categoryGroupCode") String categoryGroupCode,
+                                                   @Param("statusGroupCode") String statusGroupCode);
 }

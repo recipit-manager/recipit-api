@@ -16,6 +16,7 @@ import toy.recipit.controller.dto.request.UploadStepDto;
 import toy.recipit.controller.dto.response.CommonCodeAndNameDto;
 import toy.recipit.controller.dto.response.IngredientDto;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
+import toy.recipit.controller.dto.response.PreferCategoryDto;
 import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
@@ -26,6 +27,7 @@ import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
 import toy.recipit.mapper.vo.InsertStepVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
+import toy.recipit.mapper.vo.PreferCategoryVo;
 import toy.recipit.mapper.vo.RecipeDetailVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
 import toy.recipit.mapper.vo.StepVo;
@@ -229,6 +231,34 @@ public class RecipeService {
         recipeMapper.deleteBookmark(userNo, recipeNo);
 
         return true;
+    }
+
+    @Transactional
+    public List<PreferCategoryDto> getPreferenceCategories(String userNo) {
+        if (!recipeMapper.isPreferCategoriesExists(userNo)) {
+            recipeMapper.insertPreferCategories(
+                    userNo,
+                    Constants.GroupCode.RECIPE_CATEGORY,
+                    Constants.PreferCategory.AVERAGE
+            );
+        }
+
+        List<PreferCategoryVo> preferCategoryVoList = recipeMapper.getPreferenceCategories(
+                userNo,
+                Constants.GroupCode.RECIPE_CATEGORY,
+                Constants.GroupCode.PREFER_CATEGORY
+        );
+
+        return preferCategoryVoList.stream()
+                .map(preferCategoryVo -> new PreferCategoryDto(
+                        preferCategoryVo.getCategoryCode(),
+                        preferCategoryVo.getCategoryName(),
+                        preferCategoryVo.getStatusCode(),
+                        preferCategoryVo.getStatusName(),
+                        imageKitUtil.getUrl(preferCategoryVo.getIconUrl())
+                                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + preferCategoryVo.getIconUrl()))
+                ))
+                .toList();
     }
 
     private RecipeDetailVo getRecipeDetailVo(String recipeNo, String userNo) {

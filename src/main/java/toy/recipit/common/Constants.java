@@ -36,6 +36,7 @@ public final class Constants {
         String INGREDIENT_TYPE = "RC300";
         String REPORT_CATEGORY = "RC400";
         String DIFFICULTY = "RC320";
+        String PREFER_CATEGORY = "RC500";
 
         enum RefriIngredientCategory {
             RI100,  // 채소
@@ -115,5 +116,11 @@ public final class Constants {
         String EASY = "D1";
         String NORMAL = "D2";
         String HARD = "D3";
+    }
+
+    public interface PreferCategory{
+        String PREFERRED = "RF01";
+        String AVERAGE = "RF02";
+        String NOT_PREFERRED = "RF03";
     }
 }

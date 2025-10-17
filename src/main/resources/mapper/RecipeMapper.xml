@@ -486,4 +486,52 @@
         WHERE USER_NO = #{userNo}
           AND RECIPE_NO = #{recipeNo}
     </delete>
+
+    <select id="isPreferCategoriesExists" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM RC_PREFER_CATEGORY
+            WHERE USER_NO = #{userNo}
+        )
+    </select>
+
+    <insert id="insertPreferCategories">
+        INSERT INTO RC_PREFER_CATEGORY (
+            CATEGORY_CODE,
+            USER_NO,
+            STATUS_CODE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        SELECT
+            CODE AS CATEGORY_CODE,
+            #{userNo},
+            #{defaultStatusCode},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        FROM CM_DETAIL_CODE
+        WHERE GROUP_CODE = #{categoryGroupCode}
+    </insert>
+
+    <select id="getPreferenceCategories" resultType="toy.recipit.mapper.vo.PreferCategoryVo">
+        SELECT
+            C.CODE AS categoryCode,
+            C.CODE_NAME AS categoryName,
+            P.STATUS_CODE AS statusCode,
+            S.CODE_NAME AS statusName,
+            C.NOTE_1 AS iconUrl
+        FROM RC_PREFER_CATEGORY P
+                 INNER JOIN CM_DETAIL_CODE C
+                           ON C.GROUP_CODE = #{categoryGroupCode}
+                               AND C.CODE = P.CATEGORY_CODE
+                 INNER JOIN CM_DETAIL_CODE S
+                           ON S.GROUP_CODE = #{statusGroupCode}
+                               AND S.CODE = P.STATUS_CODE
+        WHERE P.USER_NO = #{userNo}
+        ORDER BY C.SORT_SEQUENCE
+    </select>
 </mapper>
