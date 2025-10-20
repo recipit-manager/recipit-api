@@ -552,4 +552,10 @@
         WHERE R.USER_NO = #{userNo}
           AND R.STATUS_CODE = #{statusCode};
     </select>
+
+    <select id="getUserBookmarkCount" resultType="int">
+        SELECT COUNT(*)
+        FROM RC_BOOKMARK_RECIPE
+        WHERE USER_NO = #{userNo}
+    </select>
 </mapper>

@@ -227,4 +227,13 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserLikeCount(userInfo.getUserNo())));
     }
+
+    @GetMapping("/bookmark/count")
+    public ResponseEntity<ApiResponse<Integer>> getUserBookmarkCount(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserBookmarkCount(userInfo.getUserNo())));
+    }
 }
