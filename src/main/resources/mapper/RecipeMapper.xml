@@ -541,4 +541,15 @@
         WHERE CATEGORY_CODE = #{categoryCode}
           AND USER_NO = #{userNo}
     </update>
+
+    <select id="getLikeCount" resultType="int">
+        SELECT
+            COUNT(L.RECIPE_NO) AS total_like_count
+        FROM RC_RECIPE R
+                 INNER JOIN RC_LIKE L
+                      ON R.RECIPE_NO = L.RECIPE_NO
+                          AND L.LIKE_YN = 'Y'
+        WHERE R.USER_NO = #{userNo}
+          AND R.STATUS_CODE = #{statusCode};
+    </select>
 </mapper>

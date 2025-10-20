@@ -209,4 +209,22 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.changePreferenceCategoryStatus(userInfo.getUserNo(), editPreferCategoryDto)));
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<ApiResponse<Integer>> getRecipeCount(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecipeCount(userInfo.getUserNo())));
+    }
+
+    @GetMapping("/like/count")
+    public ResponseEntity<ApiResponse<Integer>> getFavoriteRecipeCount(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getLikeCount(userInfo.getUserNo())));
+    }
 }

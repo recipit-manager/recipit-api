@@ -61,6 +61,14 @@ public class RecipeService {
         return recipeMapper.getRecipeCount(userNo, Constants.Recipe.DRAFT);
     }
 
+    public int getRecipeCount(String userNo) {
+        return recipeMapper.getRecipeCount(userNo, Constants.Recipe.RELEASE);
+    }
+
+    public int getLikeCount(String userNo) {
+        return recipeMapper.getLikeCount(userNo, Constants.Recipe.RELEASE);
+    }
+
     @Transactional
     public Boolean likeRecipe(String userNo, String recipeNo) {
         if (!recipeMapper.isRecipeExists(recipeNo)) {
