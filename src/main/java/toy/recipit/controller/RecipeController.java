@@ -220,11 +220,11 @@ public class RecipeController {
     }
 
     @GetMapping("/like/count")
-    public ResponseEntity<ApiResponse<Integer>> getFavoriteRecipeCount(
+    public ResponseEntity<ApiResponse<Integer>> getUserLikeCount(
             HttpServletRequest request
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getLikeCount(userInfo.getUserNo())));
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserLikeCount(userInfo.getUserNo())));
     }
 }
