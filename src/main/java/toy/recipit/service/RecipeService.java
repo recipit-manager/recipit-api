@@ -66,7 +66,7 @@ public class RecipeService {
     }
 
     public int getUserLikeCount(String userNo) {
-        return recipeMapper.getLikeCount(userNo, Constants.Recipe.RELEASE);
+        return recipeMapper.getUserLikeCount(userNo, Constants.Recipe.RELEASE);
     }
 
     @Transactional

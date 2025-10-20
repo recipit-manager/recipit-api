@@ -542,7 +542,7 @@
           AND USER_NO = #{userNo}
     </update>
 
-    <select id="getLikeCount" resultType="int">
+    <select id="getUserLikeCount" resultType="int">
         SELECT
             COUNT(L.RECIPE_NO) AS total_like_count
         FROM RC_RECIPE R
