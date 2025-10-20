@@ -28,6 +28,8 @@ public interface RecipeMapper {
     int getUserLikeCount(@Param("userNo") String userNo,
                      @Param("statusCode") String statusCode);
 
+    int getUserBookmarkCount(@Param("userNo") String userNo);
+
     Boolean isRecipeExists(@Param("recipeNo") String recipeNo);
 
     Boolean isLikeExists(@Param("userNo") String userNo,
