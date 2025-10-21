@@ -243,7 +243,7 @@ public class RecipeController {
     public ResponseEntity<ApiResponse<List<UserRecipeDto>>> getUserRecipes(
             HttpServletRequest request,
             @Valid @ModelAttribute GetPageDto getPageDto
-            ) {
+    ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserRecipes(userInfo.getUserNo(), getPageDto)));
