@@ -109,4 +109,11 @@ public interface RecipeMapper {
     void changePreferenceCategoryStatus(@Param("userNo") String userNo,
                                         @Param("categoryCode") String categoryCode,
                                         @Param("statusCode") String statusCode);
+
+    List<SearchRecipeVo> getUserRecipes(@Param("userNo") String userNo,
+                                        @Param("offset") int offset,
+                                        @Param("size") int size,
+                                        @Param("imageTypeCode") String imageTypeCode,
+                                        @Param("difficultyGroupCode") String difficultyGroupCode,
+                                        @Param("statusCode") String statusCode);
 }
