@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import toy.recipit.common.util.SessionUtil;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.EditPreferCategoryDto;
+import toy.recipit.controller.dto.request.GetPageDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
@@ -30,6 +31,7 @@ import toy.recipit.controller.dto.response.PreferCategoryDto;
 import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.SessionUserInfo;
+import toy.recipit.controller.dto.response.UserRecipeDto;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.RecipeService;
 
@@ -235,5 +237,15 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserBookmarkCount(userInfo.getUserNo())));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<List<UserRecipeDto>>> getUserRecipes(
+            HttpServletRequest request,
+            @Valid @ModelAttribute GetPageDto getPageDto
+            ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserRecipes(userInfo.getUserNo(), getPageDto)));
     }
 }

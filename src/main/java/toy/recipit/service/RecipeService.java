@@ -10,6 +10,7 @@ import toy.recipit.controller.dto.request.DraftIngredientDto;
 import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.DraftStepDto;
 import toy.recipit.controller.dto.request.EditPreferCategoryDto;
+import toy.recipit.controller.dto.request.GetPageDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
@@ -22,6 +23,7 @@ import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.StepDto;
+import toy.recipit.controller.dto.response.UserRecipeDto;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
@@ -283,6 +285,35 @@ public class RecipeService {
         );
 
         return true;
+    }
+
+    public List<UserRecipeDto> getUserRecipes(String userNo, GetPageDto getPageDto) {
+        List<SearchRecipeVo> recipeVoList = recipeMapper.getUserRecipes(
+                userNo,
+                (getPageDto.getPage() - 1) * getPageDto.getSize(),
+                getPageDto.getSize(),
+                Constants.Image.THUMBNAIL,
+                Constants.GroupCode.DIFFICULTY,
+                Constants.Recipe.RELEASE
+        );
+
+        return createUserRecipeListDto(recipeVoList);
+    }
+
+    private List<UserRecipeDto> createUserRecipeListDto(List<SearchRecipeVo> recipeVoList) {
+        return recipeVoList.stream()
+                .map(searchRecipeVo -> new UserRecipeDto(
+                        searchRecipeVo.getRecipeNo(),
+                        searchRecipeVo.getName(),
+                        searchRecipeVo.getDescription(),
+                        imageKitUtil.getUrl(searchRecipeVo.getImageUrl())
+                                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + searchRecipeVo.getImageUrl())),
+                        searchRecipeVo.getCookingTime(),
+                        searchRecipeVo.getDifficultyCodeName(),
+                        searchRecipeVo.getLikeCount(),
+                        searchRecipeVo.getIsLiked()
+                ))
+                .toList();
     }
 
     private RecipeDetailVo getRecipeDetailVo(String recipeNo, String userNo) {
