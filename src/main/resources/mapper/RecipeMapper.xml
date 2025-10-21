@@ -586,4 +586,11 @@
         GROUP BY R.RECIPE_NO
         LIMIT #{offset}, #{size}
     </select>
+
+    <update id="updateRecipeStatus">
+        UPDATE RC_RECIPE
+        SET STATUS_CODE = #{statusCode}
+        WHERE RECIPE_NO = #{recipeNo}
+          AND USER_NO = #{userNo}
+    </update>
 </mapper>

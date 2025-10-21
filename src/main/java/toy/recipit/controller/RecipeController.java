@@ -248,4 +248,15 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getUserRecipes(userInfo.getUserNo(), getPageDto)));
     }
+
+    @DeleteMapping("/{recipeNo}")
+    public ResponseEntity<ApiResponse<Boolean>> deleteRecipe(
+            HttpServletRequest request,
+            @PathVariable
+            String recipeNo
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.deleteRecipe(userInfo.getUserNo(), recipeNo)));
+    }
 }

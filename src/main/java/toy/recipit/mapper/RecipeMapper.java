@@ -116,4 +116,8 @@ public interface RecipeMapper {
                                         @Param("imageTypeCode") String imageTypeCode,
                                         @Param("difficultyGroupCode") String difficultyGroupCode,
                                         @Param("statusCode") String statusCode);
+
+    void updateRecipeStatus(@Param("userNo") String userNo,
+                      @Param("recipeNo") String recipeNo,
+                      @Param("statusCode") String statusCode);
 }

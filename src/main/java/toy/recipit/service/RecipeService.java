@@ -300,6 +300,16 @@ public class RecipeService {
         return createUserRecipeListDto(recipeVoList);
     }
 
+    public Boolean deleteRecipe(String userNo, String recipeNo) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        recipeMapper.updateRecipeStatus(userNo, recipeNo, Constants.Recipe.DELETED);
+
+        return true;
+    }
+
     private List<UserRecipeDto> createUserRecipeListDto(List<SearchRecipeVo> recipeVoList) {
         return recipeVoList.stream()
                 .map(searchRecipeVo -> new UserRecipeDto(
