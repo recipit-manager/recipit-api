@@ -37,6 +37,7 @@
 `-DIMAGEKIT_PUBLIC_KEY={imagekit public key}
 `-DIMAGEKIT_PRIVATE_KEY={imagekit private key}
 `-DIMAGEKIT_URL_ENDPOINT={imagekit url endpoint}
+`-DJASYPT_PASSWORD={jasypt password}
 ``` 
 
 ### Source
