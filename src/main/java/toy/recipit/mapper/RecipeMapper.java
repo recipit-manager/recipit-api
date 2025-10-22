@@ -126,4 +126,15 @@ public interface RecipeMapper {
                                             @Param("imageTypeCode") String imageTypeCode,
                                             @Param("difficultyGroupCode") String difficultyGroupCode,
                                             @Param("statusCode") String statusCode);
+
+    void upsertRecentRecipe(@Param("userNo") String userNo,
+                            @Param("recipeNo") String recipeNo);
+
+    List<SearchRecipeVo> getRecentRecipes(@Param("userNo") String userNo,
+                                          @Param("size") int size,
+                                          @Param("imageTypeCode") String imageTypeCode,
+                                          @Param("difficultyGroupCode") String difficultyGroupCode,
+                                          @Param("statusCode") String statusCode);
+
+    boolean isRecipeAuthor(String userNo, String recipeNo);
 }

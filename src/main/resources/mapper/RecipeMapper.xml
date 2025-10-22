@@ -39,6 +39,15 @@
         )
     </select>
 
+    <select id="isRecipeAuthor" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM RC_RECIPE
+            WHERE RECIPE_NO = #{recipeNo}
+              AND USER_NO = #{userNo}
+        )
+    </select>
+
     <select id="isLikeExists" resultType="boolean">
         SELECT EXISTS(
             SELECT 1
@@ -613,5 +622,57 @@
         WHERE R.USER_NO = #{userNo}
           AND R.STATUS_CODE = #{statusCode}
         GROUP BY R.RECIPE_NO
+    </select>
+
+    <insert id="upsertRecentRecipe">
+        INSERT INTO RC_RECENT_RECIPE (
+            USER_NO,
+            RECIPE_NO,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES (
+            #{userNo},
+            #{recipeNo},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        )
+        ON DUPLICATE KEY UPDATE
+            EDIT_DATETIME = NOW()
+    </insert>
+
+    <select id="getRecentRecipes" resultType="toy.recipit.mapper.vo.SearchRecipeVo">
+        SELECT
+            R.RECIPE_NO              AS recipeNo,
+            R.CATEGORY_CODE          AS categoryCode,
+            R.TITLE                  AS name,
+            R.DESCRIPTION            AS description,
+            IMG.URL                  AS imageUrl,
+            R.COOKING_TIME           AS cookingTime,
+            R.DIFFICULTY_CODE        AS difficultyCode,
+            DC.CODE_NAME             AS difficultyCodeName,
+            SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS likeCount,
+            MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS isLiked
+        FROM RC_RECENT_RECIPE RE
+                 INNER JOIN RC_RECIPE R
+                            ON RE.RECIPE_NO = R.RECIPE_NO
+                 INNER JOIN RC_IMAGE IMG
+                            ON R.RECIPE_NO = IMG.RECIPE_NO
+                                AND IMG.TYPE_CODE = #{imageTypeCode}
+                 LEFT JOIN RC_LIKE L
+                           ON R.RECIPE_NO = L.RECIPE_NO
+                 INNER JOIN CM_DETAIL_CODE DC
+                            ON R.DIFFICULTY_CODE = DC.CODE
+                                AND DC.GROUP_CODE = #{difficultyGroupCode}
+                                AND DC.USE_YN = 'Y'
+        WHERE RE.USER_NO = #{userNo}
+          AND R.STATUS_CODE = #{statusCode}
+        GROUP BY R.RECIPE_NO, RE.EDIT_DATETIME
+        ORDER BY RE.EDIT_DATETIME DESC
+        LIMIT #{size}
     </select>
 </mapper>

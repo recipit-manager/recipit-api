@@ -123,4 +123,8 @@ public final class Constants {
         String AVERAGE = "RF02";
         String NOT_PREFERRED = "RF03";
     }
+
+    public interface Offset {
+        int RECENT_RECIPE_SIZE = 30;
+    }
 }
