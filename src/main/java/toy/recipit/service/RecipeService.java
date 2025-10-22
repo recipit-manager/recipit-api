@@ -229,7 +229,7 @@ public class RecipeService {
 
         List<String> completionImageUrls = getCompletionImageUrls(recipeDetailVo);
 
-        if(StringUtils.isNotEmpty(userNo) && Constants.Recipe.RELEASE.equals(recipeDetailVo.getStatusCode())) {
+        if (StringUtils.isNotEmpty(userNo) && Constants.Recipe.RELEASE.equals(recipeDetailVo.getStatusCode())) {
             applicationEventPublisher.publishEvent(new RecipeViewEvent(userNo, recipeNo));
         }
 
