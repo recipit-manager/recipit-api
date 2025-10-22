@@ -2,6 +2,7 @@ package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,7 @@ import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.StepDto;
 import toy.recipit.controller.dto.response.UserDraftRecipeDto;
 import toy.recipit.controller.dto.response.UserRecipeDto;
+import toy.recipit.event.RecipeViewEvent;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
@@ -45,6 +47,7 @@ import java.util.List;
 public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final ImageKitUtil imageKitUtil;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public List<PopularRecipeDto> getPopularRecipes(String userNo, int size) {
         List<PopularRecipeVo> popularRecipes =
@@ -214,7 +217,6 @@ public class RecipeService {
         return true;
     }
 
-    @Transactional
     public RecipeDetailDto getRecipeDetail(String recipeNo, String userNo) {
         RecipeDetailVo recipeDetailVo = getRecipeDetailVo(recipeNo, userNo);
 
@@ -227,8 +229,8 @@ public class RecipeService {
 
         List<String> completionImageUrls = getCompletionImageUrls(recipeDetailVo);
 
-        if(StringUtils.isNotEmpty(userNo) && recipeDetailVo.getStatusCode().equals(Constants.Recipe.RELEASE)) {
-            updateRecentRecipe(recipeNo, userNo);
+        if(StringUtils.isNotEmpty(userNo) && Constants.Recipe.RELEASE.equals(recipeDetailVo.getStatusCode())) {
+            applicationEventPublisher.publishEvent(new RecipeViewEvent(userNo, recipeNo));
         }
 
         return buildRecipeDetailDto(recipeDetailVo, mainImageUrl, completionImageUrls, ingredientDtoList, stepDtoList);
@@ -323,6 +325,10 @@ public class RecipeService {
     public Boolean deleteRecipe(String userNo, String recipeNo) {
         if (!recipeMapper.isRecipeExists(recipeNo)) {
             throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        if (!recipeMapper.isRecipeAuthor(userNo, recipeNo)) {
+            throw new IllegalArgumentException("recipe.invalidUser");
         }
 
         recipeMapper.updateRecipeStatus(userNo, recipeNo, Constants.Recipe.DELETED);
@@ -557,14 +563,6 @@ public class RecipeService {
                         userNo
                 );
             }
-        }
-    }
-
-    private void updateRecentRecipe(String recipeNo, String userNo) {
-        if(recipeMapper.isRecentRecipeExists(userNo, recipeNo)) {
-            recipeMapper.updateRecentRecipe(userNo, recipeNo);
-        } else {
-            recipeMapper.insertRecentRecipe(userNo, recipeNo);
         }
     }
 }

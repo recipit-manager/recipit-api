@@ -39,6 +39,15 @@
         )
     </select>
 
+    <select id="isRecipeAuthor" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM RC_RECIPE
+            WHERE RECIPE_NO = #{recipeNo}
+              AND USER_NO = #{userNo}
+        )
+    </select>
+
     <select id="isLikeExists" resultType="boolean">
         SELECT EXISTS(
             SELECT 1
@@ -615,18 +624,8 @@
         GROUP BY R.RECIPE_NO
     </select>
 
-    <select id="isRecentRecipeExists" resultType="boolean">
-        SELECT EXISTS(
-            SELECT 1
-            FROM RC_RECENT_RECIPE
-            WHERE USER_NO = #{userNo}
-              AND RECIPE_NO = #{recipeNo}
-        )
-    </select>
-
-    <insert id="insertRecentRecipe">
-        INSERT INTO RC_RECENT_RECIPE
-        (
+    <insert id="upsertRecentRecipe">
+        INSERT INTO RC_RECENT_RECIPE (
             USER_NO,
             RECIPE_NO,
             CREATE_DATETIME,
@@ -634,23 +633,17 @@
             EDIT_DATETIME,
             EDIT_USER
         )
-        VALUES
-            (
-                #{userNo},
-                #{recipeNo},
-                NOW(),
-                #{userNo},
-                NOW(),
-                #{userNo}
-            )
+        VALUES (
+            #{userNo},
+            #{recipeNo},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        )
+        ON DUPLICATE KEY UPDATE
+            EDIT_DATETIME = NOW()
     </insert>
-
-    <update id="updateRecentRecipe">
-        UPDATE RC_RECENT_RECIPE
-        SET EDIT_DATETIME = NOW()
-        WHERE USER_NO = #{userNo}
-          AND RECIPE_NO = #{recipeNo}
-    </update>
 
     <select id="getRecentRecipes" resultType="toy.recipit.mapper.vo.SearchRecipeVo">
         SELECT
@@ -662,7 +655,7 @@
             R.COOKING_TIME           AS cookingTime,
             R.DIFFICULTY_CODE        AS difficultyCode,
             DC.CODE_NAME             AS difficultyCodeName,
-            COALESCE(SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END), 0) AS likeCount,
+            SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS likeCount,
             MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS isLiked
         FROM RC_RECENT_RECIPE RE
                  INNER JOIN RC_RECIPE R
