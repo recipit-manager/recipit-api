@@ -4,13 +4,11 @@ import io.imagekit.sdk.ImageKit;
 import io.imagekit.sdk.models.FileCreateRequest;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -44,10 +42,6 @@ public class ImageKitUtil {
     }
 
     public Optional<String> getUrl(String filePath) {
-        if (Objects.equals(filePath, StringUtils.EMPTY)) {
-            return Optional.of(filePath);
-        }
-
         return getUrl(filePath, defaultExpireSeconds);
     }
 

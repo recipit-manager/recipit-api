@@ -1,6 +1,7 @@
 package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -321,12 +322,20 @@ public class RecipeService {
                         userDraftRecipeVo.getRecipeNo(),
                         userDraftRecipeVo.getName(),
                         userDraftRecipeVo.getDescription(),
-                        imageKitUtil.getUrl(userDraftRecipeVo.getImageUrl())
-                                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + userDraftRecipeVo.getImageUrl())),
+                        getDraftRecipeImageUrl(userDraftRecipeVo.getImageUrl()),
                         userDraftRecipeVo.getCookingTime(),
                         userDraftRecipeVo.getDifficulty()
                 ))
                 .toList();
+    }
+
+    private String getDraftRecipeImageUrl(String imageUrl) {
+        if (StringUtils.isEmpty(imageUrl)) {
+            return StringUtils.EMPTY;
+        }
+
+        return imageKitUtil.getUrl(imageUrl)
+                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + imageUrl));
     }
 
     private List<UserRecipeDto> createUserRecipeListDto(List<SearchRecipeVo> recipeVoList) {
