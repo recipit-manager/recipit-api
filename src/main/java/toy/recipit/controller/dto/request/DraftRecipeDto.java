@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import toy.recipit.common.Constants;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,7 @@ public class DraftRecipeDto {
         this.categoryCode = (categoryCode == null ? StringUtils.EMPTY : categoryCode);
         this.cookingTime = (cookingTime == null ? -1 : cookingTime);
         this.servingSize = (servingSize == null ? -1 : servingSize);
-        this.difficultyCode = (difficultyCode == null ? StringUtils.EMPTY : difficultyCode);
+        this.difficultyCode = (difficultyCode == null ? Constants.Difficulty.NORMAL : difficultyCode);
         this.ingredientList = (ingredientList == null ? Collections.emptyList() : ingredientList);
         this.stepList = (stepList == null ? Collections.emptyList() : stepList);
     }

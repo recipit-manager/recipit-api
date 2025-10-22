@@ -13,6 +13,7 @@ import toy.recipit.mapper.vo.PreferCategoryVo;
 import toy.recipit.mapper.vo.RecipeDetailVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
 import toy.recipit.mapper.vo.StepVo;
+import toy.recipit.mapper.vo.UserDraftRecipeVo;
 
 import java.util.List;
 
@@ -120,4 +121,9 @@ public interface RecipeMapper {
     void updateRecipeStatus(@Param("userNo") String userNo,
                       @Param("recipeNo") String recipeNo,
                       @Param("statusCode") String statusCode);
+
+    List<UserDraftRecipeVo> getDraftRecipes(@Param("userNo") String userNo,
+                                            @Param("imageTypeCode") String imageTypeCode,
+                                            @Param("difficultyGroupCode") String difficultyGroupCode,
+                                            @Param("statusCode") String statusCode);
 }

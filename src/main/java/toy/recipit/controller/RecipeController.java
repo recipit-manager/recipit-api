@@ -31,6 +31,7 @@ import toy.recipit.controller.dto.response.PreferCategoryDto;
 import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.SessionUserInfo;
+import toy.recipit.controller.dto.response.UserDraftRecipeDto;
 import toy.recipit.controller.dto.response.UserRecipeDto;
 import toy.recipit.controller.dto.response.factory.ApiResponseFactory;
 import toy.recipit.service.RecipeService;
@@ -257,5 +258,14 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.deleteRecipe(userInfo.getUserNo(), recipeNo)));
+    }
+
+    @GetMapping("/draft/list")
+    public ResponseEntity<ApiResponse<List<UserDraftRecipeDto>>> getDraftRecipes(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getDraftRecipes(userInfo.getUserNo())));
     }
 }
