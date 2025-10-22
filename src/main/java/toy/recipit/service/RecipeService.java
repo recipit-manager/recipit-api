@@ -1,6 +1,7 @@
 package toy.recipit.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import toy.recipit.controller.dto.response.RecipeDetailDto;
 import toy.recipit.controller.dto.response.RecipeDto;
 import toy.recipit.controller.dto.response.RecipeListDto;
 import toy.recipit.controller.dto.response.StepDto;
+import toy.recipit.controller.dto.response.UserDraftRecipeDto;
 import toy.recipit.controller.dto.response.UserRecipeDto;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
@@ -34,6 +36,7 @@ import toy.recipit.mapper.vo.PreferCategoryVo;
 import toy.recipit.mapper.vo.RecipeDetailVo;
 import toy.recipit.mapper.vo.SearchRecipeVo;
 import toy.recipit.mapper.vo.StepVo;
+import toy.recipit.mapper.vo.UserDraftRecipeVo;
 
 import java.util.List;
 
@@ -308,6 +311,31 @@ public class RecipeService {
         recipeMapper.updateRecipeStatus(userNo, recipeNo, Constants.Recipe.DELETED);
 
         return true;
+    }
+
+    public List<UserDraftRecipeDto> getDraftRecipes(String userNo) {
+        List<UserDraftRecipeVo> userDraftRecipeVoList
+                = recipeMapper.getDraftRecipes(userNo, Constants.Image.THUMBNAIL, Constants.GroupCode.DIFFICULTY, Constants.Recipe.DRAFT);
+
+        return userDraftRecipeVoList.stream()
+                .map(userDraftRecipeVo -> new UserDraftRecipeDto(
+                        userDraftRecipeVo.getRecipeNo(),
+                        userDraftRecipeVo.getName(),
+                        userDraftRecipeVo.getDescription(),
+                        getDraftRecipeImageUrl(userDraftRecipeVo.getImageUrl()),
+                        userDraftRecipeVo.getCookingTime(),
+                        userDraftRecipeVo.getDifficulty()
+                ))
+                .toList();
+    }
+
+    private String getDraftRecipeImageUrl(String imageUrl) {
+        if (StringUtils.isEmpty(imageUrl)) {
+            return StringUtils.EMPTY;
+        }
+
+        return imageKitUtil.getUrl(imageUrl)
+                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + imageUrl));
     }
 
     private List<UserRecipeDto> createUserRecipeListDto(List<SearchRecipeVo> recipeVoList) {

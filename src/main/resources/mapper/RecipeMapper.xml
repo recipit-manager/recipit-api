@@ -593,4 +593,25 @@
         WHERE RECIPE_NO = #{recipeNo}
           AND USER_NO = #{userNo}
     </update>
+
+    <select id="getDraftRecipes" resultType="toy.recipit.mapper.vo.UserDraftRecipeVo">
+        SELECT
+            R.RECIPE_NO        AS recipeNo,
+            R.TITLE            AS name,
+            R.DESCRIPTION      AS description,
+            IMG.URL            AS imageUrl,
+            R.COOKING_TIME     AS cookingTime,
+            DC.CODE_NAME       AS difficultyCodeName
+        FROM RC_RECIPE R
+                 LEFT JOIN RC_IMAGE IMG
+                            ON R.RECIPE_NO = IMG.RECIPE_NO
+                                AND IMG.TYPE_CODE = #{imageTypeCode}
+                 INNER JOIN CM_DETAIL_CODE DC
+                            ON R.DIFFICULTY_CODE = DC.CODE
+                                AND DC.GROUP_CODE = #{difficultyGroupCode}
+                                AND DC.USE_YN = 'Y'
+        WHERE R.USER_NO = #{userNo}
+          AND R.STATUS_CODE = #{statusCode}
+        GROUP BY R.RECIPE_NO
+    </select>
 </mapper>
