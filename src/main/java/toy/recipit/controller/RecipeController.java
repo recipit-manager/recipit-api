@@ -268,4 +268,13 @@ public class RecipeController {
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getDraftRecipes(userInfo.getUserNo())));
     }
+
+    @GetMapping("recent/list")
+    public ResponseEntity<ApiResponse<List<UserRecipeDto>>> getRecentRecipes(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecentViewRecipes(userInfo.getUserNo())));
+    }
 }

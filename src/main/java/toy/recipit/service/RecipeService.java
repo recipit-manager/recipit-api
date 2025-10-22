@@ -214,6 +214,7 @@ public class RecipeService {
         return true;
     }
 
+    @Transactional
     public RecipeDetailDto getRecipeDetail(String recipeNo, String userNo) {
         RecipeDetailVo recipeDetailVo = getRecipeDetailVo(recipeNo, userNo);
 
@@ -225,6 +226,10 @@ public class RecipeService {
                 .orElseThrow(() -> new RuntimeException("잘못된 경로입니다: " + recipeDetailVo.getMainImagePath()));
 
         List<String> completionImageUrls = getCompletionImageUrls(recipeDetailVo);
+
+        if(StringUtils.isNotEmpty(userNo) && recipeDetailVo.getStatusCode().equals(Constants.Recipe.RELEASE)) {
+            updateRecentRecipe(recipeNo, userNo);
+        }
 
         return buildRecipeDetailDto(recipeDetailVo, mainImageUrl, completionImageUrls, ingredientDtoList, stepDtoList);
     }
@@ -295,6 +300,18 @@ public class RecipeService {
                 userNo,
                 (getPageDto.getPage() - 1) * getPageDto.getSize(),
                 getPageDto.getSize(),
+                Constants.Image.THUMBNAIL,
+                Constants.GroupCode.DIFFICULTY,
+                Constants.Recipe.RELEASE
+        );
+
+        return createUserRecipeListDto(recipeVoList);
+    }
+
+    public List<UserRecipeDto> getRecentViewRecipes(String userNo) {
+        List<SearchRecipeVo> recipeVoList = recipeMapper.getRecentRecipes(
+                userNo,
+                Constants.Offset.RECENT_RECIPE_SIZE,
                 Constants.Image.THUMBNAIL,
                 Constants.GroupCode.DIFFICULTY,
                 Constants.Recipe.RELEASE
@@ -540,6 +557,14 @@ public class RecipeService {
                         userNo
                 );
             }
+        }
+    }
+
+    private void updateRecentRecipe(String recipeNo, String userNo) {
+        if(recipeMapper.isRecentRecipeExists(userNo, recipeNo)) {
+            recipeMapper.updateRecentRecipe(userNo, recipeNo);
+        } else {
+            recipeMapper.insertRecentRecipe(userNo, recipeNo);
         }
     }
 }
