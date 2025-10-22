@@ -252,8 +252,7 @@ public class RecipeController {
     @DeleteMapping("/{recipeNo}")
     public ResponseEntity<ApiResponse<Boolean>> deleteRecipe(
             HttpServletRequest request,
-            @PathVariable
-            String recipeNo
+            @PathVariable String recipeNo
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
