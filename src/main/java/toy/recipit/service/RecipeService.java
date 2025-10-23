@@ -17,6 +17,7 @@ import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.request.UploadStepDto;
+import toy.recipit.controller.dto.response.BookmarkRecipeDto;
 import toy.recipit.controller.dto.response.CommonCodeAndNameDto;
 import toy.recipit.controller.dto.response.IngredientDto;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
@@ -29,6 +30,7 @@ import toy.recipit.controller.dto.response.UserDraftRecipeDto;
 import toy.recipit.controller.dto.response.UserRecipeDto;
 import toy.recipit.event.RecipeViewEvent;
 import toy.recipit.mapper.RecipeMapper;
+import toy.recipit.mapper.vo.BookmarkRecipeVo;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
@@ -348,6 +350,32 @@ public class RecipeService {
                         getDraftRecipeImageUrl(userDraftRecipeVo.getImageUrl()),
                         userDraftRecipeVo.getCookingTime(),
                         userDraftRecipeVo.getDifficulty()
+                ))
+                .toList();
+    }
+
+    public List<BookmarkRecipeDto> getBookmarkRecipes(String userNo, GetPageDto getPageDto) {
+        List<BookmarkRecipeVo> recipeVoList = recipeMapper.getBookmarkRecipes(
+                userNo,
+                (getPageDto.getPage() - 1) * getPageDto.getSize(),
+                getPageDto.getSize(),
+                Constants.Image.THUMBNAIL,
+                Constants.GroupCode.DIFFICULTY,
+                Constants.Recipe.RELEASE
+        );
+
+        return recipeVoList.stream()
+                .map(bookmarkRecipeVo -> new BookmarkRecipeDto(
+                        bookmarkRecipeVo.getRecipeNo(),
+                        bookmarkRecipeVo.getName(),
+                        bookmarkRecipeVo.getDescription(),
+                        imageKitUtil.getUrl(bookmarkRecipeVo.getImageUrl())
+                                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + bookmarkRecipeVo.getImageUrl())),
+                        bookmarkRecipeVo.getCookingTime(),
+                        bookmarkRecipeVo.getDifficulty(),
+                        bookmarkRecipeVo.getLikeCount(),
+                        bookmarkRecipeVo.getIsLiked(),
+                        bookmarkRecipeVo.getIsBookmarked()
                 ))
                 .toList();
     }
