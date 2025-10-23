@@ -127,4 +127,24 @@ public final class Constants {
     public interface Offset {
         int RECENT_RECIPE_SIZE = 30;
     }
+
+    public interface ReportActionStatus {
+        String PROCESSING = "AS01";
+        String NO_PROBLEM = "AS02";
+        String PRIVATE = "AS03";
+        String DELETE = "AS04";
+    }
+
+    public interface ReportCategory {
+        String INAPPROPRIATE = "RP01";
+        String FALSE_INFO = "RP02";
+        String ADVERTISEMENT = "RP03";
+        String COPYRIGHT = "RP04";
+        String DUPLICATE = "RP05";
+        String ETC = "RP06";
+    }
+
+    public interface ReportRecipe{
+        int HIDE_THRESHOLD = 5;
+    }
 }

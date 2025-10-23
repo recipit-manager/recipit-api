@@ -8,6 +8,8 @@ import toy.recipit.mapper.vo.BookmarkRecipeVo;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
+import toy.recipit.mapper.vo.InsertReportDetailVo;
+import toy.recipit.mapper.vo.InsertReportVo;
 import toy.recipit.mapper.vo.InsertStepVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
 import toy.recipit.mapper.vo.PreferCategoryVo;
@@ -145,4 +147,17 @@ public interface RecipeMapper {
                                               @Param("imageTypeCode") String imageTypeCode,
                                               @Param("difficultyGroupCode") String difficultyGroupCode,
                                               @Param("statusCode") String statusCode);
+
+    boolean isReportedRecipe(@Param("userNo") String userNo,
+                             @Param("recipeNo") String recipeNo);
+
+    void insertReport(InsertReportVo reportVo);
+
+    void insertReportDetails(@Param("reportDetails") List<InsertReportDetailVo> reportDetails);
+
+    boolean isReportedCategoryOverLimit(
+            @Param("recipeNo") String recipeNo,
+            @Param("categoryCodes") List<String> categoryCodes,
+            @Param("limit") int limit
+    );
 }
