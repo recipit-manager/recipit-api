@@ -600,7 +600,6 @@
         UPDATE RC_RECIPE
         SET STATUS_CODE = #{statusCode}
         WHERE RECIPE_NO = #{recipeNo}
-          AND USER_NO = #{userNo}
     </update>
 
     <select id="getDraftRecipes" resultType="toy.recipit.mapper.vo.UserDraftRecipeVo">
@@ -702,5 +701,77 @@
         WHERE R.STATUS_CODE = #{statusCode}
         GROUP BY R.RECIPE_NO
         LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="isReportedRecipe" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM RC_REPORT
+            WHERE USER_NO = #{userNo}
+              AND RECIPE_NO = #{recipeNo}
+        )
+    </select>
+
+    <insert id="insertReport"
+            parameterType="toy.recipit.mapper.vo.InsertReportVo"
+            useGeneratedKeys="true" keyProperty="reportNo">
+        INSERT INTO RC_REPORT (
+            USER_NO,
+            RECIPE_NO,
+            ACTION_STATUS_CODE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES (
+            #{userNo},
+            #{recipeNo},
+            #{actionStatusCode},
+            NOW(),
+            #{userNo},
+            NOW(),
+            #{userNo}
+        )
+    </insert>
+
+    <insert id="insertReportDetails">
+        INSERT INTO RC_REPORT_DETAIL (
+        CATEGORY_CODE,
+        REPORT_NO,
+        DETAIL,
+        CREATE_DATETIME,
+        CREATE_USER,
+        EDIT_DATETIME,
+        EDIT_USER
+        )
+        VALUES
+        <foreach collection="reportDetails" item="detail" separator=",">
+        (
+            #{detail.categoryCode},
+            #{detail.reportNo},
+            #{detail.detail},
+            NOW(),
+            #{detail.userNo},
+            NOW(),
+            #{detail.userNo}
+        )
+        </foreach>
+    </insert>
+
+    <select id="isReportedCategoryOverLimit" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM RC_REPORT_DETAIL D
+                INNER JOIN RC_REPORT R
+                    ON D.REPORT_NO = R.REPORT_NO
+            WHERE R.RECIPE_NO = #{recipeNo}
+            AND D.CATEGORY_CODE IN
+            <foreach collection="categoryCodes" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+            GROUP BY D.CATEGORY_CODE
+            HAVING COUNT(1) >= #{limit}
+        )
     </select>
 </mapper>

@@ -24,6 +24,7 @@ import toy.recipit.controller.dto.request.DraftRecipeDto;
 import toy.recipit.controller.dto.request.EditPreferCategoryDto;
 import toy.recipit.controller.dto.request.GetPageDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
+import toy.recipit.controller.dto.request.ReportRecipeDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
 import toy.recipit.controller.dto.response.BookmarkRecipeDto;
@@ -287,5 +288,16 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getBookmarkRecipes(userInfo.getUserNo(), getPageDto)));
+    }
+
+    @PostMapping("/report/{recipeNo}")
+    public ResponseEntity<ApiResponse<Boolean>> reportRecipe(
+            HttpServletRequest request,
+            @PathVariable("recipeNo") String recipeNo,
+            @Valid @RequestBody ReportRecipeDto reportRecipeDto
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.reportRecipe(userInfo.getUserNo(), recipeNo, reportRecipeDto)));
     }
 }
