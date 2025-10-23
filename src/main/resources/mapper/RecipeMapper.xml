@@ -675,4 +675,32 @@
         ORDER BY RE.EDIT_DATETIME DESC
         LIMIT #{size}
     </select>
+
+    <select id="getBookmarkRecipes" resultType="toy.recipit.mapper.vo.BookmarkRecipeVo">
+        SELECT
+            R.RECIPE_NO        AS recipeNo,
+            R.TITLE            AS name,
+            R.DESCRIPTION      AS description,
+            IMG.URL            AS imageUrl,
+            R.COOKING_TIME     AS cookingTime,
+            DC.CODE_NAME       AS difficulty,
+            SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS likeCount,
+            MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS isLiked,
+            MAX(CASE WHEN B.USER_NO = #{userNo} THEN 1 ELSE 0 END) AS isBookmarked
+        FROM RC_RECIPE R
+                 INNER JOIN RC_IMAGE IMG
+                            ON R.RECIPE_NO = IMG.RECIPE_NO
+                                AND IMG.TYPE_CODE = #{imageTypeCode}
+                 LEFT JOIN RC_LIKE L
+                           ON R.RECIPE_NO = L.RECIPE_NO
+                 INNER JOIN CM_DETAIL_CODE DC
+                            ON R.DIFFICULTY_CODE = DC.CODE
+                                AND DC.GROUP_CODE = #{difficultyGroupCode}
+                                AND DC.USE_YN = 'Y'
+                 INNER JOIN RC_BOOKMARK_RECIPE B
+                            ON R.RECIPE_NO = B.RECIPE_NO
+        WHERE R.STATUS_CODE = #{statusCode}
+        GROUP BY R.RECIPE_NO
+        LIMIT #{offset}, #{size}
+    </select>
 </mapper>

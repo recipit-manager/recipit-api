@@ -26,6 +26,7 @@ import toy.recipit.controller.dto.request.GetPageDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.response.ApiResponse;
+import toy.recipit.controller.dto.response.BookmarkRecipeDto;
 import toy.recipit.controller.dto.response.PopularRecipeDto;
 import toy.recipit.controller.dto.response.PreferCategoryDto;
 import toy.recipit.controller.dto.response.RecipeDetailDto;
@@ -276,5 +277,15 @@ public class RecipeController {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
         return ResponseEntity.ok(apiResponseFactory.success(recipeService.getRecentViewRecipes(userInfo.getUserNo())));
+    }
+
+    @GetMapping("/bookmark/list")
+    public ResponseEntity<ApiResponse<List<BookmarkRecipeDto>>> getBookmarkRecipes(
+            HttpServletRequest request,
+            @Valid @ModelAttribute GetPageDto getPageDto
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getBookmarkRecipes(userInfo.getUserNo(), getPageDto)));
     }
 }

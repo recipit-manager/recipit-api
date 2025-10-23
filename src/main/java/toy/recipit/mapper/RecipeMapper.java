@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import toy.recipit.controller.dto.request.DraftIngredientDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
+import toy.recipit.mapper.vo.BookmarkRecipeVo;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
@@ -27,7 +28,7 @@ public interface RecipeMapper {
                        @Param("statusCode") String statusCode);
 
     int getUserLikeCount(@Param("userNo") String userNo,
-                     @Param("statusCode") String statusCode);
+                         @Param("statusCode") String statusCode);
 
     int getUserBookmarkCount(@Param("userNo") String userNo);
 
@@ -54,17 +55,17 @@ public interface RecipeMapper {
                                     @Param("sortType") String sortType);
 
     List<CommonDetailCodeVo> getRecipeCategories(@Param("keyword") String keyword,
-                                                @Param("categoryGroupCode") String categoryGroupCode);
+                                                 @Param("categoryGroupCode") String categoryGroupCode);
 
     void insertRecipe(InsertRecipeVo recipe);
 
     void insertDraftIngredients(@Param("recipeNo") String recipeNo,
-                           @Param("userNo") String userNo,
-                           @Param("ingredientList") List<DraftIngredientDto> ingredientList);
+                                @Param("userNo") String userNo,
+                                @Param("ingredientList") List<DraftIngredientDto> ingredientList);
 
     void insertUploadIngredients(@Param("recipeNo") String recipeNo,
-                                @Param("userNo") String userNo,
-                                @Param("ingredientList") List<UploadIngredientDto> ingredientList);
+                                 @Param("userNo") String userNo,
+                                 @Param("ingredientList") List<UploadIngredientDto> ingredientList);
 
     void insertRecipeImage(@Param("recipeNo") String recipeNo,
                            @Param("url") String url,
@@ -100,8 +101,8 @@ public interface RecipeMapper {
     boolean isPreferCategoriesExists(@Param("userNo") String userNo);
 
     void insertPreferCategories(@Param("userNo") String userNo,
-                                       @Param("categoryGroupCode") String categoryGroupCode,
-                                       @Param("defaultStatusCode") String defaultStatusCode);
+                                @Param("categoryGroupCode") String categoryGroupCode,
+                                @Param("defaultStatusCode") String defaultStatusCode);
 
     List<PreferCategoryVo> getPreferenceCategories(@Param("userNo") String userNo,
                                                    @Param("categoryGroupCode") String categoryGroupCode,
@@ -119,8 +120,8 @@ public interface RecipeMapper {
                                         @Param("statusCode") String statusCode);
 
     void updateRecipeStatus(@Param("userNo") String userNo,
-                      @Param("recipeNo") String recipeNo,
-                      @Param("statusCode") String statusCode);
+                            @Param("recipeNo") String recipeNo,
+                            @Param("statusCode") String statusCode);
 
     List<UserDraftRecipeVo> getDraftRecipes(@Param("userNo") String userNo,
                                             @Param("imageTypeCode") String imageTypeCode,
@@ -137,4 +138,11 @@ public interface RecipeMapper {
                                           @Param("statusCode") String statusCode);
 
     boolean isRecipeAuthor(String userNo, String recipeNo);
+
+    List<BookmarkRecipeVo> getBookmarkRecipes(@Param("userNo") String userNo,
+                                              @Param("offset") int offset,
+                                              @Param("size") int size,
+                                              @Param("imageTypeCode") String imageTypeCode,
+                                              @Param("difficultyGroupCode") String difficultyGroupCode,
+                                              @Param("statusCode") String statusCode);
 }
