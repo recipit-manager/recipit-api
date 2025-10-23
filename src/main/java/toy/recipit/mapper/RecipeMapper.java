@@ -121,7 +121,8 @@ public interface RecipeMapper {
                                         @Param("difficultyGroupCode") String difficultyGroupCode,
                                         @Param("statusCode") String statusCode);
 
-    void updateRecipeStatus(@Param("recipeNo") String recipeNo,
+    void updateRecipeStatus(@Param("userNo") String userNo,
+                            @Param("recipeNo") String recipeNo,
                             @Param("statusCode") String statusCode);
 
     List<UserDraftRecipeVo> getDraftRecipes(@Param("userNo") String userNo,

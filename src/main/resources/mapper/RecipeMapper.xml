@@ -598,7 +598,9 @@
 
     <update id="updateRecipeStatus">
         UPDATE RC_RECIPE
-        SET STATUS_CODE = #{statusCode}
+        SET STATUS_CODE = #{statusCode},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{userNo}
         WHERE RECIPE_NO = #{recipeNo}
     </update>
 

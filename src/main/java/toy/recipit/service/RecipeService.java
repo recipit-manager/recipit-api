@@ -336,7 +336,7 @@ public class RecipeService {
             throw new IllegalArgumentException("recipe.invalidUser");
         }
 
-        recipeMapper.updateRecipeStatus(recipeNo, Constants.Recipe.DELETED);
+        recipeMapper.updateRecipeStatus(userNo, recipeNo, Constants.Recipe.DELETED);
 
         return true;
     }
@@ -416,7 +416,7 @@ public class RecipeService {
                 reportRecipeDto.getReportTypeCodeList(),
                 Constants.ReportRecipe.HIDE_THRESHOLD)
         ) {
-            recipeMapper.updateRecipeStatus(recipeNo, Constants.Recipe.PRIVATE);
+            recipeMapper.updateRecipeStatus(Constants.SystemId.SYSTEM_NUMBER, recipeNo, Constants.Recipe.PRIVATE);
         }
 
         return true;
