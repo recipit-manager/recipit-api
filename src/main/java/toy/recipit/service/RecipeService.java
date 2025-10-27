@@ -14,6 +14,7 @@ import toy.recipit.controller.dto.request.DraftStepDto;
 import toy.recipit.controller.dto.request.EditPreferCategoryDto;
 import toy.recipit.controller.dto.request.GetPageDto;
 import toy.recipit.controller.dto.request.GetRecipeListDto;
+import toy.recipit.controller.dto.request.ReportRecipeDto;
 import toy.recipit.controller.dto.request.UploadIngredientDto;
 import toy.recipit.controller.dto.request.UploadRecipeDto;
 import toy.recipit.controller.dto.request.UploadStepDto;
@@ -34,6 +35,8 @@ import toy.recipit.mapper.vo.BookmarkRecipeVo;
 import toy.recipit.mapper.vo.CommonDetailCodeVo;
 import toy.recipit.mapper.vo.IngredientVo;
 import toy.recipit.mapper.vo.InsertRecipeVo;
+import toy.recipit.mapper.vo.InsertReportDetailVo;
+import toy.recipit.mapper.vo.InsertReportVo;
 import toy.recipit.mapper.vo.InsertStepVo;
 import toy.recipit.mapper.vo.PopularRecipeVo;
 import toy.recipit.mapper.vo.PreferCategoryVo;
@@ -378,6 +381,45 @@ public class RecipeService {
                         bookmarkRecipeVo.getIsBookmarked()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public boolean reportRecipe(String userNo, String recipeNo, ReportRecipeDto reportRecipeDto) {
+        if (!recipeMapper.isRecipeExists(recipeNo)) {
+            throw new IllegalArgumentException("recipe.notFoundRecipe");
+        }
+
+        if(recipeMapper.isRecipeAuthor(userNo, recipeNo)) {
+            throw new IllegalArgumentException("report.invalidUser");
+        }
+
+        if (recipeMapper.isReportedRecipe(userNo, recipeNo)) {
+            throw new IllegalArgumentException("report.alreadyReported");
+        }
+
+        InsertReportVo reportVo = new InsertReportVo(null, userNo, recipeNo, Constants.ReportActionStatus.PROCESSING);
+        recipeMapper.insertReport(reportVo);
+
+        List<InsertReportDetailVo> reportDetails = reportRecipeDto.getReportTypeCodeList().stream()
+                .map(categoryCode -> new InsertReportDetailVo(
+                        reportVo.getReportNo(),
+                        categoryCode,
+                        Constants.ReportCategory.ETC.equals(categoryCode) ? reportRecipeDto.getContent() : StringUtils.EMPTY,
+                        userNo
+                ))
+                .toList();
+
+        recipeMapper.insertReportDetails(reportDetails);
+
+        if (recipeMapper.isReportedCategoryOverLimit(
+                recipeNo,
+                reportRecipeDto.getReportTypeCodeList(),
+                Constants.ReportRecipe.HIDE_THRESHOLD)
+        ) {
+            recipeMapper.updateRecipeStatus(Constants.SystemId.SYSTEM_NUMBER, recipeNo, Constants.Recipe.PRIVATE);
+        }
+
+        return true;
     }
 
     private String getDraftRecipeImageUrl(String imageUrl) {
