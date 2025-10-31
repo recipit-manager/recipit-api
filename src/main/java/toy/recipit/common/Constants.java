@@ -147,4 +147,8 @@ public final class Constants {
     public interface ReportRecipe{
         int HIDE_THRESHOLD = 5;
     }
+
+    public interface Notice{
+        String NEW_NOTICE_MSG = "NEW_NOTICE";
+    }
 }
