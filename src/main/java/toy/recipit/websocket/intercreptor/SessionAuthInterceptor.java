@@ -29,7 +29,7 @@ public class SessionAuthInterceptor implements HandshakeInterceptor {
 
                 return true;
             } catch (Exception e) {
-                log.warn("Authentication failed: {}", e.getMessage());
+                log.warn("Authentication failed: {}", e.getMessage(), e);
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
             }
         }

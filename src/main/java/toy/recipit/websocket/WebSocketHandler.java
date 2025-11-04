@@ -51,7 +51,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 try {
                     session.sendMessage(new TextMessage(msg));
                 } catch (IOException e) {
-                    log.warn("{} Fail Send Message: {}", userNo, e.getMessage());
+                    log.warn("{} Fail Send Message: {}", userNo, e.getMessage(), e);
                 }
             }
         }
