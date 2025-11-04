@@ -19,7 +19,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        String userNo = (String) session.getAttributes().get("userNo");
+        String userNo = session.getAttributes().get("userNo").toString();
 
         if (userNo != null) {
             sessions.put(userNo, session);

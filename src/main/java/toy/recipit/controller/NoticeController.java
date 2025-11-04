@@ -19,8 +19,6 @@ public class NoticeController {
 
     @PostMapping("/dispatch")
     public ResponseEntity<Void> noticeDispatch(@RequestBody NoticeRequestDto request) {
-        System.out.println("📩 알림 요청 수신: " + request.getNoticeItems().size() + "건");
-
         for (NoticeItemDto item : request.getNoticeItems()) {
             noticeWebSocketHandler.sendMessage(item.getUserNo(), Constants.Notice.NEW_NOTICE_MSG);
         }
