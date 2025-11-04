@@ -1,6 +1,7 @@
 package toy.recipit.websocket.intercreptor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
@@ -13,6 +14,7 @@ import toy.recipit.common.util.SessionUtil;
 
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SessionAuthInterceptor implements HandshakeInterceptor {
@@ -27,6 +29,7 @@ public class SessionAuthInterceptor implements HandshakeInterceptor {
 
                 return true;
             } catch (Exception e) {
+                log.warn("Authentication failed: {}", e.getMessage());
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
             }
         }
