@@ -42,4 +42,5 @@ logging:
 jasypt:
   password: ${JASYPT_PASSWORD}
 
-
+internal:
+  auth-key: ${INTERNAL_AUTH_KEY}
