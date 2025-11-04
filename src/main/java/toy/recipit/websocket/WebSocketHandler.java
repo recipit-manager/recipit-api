@@ -40,13 +40,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     public void sendMessage(String userNo, String msg) {
-        Set<WebSocketSession> Sessions = sessions.get(userNo);
+        Set<WebSocketSession> webSocketSessionSet = sessions.get(userNo);
 
-        if (Sessions.isEmpty()) {
+        if (webSocketSessionSet.isEmpty()) {
             log.warn("{} Session not Fount or Close", userNo);
         }
 
-        for (WebSocketSession session : Sessions) {
+        for (WebSocketSession session : webSocketSessionSet) {
             if (session.isOpen()) {
                 try {
                     session.sendMessage(new TextMessage(msg));
