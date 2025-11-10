@@ -23,6 +23,10 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 550MB
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
 
 mybatis:
   configuration:
