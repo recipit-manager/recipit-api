@@ -5,6 +5,7 @@
 
     <select id="getCommonDetailCodes" parameterType="string" resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
         SELECT
+            GROUP_CODE      AS groupCode,
             CODE            AS code,
             CODE_NAME       AS codeName,
             NOTE_1          AS note1,
@@ -58,6 +59,7 @@
 
     <select id="getCommonDetailCode" parameterType="string" resultType="toy.recipit.mapper.vo.CommonDetailCodeVo">
         SELECT
+            GROUP_CODE AS groupCode,
             CODE      AS code,
             CODE_NAME AS codeName,
             NOTE_1    AS note1,

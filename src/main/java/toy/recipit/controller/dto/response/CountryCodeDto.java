@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class CountryCodeDto {
+    private final String groupCode;
     private final String code;
     private final String name;
     private final String dialCode;
     private final String format;
     private final String regex;
-
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommonDetailCodeVo {
+    private String groupCode;
     private String code;
     private String codeName;
     private String note1;
