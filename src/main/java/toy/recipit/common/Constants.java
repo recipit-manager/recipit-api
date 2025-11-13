@@ -9,6 +9,11 @@ public final class Constants {
         String NO = "N";
     }
 
+    public interface LanguageCode {
+        String KO = "KO";
+        String EN = "EN";
+    }
+
     public interface LogTag {
         String SERVER_ERROR = "SERVER_ERROR";
         String DB_FAIL = "DB_FAIL";

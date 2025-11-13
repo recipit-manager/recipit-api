@@ -36,7 +36,7 @@ public class InsertUserVo {
         this.middleName = signUpDto.getMiddleName();
         this.lastName = signUpDto.getLastName();
         this.nickName = signUpDto.getNickname();
-        this.countryCode = signUpDto.getCountryCode().getCode();
+        this.countryCode = signUpDto.getCountryCode();
         this.phoneNumberHashing = phoneNumberHashing;
         this.phoneNumberEncrypt = phoneNumberEncrypt;
     }

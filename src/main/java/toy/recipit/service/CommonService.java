@@ -31,7 +31,6 @@ public class CommonService {
         return commonMapper.getCommonDetailCodes(groupCode)
                 .stream()
                 .map(CommonCodeVo -> new CountryCodeDto(
-                        CommonCodeVo.getGroupCode(),
                         CommonCodeVo.getCode(),
                         CommonCodeVo.getCodeName(),
                         CommonCodeVo.getNote4(),
@@ -131,7 +130,6 @@ public class CommonService {
     public Optional<CountryCodeDto> getCountryCode(String groupCode, String countryCode) {
         return commonMapper.getCommonDetailCode(groupCode, countryCode)
                 .map(commonDetailCodeVo -> new CountryCodeDto(
-                        commonDetailCodeVo.getGroupCode(),
                         commonDetailCodeVo.getCode(),
                         commonDetailCodeVo.getCodeName(),
                         commonDetailCodeVo.getNote4(),
