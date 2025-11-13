@@ -16,7 +16,6 @@ import toy.recipit.common.Constants;
 import toy.recipit.common.exception.UserNotFoundException;
 import toy.recipit.common.exception.loginFailException;
 import toy.recipit.common.util.EmailMaskUtil;
-import toy.recipit.common.util.LanguageCodeUtil;
 import toy.recipit.common.util.SecurityUtil;
 import toy.recipit.common.util.TemporaryPasswordGenerator;
 import toy.recipit.controller.dto.request.ChangeNicknameDto;
@@ -68,7 +67,7 @@ public class UserService {
         validateEmailVerification(emailHashing);
         validateDuplicateEmail(emailHashing);
         validateDuplicateNameAndPhone(signUpDto, phoneNumberHashing);
-        validateCountryAndPhoneNumber(LanguageCodeUtil.toGroupCode(language),signUpDto.getCountryCode(), phoneNumber);
+        validateCountryAndPhoneNumber(Constants.GroupCode.Language.valueOf(language).getGroupCode(),signUpDto.getCountryCode(), phoneNumber);
 
         InsertUserVo insertUserVo = new InsertUserVo(
                 signUpDto,
@@ -139,7 +138,7 @@ public class UserService {
 
     public String findUserId(FindUserIdDto findUserIdDto, String language) {
         validateCountryAndPhoneNumber(
-                LanguageCodeUtil.toGroupCode(language),
+                Constants.GroupCode.Language.valueOf(language).getGroupCode(),
                 findUserIdDto.getCountryCode(),
                 findUserIdDto.getPhoneNumber()
         );
@@ -160,7 +159,7 @@ public class UserService {
     @Transactional
     public Boolean sendTemporaryPassword(FindUserPasswordDto findUserPasswordDto, String language) {
         validateCountryAndPhoneNumber(
-                LanguageCodeUtil.toGroupCode(language),
+                Constants.GroupCode.Language.valueOf(language).getGroupCode(),
                 findUserPasswordDto.getCountryCode(),
                 findUserPasswordDto.getPhoneNumber()
         );
