@@ -1,9 +1,7 @@
 package toy.recipit.controller.dto.request;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -46,9 +44,8 @@ public class SignUpDto {
     })
     private final String password;
 
-    @NotNull(message = "validation.countryCode.null")
-    @Valid
-    private final CommonCodeDto countryCode;
+    @NotBlank(message = "validation.countryCode.blank")
+    private final String countryCode;
 
     @NotBlank(message = "validation.phoneNumber.blank")
     private final String phoneNumber;
@@ -60,7 +57,7 @@ public class SignUpDto {
             String nickname,
             String email,
             String password,
-            CommonCodeDto countryCode,
+            String countryCode,
             String phoneNumber
     ) {
         this.firstName = firstName;

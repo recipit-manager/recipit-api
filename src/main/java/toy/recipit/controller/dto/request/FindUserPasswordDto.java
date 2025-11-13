@@ -21,9 +21,8 @@ public class FindUserPasswordDto {
     @Size(max = 20, message = "validation.lastName.size")
     private final String lastName;
 
-    @NotNull(message = "validation.countryCode.null")
-    @Valid
-    private final CommonCodeDto countryCode;
+    @NotBlank(message = "validation.countryCode.blank")
+    private final String countryCode;
 
     @NotBlank(message = "validation.phoneNumber.blank")
     private final String phoneNumber;
@@ -37,15 +36,14 @@ public class FindUserPasswordDto {
             String firstName,
             String middleName,
             String lastName,
-            String groupCode,
-            String code,
+            String countryCode,
             String phoneNumber,
             String email
     ) {
         this.firstName = firstName;
         this.middleName = (middleName == null) ? StringUtil.EMPTY_STRING : middleName;
         this.lastName = lastName;
-        this.countryCode = new CommonCodeDto(groupCode, code);
+        this.countryCode = countryCode;
         this.phoneNumber = phoneNumber;
         this.email = email;
     }

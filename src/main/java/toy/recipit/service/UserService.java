@@ -21,7 +21,6 @@ import toy.recipit.common.util.TemporaryPasswordGenerator;
 import toy.recipit.controller.dto.request.ChangeNicknameDto;
 import toy.recipit.controller.dto.request.ChangePasswordDto;
 import toy.recipit.controller.dto.request.ChangeTemporaryPasswordDto;
-import toy.recipit.controller.dto.request.CommonCodeDto;
 import toy.recipit.controller.dto.request.FindUserIdDto;
 import toy.recipit.controller.dto.request.FindUserPasswordDto;
 import toy.recipit.controller.dto.request.LoginDto;
@@ -55,7 +54,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean signUp(SignUpDto signUpDto) {
+    public boolean signUp(SignUpDto signUpDto, String language) {
         String email = signUpDto.getEmail();
         String emailHashing = DigestUtils.sha256Hex(email);
         String emailEncrypt = securityUtil.encrypt(email);
@@ -68,7 +67,7 @@ public class UserService {
         validateEmailVerification(emailHashing);
         validateDuplicateEmail(emailHashing);
         validateDuplicateNameAndPhone(signUpDto, phoneNumberHashing);
-        validateCountryAndPhoneNumber(signUpDto.getCountryCode(), phoneNumber);
+        validateCountryAndPhoneNumber(Constants.GroupCode.Language.valueOf(language).getGroupCode(),signUpDto.getCountryCode(), phoneNumber);
 
         InsertUserVo insertUserVo = new InsertUserVo(
                 signUpDto,
@@ -137,8 +136,12 @@ public class UserService {
                 refreshAutoLoginToken(autoLoginToken, userNo));
     }
 
-    public String findUserId(FindUserIdDto findUserIdDto) {
-        validateCountryAndPhoneNumber(findUserIdDto.getCountryCode(), findUserIdDto.getPhoneNumber());
+    public String findUserId(FindUserIdDto findUserIdDto, String language) {
+        validateCountryAndPhoneNumber(
+                Constants.GroupCode.Language.valueOf(language).getGroupCode(),
+                findUserIdDto.getCountryCode(),
+                findUserIdDto.getPhoneNumber()
+        );
 
         UserVo userVo = userMapper.getUserForFindAccount(
                 StringUtil.EMPTY_STRING,
@@ -154,8 +157,12 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean sendTemporaryPassword(FindUserPasswordDto findUserPasswordDto) {
-        validateCountryAndPhoneNumber(findUserPasswordDto.getCountryCode(), findUserPasswordDto.getPhoneNumber());
+    public Boolean sendTemporaryPassword(FindUserPasswordDto findUserPasswordDto, String language) {
+        validateCountryAndPhoneNumber(
+                Constants.GroupCode.Language.valueOf(language).getGroupCode(),
+                findUserPasswordDto.getCountryCode(),
+                findUserPasswordDto.getPhoneNumber()
+        );
 
         UserVo userVo = userMapper.getUserForFindAccount(
                 DigestUtils.sha256Hex(findUserPasswordDto.getEmail()),
@@ -290,11 +297,12 @@ public class UserService {
     }
 
     private void validateCountryAndPhoneNumber(
-            CommonCodeDto commonCodeDto,
+            String languageCode,
+            String countryCode,
             String phoneNumber
     ) {
         Optional<CountryCodeDto> countryCodeDto = commonService.getCountryCode(
-                commonCodeDto.getGroupCode(), commonCodeDto.getCode());
+                languageCode, countryCode);
 
         if (countryCodeDto.isEmpty()) {
             throw new IllegalArgumentException("signUp.invalidCountryCode");

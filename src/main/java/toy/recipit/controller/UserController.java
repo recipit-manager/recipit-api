@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -100,9 +101,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> signUp(
+            @RequestHeader(value = "Accept-Language", required = false, defaultValue = "KO") String language,
             @RequestBody @Valid SignUpDto signUpDto
     ) {
-        return ResponseEntity.ok(apiResponseFactory.success(userService.signUp(signUpDto)));
+
+        return ResponseEntity.ok(apiResponseFactory.success(userService.signUp(signUpDto, language)));
     }
 
     @PostMapping("/login")
@@ -202,16 +205,18 @@ public class UserController {
 
     @GetMapping("/id")
     public ResponseEntity<ApiResponse<String>> findUserId(
+            @RequestHeader(value = "Accept-Language", required = false, defaultValue = "KO") String language,
             @Valid @ModelAttribute FindUserIdDto findUserIdDto
     ) {
-        return ResponseEntity.ok(apiResponseFactory.success(userService.findUserId(findUserIdDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.findUserId(findUserIdDto, language)));
     }
 
     @PostMapping("/password/temporary")
     public ResponseEntity<ApiResponse<Boolean>> sendTemporaryPassword(
+            @RequestHeader(value = "Accept-Language", required = false, defaultValue = "KO") String language,
             @RequestBody @Valid FindUserPasswordDto findUserPasswordDto
     ) {
-        return ResponseEntity.ok(apiResponseFactory.success(userService.sendTemporaryPassword(findUserPasswordDto)));
+        return ResponseEntity.ok(apiResponseFactory.success(userService.sendTemporaryPassword(findUserPasswordDto, language)));
     }
 
     @PatchMapping("/password/temporary")
