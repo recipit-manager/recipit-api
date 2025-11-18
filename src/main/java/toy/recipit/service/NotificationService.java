@@ -40,4 +40,8 @@ public class NotificationService {
 
         return true;
     }
+
+    public boolean isUnreadNotificationExists(String userNo) {
+        return notificationMapper.isUnreadNotificationExists(userNo, Constants.Yn.NO);
+    }
 }

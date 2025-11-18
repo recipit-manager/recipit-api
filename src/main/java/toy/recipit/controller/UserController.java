@@ -279,6 +279,15 @@ public class UserController {
         return ResponseEntity.ok(apiResponseFactory.success(notificationService.readNotifications(userInfo.getUserNo(), notificationIdList)));
     }
 
+    @GetMapping("/notification/unread/exists")
+    public ResponseEntity<ApiResponse<Boolean>> isUnreadNotificationExists(
+            HttpServletRequest request
+    ) {
+        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+
+        return ResponseEntity.ok(apiResponseFactory.success(notificationService.isUnreadNotificationExists(userInfo.getUserNo())));
+    }
+
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);

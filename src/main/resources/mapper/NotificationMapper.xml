@@ -33,4 +33,13 @@
         </foreach>
     </update>
 
+    <select id="isUnreadNotificationExists" parameterType="string" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM US_NOTICE
+            WHERE USER_NO = #{userNo}
+              AND READ_YN = #{readStatus}
+        )
+    </select>
+
 </mapper>
