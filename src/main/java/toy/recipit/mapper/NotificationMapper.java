@@ -14,4 +14,7 @@ public interface NotificationMapper {
     int updateReadYn(@Param("userNo") String userNo,
                      @Param("noticeNoList") List<String> noticeNoList,
                      @Param("readStatus") String readStatus);
+
+    boolean isUnreadNotificationExists(@Param("userNo") String userNo,
+                                       @Param("readStatus") String readStatus);
 }
