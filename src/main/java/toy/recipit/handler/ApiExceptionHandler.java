@@ -127,28 +127,28 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(SessionNotExistsException.class)
     public ResponseEntity<ApiResponse<String>> handleSessionNotExistsException(SessionNotExistsException e, HttpServletRequest req) {
-        log.warn("{} {} - {}", Constants.LogTag.SESSION_ERROR, req.getMethod(), req.getRequestURI(), e);
+        log.warn("{} {} - {}", Constants.LogTag.SESSION_ERROR, req.getMethod(), req.getRequestURI());
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.SESSION_NOT_FOUND));
     }
 
     @ExceptionHandler(NotLoginStatusException.class)
     public ResponseEntity<ApiResponse<String>> handleNotLoginStatusException(NotLoginStatusException e, HttpServletRequest req) {
-        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
+        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI());
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.NOT_LOGIN_STATUS));
     }
 
     @ExceptionHandler(UserStatusLockException.class)
     public ResponseEntity<ApiResponse<String>> handleUserStatusLockException(UserStatusLockException e, HttpServletRequest req) {
-        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
+        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI());
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.LOCK_LOGIN_STATUS));
     }
 
     @ExceptionHandler(UserStatusInactiveException.class)
     public ResponseEntity<ApiResponse<String>> handleUserStatusInactiveException(UserStatusInactiveException e, HttpServletRequest req) {
-        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI(), e);
+        log.warn("{} {} - {}", Constants.LogTag.LOGIN_STATUS_ERROR, req.getMethod(), req.getRequestURI());
 
         return ResponseEntity.ok(apiResponseFactory.error(ApiResponse.Result.INACTIVE_LOGIN_STATUS));
     }

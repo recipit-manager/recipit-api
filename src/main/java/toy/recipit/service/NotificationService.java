@@ -23,6 +23,7 @@ public class NotificationService {
                 .map(notificationVo -> new NotificationDto(
                         notificationVo.getNoticeNo(),
                         notificationVo.getContents(),
+                        notificationVo.getRecipeNo(),
                         new CommonCodeAndNameDto(notificationVo.getCategoryCode(), notificationVo.getCategoryCodeName()),
                         notificationVo.getReadYn(),
                         notificationVo.getCreateDateTime()
