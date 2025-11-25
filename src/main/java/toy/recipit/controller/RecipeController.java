@@ -55,9 +55,14 @@ public class RecipeController {
             @Min(value = 1, message = "recipe.list.size.min")
             int size
     ) {
-        SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+        String userNo = StringUtil.EMPTY_STRING;
 
-        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getPopularRecipes(userInfo.getUserNo(), size)));
+        if(sessionUtil.isSessionExists(request)) {
+            SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
+            userNo = userInfo.getUserNo();
+        }
+
+        return ResponseEntity.ok(apiResponseFactory.success(recipeService.getPopularRecipes(userNo, size)));
     }
 
     @GetMapping("/draft/count")
