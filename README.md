@@ -37,7 +37,14 @@
 `-DIMAGEKIT_PUBLIC_KEY={imagekit public key}
 `-DIMAGEKIT_PRIVATE_KEY={imagekit private key}
 `-DIMAGEKIT_URL_ENDPOINT={imagekit url endpoint}
+`-DSPRING_MAIL_HOST={smtp host}
+`-SPRING_MAIL_PORT={smtp port}
+`-SPRING_MAIL_USERNAME={mail account}
+`-SPRING_MAIL_PASSWORD={mail password}
 `-DJASYPT_PASSWORD={jasypt password}
+`-DINTERNAL_AUTH_KEY={internal auth key}
+`-Dspring.profiles.active={local / dev / prod}
+
 ``` 
 
 ### Source

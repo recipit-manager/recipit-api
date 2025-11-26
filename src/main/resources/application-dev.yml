@@ -1,0 +1,13 @@
+app:
+  base-url: "https://scdev4--recipit-api--qj5x98zdln7d.code.run/"
+
+cors:
+  allowed-origins:
+    - "http://localhost:8081"
+    - "https://scdev4--recipit-api--qj5x98zdln7d.code.run/"
+
+spring:
+  datasource:
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 5
