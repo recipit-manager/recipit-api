@@ -3,7 +3,8 @@ app:
 
 cors:
   allowed-origins:
-    - http://localhost:8081
+    -http://localhost:8081
+    -https://scdev4--recipit-api--qj5x98zdln7d.code.run/
 
 spring:
   datasource:
