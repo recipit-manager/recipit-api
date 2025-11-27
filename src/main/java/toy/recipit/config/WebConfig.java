@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+
 @Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -16,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         log.info("###########################################################");
-        log.info(allowedOrigins.toString());
+        Arrays.stream(allowedOrigins).forEach(x -> log.info(x));
         log.info("###########################################################");
 
         registry.addMapping("/**")
