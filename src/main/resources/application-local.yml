@@ -10,3 +10,9 @@ spring:
     hikari:
       minimum-idle: 1
       maximum-pool-size: 3
+
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: Lax
