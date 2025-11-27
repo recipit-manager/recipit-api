@@ -2,7 +2,9 @@ app:
   base-url: https://api.recipit.com #임의의 url
 
 cors:
-  allowed-origins: "https://recipit.mo" #임의의 url
+  allowed-origins:
+    -http://localhost:8081
+    -http://localhost:3000
 
 spring:
   datasource:

@@ -48,3 +48,10 @@ jasypt:
 
 internal:
   auth-key: ${INTERNAL_AUTH_KEY}
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+        same-site: none
