@@ -10,6 +10,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -49,8 +51,8 @@ import toy.recipit.service.EmailVerificationService;
 import toy.recipit.service.NotificationService;
 import toy.recipit.service.UserService;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
@@ -271,7 +273,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<Boolean>> readNotifications(
             HttpServletRequest request,
             @RequestBody
-            @NotEmpty (message = "validation.notification_id_list.empty")
+            @NotEmpty(message = "validation.notification_id_list.empty")
             List<String> notificationIdList
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
@@ -290,11 +292,15 @@ public class UserController {
 
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS));
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token)
+                .sameSite("none")
+                .secure(true)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(Duration.ofDays(Constants.UserLogin.AUTO_LOGIN_EXPIRATION_DAYS))
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     private void removeAutoLoginCookie(HttpServletResponse response) {
