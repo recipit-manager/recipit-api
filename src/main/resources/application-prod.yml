@@ -3,8 +3,7 @@ app:
 
 cors:
   allowed-origins:
-    http://localhost:8081,
-    http://localhost:3000
+    https://recipit.mo
 
 spring:
   datasource:
