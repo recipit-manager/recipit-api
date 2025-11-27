@@ -44,7 +44,6 @@
 `-DJASYPT_PASSWORD={jasypt password}
 `-DINTERNAL_AUTH_KEY={internal auth key}
 `-Dspring.profiles.active={local / dev / prod}
-
 ``` 
 
 ### Source
