@@ -5,6 +5,7 @@ cors:
   allowed-origins:
     http://localhost:8081,
     https://scdev4--recipit-mo--m2p477ffsl99.code.run
+    https://mockiwi.com
 
 spring:
   datasource:
@@ -17,3 +18,4 @@ server:
     session:
       cookie:
         same-site: Lax
+        domain: .mockiwi.com

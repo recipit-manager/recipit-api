@@ -297,7 +297,7 @@ public class UserController {
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         ResponseCookie cookie = ResponseCookie.from(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token)
-                .domain(".code.run")
+                .domain(".mockiwi.com")
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)
