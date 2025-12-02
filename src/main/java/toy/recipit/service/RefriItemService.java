@@ -36,6 +36,10 @@ public class RefriItemService {
                 Constants.GroupCode.DIFFICULTY
         );
 
+        if (recipeVoList.isEmpty()) {
+            return List.of();
+        }
+
         List<String> recipeNoList = recipeVoList.stream()
                 .map(SearchRefriVo::getId)
                 .toList();
