@@ -121,7 +121,8 @@ public class RecipeService {
                 getRecipeListDto.getSize(),
                 Constants.Image.THUMBNAIL,
                 Constants.GroupCode.DIFFICULTY,
-                Constants.SortType.RECENT
+                Constants.SortType.RECENT,
+                Constants.Recipe.RELEASE
         );
 
         return createRecipeListDto(recipeVoList, getRecipeListDto);
@@ -136,7 +137,8 @@ public class RecipeService {
                 getRecipeListDto.getSize(),
                 Constants.Image.THUMBNAIL,
                 Constants.GroupCode.DIFFICULTY,
-                Constants.SortType.LIKE
+                Constants.SortType.LIKE,
+                Constants.Recipe.RELEASE
         );
 
         return createRecipeListDto(recipeVoList, getRecipeListDto);

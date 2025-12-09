@@ -125,8 +125,10 @@
                 AND DC.GROUP_CODE = #{difficultyGroupCode}
                 AND DC.USE_YN = 'Y'
         <where>
+            R.STATUS_CODE = #{statusCode}
+
             <if test="categoryCode != ''">
-                R.CATEGORY_CODE = #{categoryCode}
+                AND R.CATEGORY_CODE = #{categoryCode}
             </if>
             <if test="keyword != ''">
                 AND (
