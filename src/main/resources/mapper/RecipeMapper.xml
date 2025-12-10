@@ -433,14 +433,18 @@
     </resultMap>
 
     <select id="getIngredients" resultType="toy.recipit.mapper.vo.IngredientVo">
-
         SELECT
             I.NAME           AS name,
             I.TYPE_CODE      AS categoryCode,
+            DC.CODE_NAME     AS categoryName,
             I.QUANTITY       AS quantity,
             I.UNIT           AS unit,
             I.TIP            AS tip
         FROM RC_INGREDIENT I
+        INNER JOIN CM_DETAIL_CODE DC
+            ON DC.GROUP_CODE = #{categoryGroupCode}
+            AND DC.CODE = I.TYPE_CODE
+            AND DC.USE_YN = 'Y'
         WHERE I.RECIPE_NO = #{recipeNo}
         ORDER BY I.INGREDIENT_NO
     </select>

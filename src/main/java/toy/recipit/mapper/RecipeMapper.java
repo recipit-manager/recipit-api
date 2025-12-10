@@ -91,7 +91,8 @@ public interface RecipeMapper {
                                    @Param("thumbnailImageCode") String thumbnailImageCode,
                                    @Param("completeImageCode") String completeImageCode);
 
-    List<IngredientVo> getIngredients(@Param("recipeNo") String recipeNo);
+    List<IngredientVo> getIngredients(@Param("recipeNo") String recipeNo,
+                                      @Param("categoryGroupCode") String categoryGroupCode);
 
     List<StepVo> getSteps(@Param("recipeNo") String recipeNo);
 
