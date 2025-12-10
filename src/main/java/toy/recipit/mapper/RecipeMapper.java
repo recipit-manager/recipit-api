@@ -54,7 +54,8 @@ public interface RecipeMapper {
                                     @Param("size") int size,
                                     @Param("imageTypeCode") String imageTypeCode,
                                     @Param("difficultyGroupCode") String difficultyGroupCode,
-                                    @Param("sortType") String sortType);
+                                    @Param("sortType") String sortType,
+                                    @Param("statusCode") String statusCode);
 
     List<CommonDetailCodeVo> getRecipeCategories(@Param("keyword") String keyword,
                                                  @Param("categoryGroupCode") String categoryGroupCode);
@@ -90,7 +91,8 @@ public interface RecipeMapper {
                                    @Param("thumbnailImageCode") String thumbnailImageCode,
                                    @Param("completeImageCode") String completeImageCode);
 
-    List<IngredientVo> getIngredients(@Param("recipeNo") String recipeNo);
+    List<IngredientVo> getIngredients(@Param("recipeNo") String recipeNo,
+                                      @Param("categoryGroupCode") String categoryGroupCode);
 
     List<StepVo> getSteps(@Param("recipeNo") String recipeNo);
 

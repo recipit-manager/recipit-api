@@ -36,8 +36,6 @@
                 COUNT(*) AS likeCount,
                 CUME_DIST() OVER (ORDER BY COUNT(*) DESC) AS likePercentile
             FROM RC_LIKE L
-            INNER JOIN SearchRecipes SR
-                ON L.RECIPE_NO = SR.RECIPE_NO
             WHERE L.LIKE_YN = 'Y'
             GROUP BY L.RECIPE_NO
         )
