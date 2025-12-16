@@ -693,7 +693,7 @@
             DC.CODE_NAME       AS difficulty,
             SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS likeCount,
             MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS isLiked,
-            MAX(CASE WHEN B.USER_NO = #{userNo} THEN 1 ELSE 0 END) AS isBookmarked
+            1 AS isBookmarked
         FROM RC_RECIPE R
                  INNER JOIN RC_IMAGE IMG
                             ON R.RECIPE_NO = IMG.RECIPE_NO
@@ -706,6 +706,7 @@
                                 AND DC.USE_YN = 'Y'
                  INNER JOIN RC_BOOKMARK_RECIPE B
                             ON R.RECIPE_NO = B.RECIPE_NO
+                                AND B.USER_NO = #{userNo}
         WHERE R.STATUS_CODE = #{statusCode}
         GROUP BY R.RECIPE_NO
         LIMIT #{offset}, #{size}
