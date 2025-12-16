@@ -125,8 +125,10 @@
                 AND DC.GROUP_CODE = #{difficultyGroupCode}
                 AND DC.USE_YN = 'Y'
         <where>
+            R.STATUS_CODE = #{statusCode}
+
             <if test="categoryCode != ''">
-                R.CATEGORY_CODE = #{categoryCode}
+                AND R.CATEGORY_CODE = #{categoryCode}
             </if>
             <if test="keyword != ''">
                 AND (
@@ -431,14 +433,18 @@
     </resultMap>
 
     <select id="getIngredients" resultType="toy.recipit.mapper.vo.IngredientVo">
-
         SELECT
             I.NAME           AS name,
             I.TYPE_CODE      AS categoryCode,
+            DC.CODE_NAME     AS categoryName,
             I.QUANTITY       AS quantity,
             I.UNIT           AS unit,
             I.TIP            AS tip
         FROM RC_INGREDIENT I
+        INNER JOIN CM_DETAIL_CODE DC
+            ON DC.GROUP_CODE = #{categoryGroupCode}
+            AND DC.CODE = I.TYPE_CODE
+            AND DC.USE_YN = 'Y'
         WHERE I.RECIPE_NO = #{recipeNo}
         ORDER BY I.INGREDIENT_NO
     </select>
@@ -687,7 +693,7 @@
             DC.CODE_NAME       AS difficulty,
             SUM(CASE WHEN L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS likeCount,
             MAX(CASE WHEN L.USER_NO = #{userNo} AND L.LIKE_YN = 'Y' THEN 1 ELSE 0 END) AS isLiked,
-            MAX(CASE WHEN B.USER_NO = #{userNo} THEN 1 ELSE 0 END) AS isBookmarked
+            1 AS isBookmarked
         FROM RC_RECIPE R
                  INNER JOIN RC_IMAGE IMG
                             ON R.RECIPE_NO = IMG.RECIPE_NO
@@ -700,6 +706,7 @@
                                 AND DC.USE_YN = 'Y'
                  INNER JOIN RC_BOOKMARK_RECIPE B
                             ON R.RECIPE_NO = B.RECIPE_NO
+                                AND B.USER_NO = #{userNo}
         WHERE R.STATUS_CODE = #{statusCode}
         GROUP BY R.RECIPE_NO
         LIMIT #{offset}, #{size}

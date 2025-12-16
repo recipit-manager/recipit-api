@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,7 @@ import java.util.List;
 @RequestMapping("/user")
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -116,6 +118,8 @@ public class UserController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+        log.warn(request.getSession().getId());
+
         LoginResultDto loginResult = userService.login(loginDto);
         sessionUtil.setSessionUserInfo(request,
                 new SessionUserInfo(
@@ -293,6 +297,7 @@ public class UserController {
 
     private void setAutoLoginCookie(HttpServletResponse response, String token) {
         ResponseCookie cookie = ResponseCookie.from(Constants.UserLogin.AUTO_LOGIN_COOKIE_NAME, token)
+//                .domain("mockiwi.com") TODO: 도메인 설정
                 .sameSite("none")
                 .secure(true)
                 .httpOnly(true)

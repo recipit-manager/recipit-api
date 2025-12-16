@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class IngredientVo {
     private final String name;
     private final String categoryCode;
+    private final String categoryName;
     private final String quantity;
     private final String unit;
     private final String tip;

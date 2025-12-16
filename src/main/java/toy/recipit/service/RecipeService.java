@@ -121,7 +121,8 @@ public class RecipeService {
                 getRecipeListDto.getSize(),
                 Constants.Image.THUMBNAIL,
                 Constants.GroupCode.DIFFICULTY,
-                Constants.SortType.RECENT
+                Constants.SortType.RECENT,
+                Constants.Recipe.RELEASE
         );
 
         return createRecipeListDto(recipeVoList, getRecipeListDto);
@@ -136,7 +137,8 @@ public class RecipeService {
                 getRecipeListDto.getSize(),
                 Constants.Image.THUMBNAIL,
                 Constants.GroupCode.DIFFICULTY,
-                Constants.SortType.LIKE
+                Constants.SortType.LIKE,
+                Constants.Recipe.RELEASE
         );
 
         return createRecipeListDto(recipeVoList, getRecipeListDto);
@@ -466,13 +468,14 @@ public class RecipeService {
 
 
     private List<IngredientDto> getIngredientDtoList(String recipeNo) {
-        List<IngredientVo> ingredientVoList = recipeMapper.getIngredients(recipeNo);
+        List<IngredientVo> ingredientVoList = recipeMapper.getIngredients(recipeNo, Constants.GroupCode.INGREDIENT_TYPE);
 
         return ingredientVoList == null ? List.of()
                 : ingredientVoList.stream()
                 .map(vo -> new IngredientDto(
                         vo.getName(),
                         vo.getCategoryCode(),
+                        vo.getCategoryName(),
                         vo.getQuantity(),
                         vo.getUnit(),
                         vo.getTip()
@@ -524,7 +527,7 @@ public class RecipeService {
                 .map(stepVo -> new StepDto(
                         stepVo.getContent(),
                         stepVo.getImagePathList().stream()
-                                .map(stepImagePath -> imageKitUtil.getUrl(stepImagePath)
+                                .map(stepImagePath -> imageKitUtil.getUrl(stepImagePath, 3600)
                                         .orElseThrow(() -> new RuntimeException("잘못된 경로입니다: " + stepImagePath)))
                                 .toList()
                 ))

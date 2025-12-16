@@ -3,6 +3,7 @@ package toy.recipit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import toy.recipit.common.Constants;
+import toy.recipit.common.util.ImageKitUtil;
 import toy.recipit.controller.dto.request.GetRefriItemListDto;
 import toy.recipit.controller.dto.response.RefriItemRecipeListDto;
 import toy.recipit.mapper.RefriItemMapper;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RefriItemService {
     private final RefriItemMapper refriItemMapper;
+    private final ImageKitUtil imageKitUtil;
 
     public List<String> getAutoCompleteList(String keyword) {
         return refriItemMapper.getAutoCompleteList(keyword);
@@ -33,6 +35,10 @@ public class RefriItemService {
                 Constants.Image.THUMBNAIL,
                 Constants.GroupCode.DIFFICULTY
         );
+
+        if (recipeVoList.isEmpty()) {
+            return List.of();
+        }
 
         List<String> recipeNoList = recipeVoList.stream()
                 .map(SearchRefriVo::getId)
@@ -54,7 +60,8 @@ public class RefriItemService {
                         searchRefriVo.getId(),
                         searchRefriVo.getName(),
                         searchRefriVo.getDescription(),
-                        searchRefriVo.getImageUrl(),
+                        imageKitUtil.getUrl(searchRefriVo.getImageUrl())
+                                .orElseThrow(() -> new RuntimeException("잘못된 경로입니다 : " + searchRefriVo.getImageUrl())),
                         searchRefriVo.getCookingTime(),
                         searchRefriVo.getServingSize(),
                         searchRefriVo.getDifficulty(),
