@@ -262,10 +262,22 @@ public class UserController {
     public ResponseEntity<ApiResponse<Boolean>> changeNickname(
             HttpServletRequest request,
             @RequestBody @Valid ChangeNicknameDto changeNicknameDto
-    ) {
+    ) throws Exception {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
-        return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.getUserNo(), changeNicknameDto)));
+        if (userService.changeNickname(userInfo.getUserNo(), changeNicknameDto)) {
+            SessionUserInfo changeUserInfo = new SessionUserInfo(
+                    userInfo.getUserNo(),
+                    changeNicknameDto.getNickname(),
+                    Constants.UserStatus.ACTIVE
+            );
+
+            sessionUtil.setSessionUserInfo(request, changeUserInfo);
+
+            return ResponseEntity.ok(apiResponseFactory.success(true));
+        }
+
+       throw new Exception();
     }
 
     @GetMapping("/notification/list")
