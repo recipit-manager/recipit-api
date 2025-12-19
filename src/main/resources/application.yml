@@ -28,6 +28,22 @@ spring:
     encoding: UTF-8
     fallback-to-system-locale: false
 
+springdoc:
+  api-docs:
+    path: /api-docs
+    version: OpenAPI_3-1
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+  paths-to-match:
+    - /common/**
+    - /notice/**
+    - /recipe/**
+    - /refri-item/**
+    - /user/**
+
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
