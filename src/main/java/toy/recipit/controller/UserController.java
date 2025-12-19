@@ -1,5 +1,7 @@
 package toy.recipit.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,6 +62,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "회원", description = "Recipit 서비스의 회원정보 관련 API 정보를 제공합니다.")
 public class UserController {
 
     private final UserService userService;
@@ -80,6 +83,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponseFactory.success(result));
     }
 
+    @Operation(summary = "이메일 인증코드 전송", description = "입력된 이메일 주소로 인증코드 메일을 전송합니다.")
     @PostMapping("/email/authentication")
     public ResponseEntity<ApiResponse<SendEmailAuthenticationDto>> sendEmailAuthentication(
             @RequestBody @Valid EmailDto emailDto
