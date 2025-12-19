@@ -1,13 +1,18 @@
 package toy.recipit.controller.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@Schema(description = "API 응답 정보")
 public class ApiResponse<T> {
+    @Schema(description = "결과 코드", example = "0000")
     private final String code;
+    @Schema(description = "결과 메세지", example = "성공")
     private final String message;
+    @Schema(description = "응답 데이터")
     private final T data;
 
     @Getter
