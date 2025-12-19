@@ -261,6 +261,14 @@ public class UserController {
     ) {
         SessionUserInfo userInfo = sessionUtil.getSessionUserInfo(request);
 
+        SessionUserInfo changeUserInfo = new SessionUserInfo(
+                userInfo.getUserNo(),
+                changeNicknameDto.getNickname(),
+                Constants.UserStatus.ACTIVE
+        );
+
+        sessionUtil.setSessionUserInfo(request, changeUserInfo);
+
         return ResponseEntity.ok(apiResponseFactory.success(userService.changeNickname(userInfo.getUserNo(), changeNicknameDto)));
     }
 
