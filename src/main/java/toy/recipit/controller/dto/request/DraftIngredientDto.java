@@ -25,7 +25,7 @@ public class DraftIngredientDto {
     private final String unit;
 
     @Size(max = 30, message = "validation.recipe.ingredient.tip.size")
-    @Schema(description = "재료tip",example = "돼지고기는 실온에서 냉기를 빼주세요.")
+    @Schema(description = "재료tip", example = "돼지고기는 실온에서 냉기를 빼주세요.")
     private final String tip;
 
     public DraftIngredientDto(String name, String categoryCode, Integer quantity, String unit, String tip) {

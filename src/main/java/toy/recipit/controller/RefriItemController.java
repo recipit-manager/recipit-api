@@ -35,7 +35,7 @@ public class RefriItemController {
     private final RefriItemService refriItemService;
     private final SessionUtil sessionUtil;
 
-    @Operation(summary = "재료명 자동완성", description = "사용자가 입력한 키워드의 자동원성 재료명 목록을 반환합니다.")
+    @Operation(summary = "재료명 자동완성", description = "사용자가 입력한 키워드의 자동완성 재료명 목록을 반환합니다.")
     @GetMapping("/ingredient/auto-complete")
     public ResponseEntity<ApiResponse<List<String>>> getAutoCompleteList(
             @RequestParam

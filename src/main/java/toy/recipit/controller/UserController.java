@@ -297,7 +297,7 @@ public class UserController {
        throw new Exception();
     }
 
-    @Operation(summary = "알림 목록 조회", description = "사용자가 받은 알림 목록을 반홥합니다.")
+    @Operation(summary = "알림 목록 조회", description = "사용자가 받은 알림 목록을 반환합니다.")
     @GetMapping("/notification/list")
     public ResponseEntity<ApiResponse<List<NotificationDto>>> getNotifications(
             HttpServletRequest request
