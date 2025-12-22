@@ -1,5 +1,7 @@
 package toy.recipit.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import toy.recipit.websocket.WebSocketHandler;
 @RestController
 @RequestMapping("/notice")
 @RequiredArgsConstructor
+@Tag(name = "알림", description = "Recipit 서비스 구성에서 알림에 관련된 API 정보를 제공합니다.")
 public class NoticeController {
     private final WebSocketHandler noticeWebSocketHandler;
 
@@ -24,6 +27,7 @@ public class NoticeController {
     private String internalAuthKey;
 
     @PostMapping("/dispatch")
+    @Operation(summary = "새로운 알림 신호 수신", description = "새로운 알림이 생성된 경우 신호를 수신하여 메세지를 반환합니다..")
     public ResponseEntity<Void> noticeDispatch(
             @RequestBody NoticeRequestDto request,
             @RequestHeader("AuthenticationKey") String authenticationKey

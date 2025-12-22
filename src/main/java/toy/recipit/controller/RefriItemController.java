@@ -1,6 +1,9 @@
 package toy.recipit.controller;
 
 import io.netty.util.internal.StringUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -26,20 +29,24 @@ import java.util.List;
 @RequestMapping("/refri-item")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "냉템요리", description = "Recipit에서 냉템요리 서비스 관련 API 정보를 제공합니다.")
 public class RefriItemController {
     private final ApiResponseFactory apiResponseFactory;
     private final RefriItemService refriItemService;
     private final SessionUtil sessionUtil;
 
+    @Operation(summary = "재료명 자동완성", description = "사용자가 입력한 키워드의 자동완성 재료명 목록을 반환합니다.")
     @GetMapping("/ingredient/auto-complete")
     public ResponseEntity<ApiResponse<List<String>>> getAutoCompleteList(
             @RequestParam
             @NotBlank(message = "refriItem.keyword.blank")
+            @Schema(description = "입력한 키워드")
             String keyword
     ) {
         return ResponseEntity.ok(apiResponseFactory.success(refriItemService.getAutoCompleteList(keyword)));
     }
 
+    @Operation(summary = "냉템요리 검색", description = "사용자가 입력한 재료 기반의 레시피 목록을 반환합니다.")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<RefriItemRecipeListDto>>> getRefriItemList(
             HttpServletRequest request,

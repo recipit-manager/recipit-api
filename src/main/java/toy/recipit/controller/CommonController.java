@@ -42,31 +42,37 @@ public class CommonController {
         return apiResponseFactory.success(commonService.getCountryCodes(language.getGroupCode()));
     }
 
+    @Operation(summary = "이메일 도메인 목록 조회", description = "자주 사용하는 이메일 도메인 목록을 제공합니다.")
     @GetMapping("/email-domain/list")
     public ApiResponse<List<String>> getEmailDomains() {
         return apiResponseFactory.success(commonService.getEmailDomains());
     }
 
+    @Operation(summary = "레시피 카테고리 목록 조회", description = "Recipit서비스에서 지원하는 레시피 카테고리 목록을 제공합니다.")
     @GetMapping("/recipe/category/list")
     public ApiResponse<List<RecipeCategoryDto>> getRecipeCategories() {
         return apiResponseFactory.success(commonService.getRecipeCategories());
     }
 
+    @Operation(summary = "레시피 재료 목록 조회", description = "레시피 등록에 사용되는 재료 목록을 제공합니다.")
     @GetMapping("/ingredient-type/list")
     public ApiResponse<List<IngredientTypeDto>> getIngredientTypes() {
         return apiResponseFactory.success(commonService.getIngredientTypes());
     }
 
+    @Operation(summary = "신고 카테고리 목록 조회", description = "레시피 신고에 사용되는 신고 카테고리 목록을 제공합니다.")
     @GetMapping("/report-category/list")
     public ApiResponse<List<ReportCategoryDto>> getReportCategories() {
         return apiResponseFactory.success(commonService.getReportCategories());
     }
 
+    @Operation(summary = "난이도 목록 조회", description = "레시피에 적용되는 난이도 목록을 제공합니다.")
     @GetMapping("/difficulty/list")
     public ApiResponse<List<DifficultyDto>> getDifficulties() {
         return apiResponseFactory.success(commonService.getDifficulties());
     }
 
+    @Operation(summary = "냉템요리 재료 목록 조회", description = "냉템요리 기능에서 사용되는 재료 목록을 제공합니다.")
     @GetMapping("/refri-item/ingredient/list")
     public ApiResponse<IngredientCategoryDto> getIngredientsByCategory() {
         return apiResponseFactory.success(commonService.getIngredientsByCategory());
