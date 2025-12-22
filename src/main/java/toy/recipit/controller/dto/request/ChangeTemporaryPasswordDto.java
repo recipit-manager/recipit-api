@@ -1,5 +1,6 @@
 package toy.recipit.controller.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -21,5 +22,6 @@ public class ChangeTemporaryPasswordDto {
                     message = "validation.password.repetition"
             )
     })
+    @Schema(description = "변경할 비밀번호", example = "Test1234@")
     private final String password;
 }
